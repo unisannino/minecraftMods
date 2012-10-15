@@ -48,7 +48,7 @@ public class Mod_DenEnderman_Core
 	public static boolean ToggleXies = false;
 	public static boolean onepiece = false;
 	//public static boolean canbreakleaves = false;
-	public static boolean geneMelons = false;
+	public static boolean geneMelons = true;
 
 	public static String canPickupDE ="37, 38";
 	public static String canPickupTR ="39, 40";
@@ -108,31 +108,31 @@ public class Mod_DenEnderman_Core
 		{
 			conf.load();
 
-			DenenblockID = conf.getOrCreateIntProperty("DenEnderBlockID", Configuration.CATEGORY_BLOCK, 161).getInt();
-			LavenderID = conf.getOrCreateIntProperty("LavenderID", Configuration.CATEGORY_BLOCK, 162).getInt();
-			StarSandID = conf.getOrCreateIntProperty("StarSandID", Configuration.CATEGORY_BLOCK, 163).getInt();
+			DenenblockID = conf.get("DenEnderBlockID", Configuration.CATEGORY_BLOCK, 161).getInt();
+			LavenderID = conf.get("LavenderID", Configuration.CATEGORY_BLOCK, 162).getInt();
+			StarSandID = conf.get("StarSandID", Configuration.CATEGORY_BLOCK, 163).getInt();
 
-			DenEnderPearlID = conf.getOrCreateIntProperty("DenEnderPearlID", Configuration.CATEGORY_ITEM, 561).getInt();
-			TreeperSeedID = conf.getOrCreateIntProperty("TreeperSeedID", Configuration.CATEGORY_ITEM, 563).getInt();
-			StarPowderID = conf.getOrCreateIntProperty("SterPowderID", Configuration.CATEGORY_ITEM, 564).getInt();
-			UniuniSoulID = conf.getOrCreateIntProperty("UniuniSoulID", Configuration.CATEGORY_ITEM, 565).getInt();
-			FSeedsID = conf.getOrCreateIntProperty("FarmerSeedID", Configuration.CATEGORY_ITEM, 566).getInt();
-			AppleBombID = conf.getOrCreateIntProperty("AppleBombID", Configuration.CATEGORY_ITEM, 567).getInt();
-			SeedGunID = conf.getOrCreateIntProperty("SeedGunID", Configuration.CATEGORY_ITEM, 568).getInt();
+			DenEnderPearlID = conf.get("DenEnderPearlID", Configuration.CATEGORY_ITEM, 561).getInt();
+			TreeperSeedID = conf.get("TreeperSeedID", Configuration.CATEGORY_ITEM, 563).getInt();
+			StarPowderID = conf.get("SterPowderID", Configuration.CATEGORY_ITEM, 564).getInt();
+			UniuniSoulID = conf.get("UniuniSoulID", Configuration.CATEGORY_ITEM, 565).getInt();
+			FSeedsID = conf.get("FarmerSeedID", Configuration.CATEGORY_ITEM, 566).getInt();
+			AppleBombID = conf.get("AppleBombID", Configuration.CATEGORY_ITEM, 567).getInt();
+			SeedGunID = conf.get("SeedGunID", Configuration.CATEGORY_ITEM, 568).getInt();
 
-			Property cryingP = conf.getOrCreateBooleanProperty("isCrying", Configuration.CATEGORY_GENERAL, true);
+			Property cryingP = conf.get("isCrying", Configuration.CATEGORY_GENERAL, true);
 			cryingP.comment = "If you choose \"false\", DenEnderman stop crying.";
 			crying = cryingP.getBoolean(true);
 
-			Property ToggleXiesP = conf.getOrCreateBooleanProperty("Xies", Configuration.CATEGORY_GENERAL, false);
+			Property ToggleXiesP = conf.get("Xies", Configuration.CATEGORY_GENERAL, false);
 			ToggleXiesP.comment = "If you cooperate Xies, you choose \" true\" .";
 			ToggleXies = ToggleXiesP.getBoolean(false);
 
-			Property onepieceP = conf.getOrCreateBooleanProperty("Weare", Configuration.CATEGORY_GENERAL, false);
+			Property onepieceP = conf.get("Weare", Configuration.CATEGORY_GENERAL, false);
 			onepieceP.comment = "The coin in my pocket, and you wanna be my friend?";
 			onepiece = onepieceP.getBoolean(false);
 
-			Property geneMelonsP = conf.getOrCreateBooleanProperty("generateMelons", Configuration.CATEGORY_GENERAL, false);
+			Property geneMelonsP = conf.get("generateMelons", Configuration.CATEGORY_GENERAL, true);
 			geneMelonsP.comment = "If you choose true, Generate melons on surface of ground";
 			geneMelons = geneMelonsP.getBoolean(false);
 			/*
@@ -140,10 +140,10 @@ public class Mod_DenEnderman_Core
 			public static boolean canbreakleaves = false;
 			*/
 
-			Property canPickupDEP = conf.getOrCreateProperty("canPickDenEnder", Configuration.CATEGORY_GENERAL, "37, 38");
+			Property canPickupDEP = conf.get("canPickDenEnder", Configuration.CATEGORY_GENERAL, "37, 38");
 			canPickupDEP.comment = "DenEnderman can pick up items that you wrote here.";
 			canPickupDE  = canPickupDEP.value;
-			Property canPickupTRP = conf.getOrCreateProperty("canPickTreeper", Configuration.CATEGORY_GENERAL, "39, 40");
+			Property canPickupTRP = conf.get("canPickTreeper", Configuration.CATEGORY_GENERAL, "39, 40");
 			canPickupTRP.comment = "Treeper can pick up items that you wrote here.";
 			canPickupTR = canPickupTRP.value;
 
@@ -333,23 +333,4 @@ public class Mod_DenEnderman_Core
 		GameRegistry.addSmelting(this.StarPowder.shiftedIndex, new ItemStack(Block.sand), 0.1F);
 		GameRegistry.addSmelting(this.Lavender.blockID, new ItemStack(Item.dyePowder, 2, 5), 0.7F);
 	}
-
-    public void generateSurface(World var1, Random var2, int var3, int var4)
-    {
-    	if(this.geneMelons)
-    	{
-        	WorldChunkManager wcm = var1.getWorldChunkManager();
-        	BiomeGenBase bgb = wcm.getBiomeGenAt(var3, var4);
-        	if(bgb instanceof BiomeGenBeach)
-        	{
-                if (var2.nextInt(4) == 0)
-                {
-                    int x = var3 + var2.nextInt(16) + 8;
-                    int y = var2.nextInt(128);
-                    int z = var4 + var2.nextInt(16) + 8;
-                    (new WorldGenMelon()).generate(var1, var2, x, y, z);
-                }
-        	}
-    	}
-    }
 }
