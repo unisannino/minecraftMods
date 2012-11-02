@@ -34,11 +34,12 @@ public class EntityAIMoveCrops extends EntityAIBase
         }
         else
         {
-            Vec3 var1 = this.findPossibleFarmlands();
+            Vec3 var1 = this.findPossibleCrops();
 
             if (var1 == null)
             {
-                var1 = this.findPossibleCrops();
+                var1 = this.findPossibleFarmlands();
+
                 if(var1 == null)
                 {
                 	return false;
@@ -69,12 +70,7 @@ public class EntityAIMoveCrops extends EntityAIBase
      */
     public boolean continueExecuting()
     {
-    	if(this.theFarmers.getNavigator().noPath())
-        {
-     	   return true;
-        }
-
-    	return false;
+    	return this.theFarmers.getNavigator().noPath();
     }
 
     public void resetTasks()
@@ -101,7 +97,7 @@ public class EntityAIMoveCrops extends EntityAIBase
 
             if (this.theFarmers.canHervest(theWorld, var3, var4, var5))
             {
-                return Vec3.getVec3Pool().getVecFromPool((double)var3, (double)var4, (double)var5);
+                return this.theWorld.func_82732_R().getVecFromPool((double)var3, (double)var4, (double)var5);
             }
         }
         return null;
@@ -118,11 +114,13 @@ public class EntityAIMoveCrops extends EntityAIBase
             int var5 = MathHelper.floor_double(this.theFarmers.posZ + (double)var1.nextInt(20) - 10.0D);
             int var6 = this.theWorld.getBlockId(var3, var4, var5);
             int var7 = this.theWorld.getBlockId(var3, var4 + 1, var5);
+            int var8 = var4 + 1;
 
 
-			ItemStack itemstack = null;
+            ItemStack itemstack = null;
 			Object obj = null;
 			ItemSeeds seeds = null;
+			ItemSeedFood fseeds = null;
 			int meta = 0;
 	        for (int length = 0; length < this.theFarmers.inventory.mainInventory.length; length++)
 	        {
@@ -139,27 +137,21 @@ public class EntityAIMoveCrops extends EntityAIBase
 						meta = this.theFarmers.inventory.getInventoryMetadata(length);
 						itemstack = new ItemStack(seeds, 1, meta);
 						break;
+					}else if(obj instanceof ItemSeedFood)
+					{
+						fseeds = (ItemSeedFood) obj;
+						meta = this.theFarmers.inventory.getInventoryMetadata(length);
+						itemstack = new ItemStack(fseeds, 1, meta);
+						break;
 					}
 	            }
 	        }
 	        if(itemstack != null)
 	        {
-                try
-                {
-                    if(seeds != null)
-                    {
-                    	int cropblock = (Integer)ModLoader.getPrivateValue(ItemSeeds.class, seeds, 0);
-                    	int baseblock = (Integer)ModLoader.getPrivateValue(ItemSeeds.class, seeds, 1);
-                    	Block crops = Block.blocksList[cropblock];
-                    	if(((var6 == baseblock && baseblock != 0 ) || crops.canPlaceBlockAt(this.theWorld, var3, var4, var5) )&& var7 == 0)
-                    	{
-                            return Vec3.getVec3Pool().getVecFromPool((double)var3, (double)var4, (double)var5);
-                    	}
-					}
-                }
-                catch (Exception e)
-                {
-                }
+	        	if(Block.blocksList[var6] != null && Block.blocksList[var6].isFertile(this.theWorld, var3, var4, var5) && this.theWorld.isAirBlock(var3, var4 + 1, var5))
+	        	{
+	        		return this.theWorld.func_82732_R().getVecFromPool((double)var3, (double)var4, (double)var5);
+	        	}
 	        }
         }
         return null;

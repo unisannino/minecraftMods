@@ -3,7 +3,6 @@ package unisannino.denenderman;
 import java.util.Random;
 
 import net.minecraft.src.*;
-import net.minecraft.src.Block;;
 
 public class BlockDenEnder extends BlockContainer
 {
@@ -13,6 +12,7 @@ public class BlockDenEnder extends BlockContainer
         random = new Random();
         setTickRandomly(true);
         this.setCreativeTab(CreativeTabs.tabDecorations);
+        this.setRequiresSelfNotify();
     }
 
     @Override
@@ -81,39 +81,21 @@ public class BlockDenEnder extends BlockContainer
         }
     }
 
-    /*
-    public void onBlockAdded(World world, int i, int j, int k)
+    public void onBlockAdded(World par1World, int par2, int par3, int par4)
     {
-        super.onBlockAdded(world, i, j, k);
-    	for(int heightSpawn = 1; heightSpawn < 3; heightSpawn ++)
-    	{
-    		/!---
-            int check = world.getBlockId(i, j + height, k);
-        	if(check == 0 || check == 8 || check == 9)
-        	{
-        		System.out.println("SpawnChecker"+ height + "is true.");
-        	}
-        	*
-    	}
-            if(!world.multiplayerWorld && spawncheck[1] && spawncheck[2] && spawncheck[3])
-            {
-                EntityDenEnderman entitydenenderman = new EntityDenEnderman(world);
-                entitydenenderman.setLocationAndAngles((double)i + 0.5D, j + 1, (double)k + 0.5D, 0.0F, 0.0F);
-                world.entityJoinedWorld(entitydenenderman);
-                entitydenenderman.spawnExplosionParticle();
-            }
+        super.onBlockAdded(par1World, par2, par3, par4);
     }
-    */
 
     @Override
     public void breakBlock(World par1World, int par2, int par3, int par4, int par5, int par6)
     {
-        TileEntityDenEnder tileentitydenender = (TileEntityDenEnder)par1World.getBlockTileEntity(par2, par3, par4);
+        TileEntityDenEnder deblock = (TileEntityDenEnder)par1World.getBlockTileEntity(par2, par3, par4);
+        System.out.println(deblock.hashCode());
         label0:
 
-        for (int l = 0; l < tileentitydenender.getSizeInventory(); l++)
+        for (int l = 0; l < deblock.getSizeInventory(); l++)
         {
-            ItemStack itemstack = tileentitydenender.getStackInSlot(l);
+            ItemStack itemstack = deblock.getStackInSlot(l);
 
             if (itemstack == null)
             {

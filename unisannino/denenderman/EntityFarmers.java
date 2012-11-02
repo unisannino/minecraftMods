@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 
@@ -17,7 +18,7 @@ public class EntityFarmers extends EntityAnimal
     protected int heartpop;
     private int lovePoint;
 
-    protected Minecraft mc = ModLoader.getMinecraftInstance();
+    protected Minecraft mc = FMLClientHandler.instance().getClient();
     protected InventoryFarmers inventory;
     protected PathEntity pathToCrop;
     protected int favoriteItem;
@@ -29,27 +30,30 @@ public class EntityFarmers extends EntityAnimal
     public IInventory myDBlock;
     public TileEntity myTile;
     @SideOnly(Side.CLIENT)
-    private boolean message;
+    protected boolean sayLogs;
     @SideOnly(Side.CLIENT)
     public boolean findItems;
 
     protected DEHomeCollection homecollection;
 	protected DEHomePosition homePos;
 
+	protected List<TileEntityDenEnder> deblockList;
+
     public EntityFarmers(World par1World)
     {
         super(par1World);
-        inventory = new InventoryFarmers(this);
-        inventory.currentItem = 0;
-        pathToCrop = null;
-        favoriteItem = Item.wheat.shiftedIndex;
-        likeItem = Item.wheat.shiftedIndex;
-        serchedDE = new ArrayList<TileEntityDenEnder>();
-        canpickup = new ArrayList<Integer>();
-        cantputItem = new ArrayList<Integer>();
-        message = false;
+        this.inventory = new InventoryFarmers(this);
+        this.inventory.currentItem = 0;
+        this.pathToCrop = null;
+        this.favoriteItem = Item.wheat.shiftedIndex;
+        this.likeItem = Item.wheat.shiftedIndex;
+        this.serchedDE = new ArrayList<TileEntityDenEnder>();
+        this.canpickup = new ArrayList<Integer>();
+        this.cantputItem = new ArrayList<Integer>();
+        this.sayLogs = false;
         this.findItems = false;
-        homecollection = new DEHomeCollection(this.worldObj);
+        this.homecollection = new DEHomeCollection(this.worldObj);
+        this.deblockList = new ArrayList<TileEntityDenEnder>();
 
         addConfigPickupItems();
     }
@@ -80,7 +84,7 @@ public class EntityFarmers extends EntityAnimal
      */
     public boolean canEntityItemBeSeen(Entity entity)
     {
-        return worldObj.rayTraceBlocks(Vec3.getVec3Pool().getVecFromPool(posX, posY + (double)getEyeHeight(), posZ), Vec3.getVec3Pool().getVecFromPool(entity.posX, entity.posY + ((entity.boundingBox.minY - entity.boundingBox.minY) / 2), entity.posZ)) == null;
+        return worldObj.rayTraceBlocks(this.worldObj.func_82732_R().getVecFromPool(posX, posY + (double)getEyeHeight(), posZ), this.worldObj.func_82732_R().getVecFromPool(entity.posX, entity.posY + ((entity.boundingBox.minY - entity.boundingBox.minY) / 2), entity.posZ)) == null;
     }
 
     @Override
@@ -126,7 +130,7 @@ public class EntityFarmers extends EntityAnimal
 
             if (inventory.getFirstEmptyStack() == -1)
             {
-                searchDBlock();
+                //searchDBlock();
             }
 
             if (heartpop > 0)
@@ -199,7 +203,7 @@ public class EntityFarmers extends EntityAnimal
         return false;
     }
 
-    private boolean checkItemCanPut(int i)
+    protected boolean checkItemCanPut(int i)
     {
         for (int j = 0; j < cantputItem.size(); j++)
         {
@@ -301,9 +305,8 @@ public class EntityFarmers extends EntityAnimal
             nbt.setDouble("homePosX", this.homePos.posX);
             nbt.setDouble("homePosY", this.homePos.posY);
             nbt.setDouble("homePosZ", this.homePos.posZ);
-            nbt.setBoolean("canTerepo", this.homePos.canTerepo);
+            nbt.setBoolean("isinHome", this.homePos.isinHome);
         }
-
         /*
     	NBTTagList nbttaglist = new NBTTagList();
 
@@ -333,10 +336,10 @@ public class EntityFarmers extends EntityAnimal
         double y = nbt.getDouble("homePosY");
         double z = nbt.getDouble("homePosZ");
         this.setDEHomePos(x, y, z);
-        
+
         if(this.homePos != null)
         {
-        	this.homePos.canTerepo = nbt.getBoolean("canTerepo");
+        	this.homePos.isinHome = nbt.getBoolean("isinHome");
         }
 
         /*
@@ -456,6 +459,7 @@ public class EntityFarmers extends EntityAnimal
     {
     }
 
+    @Deprecated
     public void facetoPath(int x, int y, int z, float f, float f1)
     {
         double d = (double)x - posX;
@@ -546,6 +550,7 @@ public class EntityFarmers extends EntityAnimal
         return k == 0 ? true : inventory.addItemStackToInventory(new ItemStack(item, k));
     }
 
+    @Deprecated
     protected boolean getBlock(World world, int i, int j, int k)
     {
         TileEntityDenEnder tedenender = (TileEntityDenEnder)world.getBlockTileEntity(i, j, k);
@@ -567,6 +572,7 @@ public class EntityFarmers extends EntityAnimal
         }
     }
 
+    @Deprecated
     protected void putDBlock()
     {
         if (myDBlock != null)
@@ -623,13 +629,14 @@ public class EntityFarmers extends EntityAnimal
             myTile = null;
             myDBlock = null;
             serchedDE.clear();
-            message = false;
+            sayLogs = false;
         }
     }
 
+    @Deprecated
     private void searchDBlock()
     {
-    	if(!message)
+    	if(!sayLogs)
     	{
     		String s = new StringBuilder(getEntityString()).append(" is searching DenenderBlock...").toString();
     		if(mc.thePlayer != null)
@@ -639,7 +646,7 @@ public class EntityFarmers extends EntityAnimal
 
         			mc.thePlayer.addChatMessage(s);
     			}
-        		message = true;
+        		sayLogs = true;
     		}
     	}
 		for (double checkXZ = 10; checkXZ > 0; checkXZ--)
@@ -755,5 +762,11 @@ public class EntityFarmers extends EntityAnimal
 	public DEHomePosition getDEHomePos()
 	{
 		return this.homePos;
+	}
+
+
+	public String getFarmersName()
+	{
+		return this.getEntityName();
 	}
 }

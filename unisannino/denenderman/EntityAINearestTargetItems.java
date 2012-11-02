@@ -35,7 +35,6 @@ public class EntityAINearestTargetItems extends EntityAIBase
 
             if (var2.hasNext())
             {
-                int var3 = this.theOwner.getRNG().nextInt(var1.size());
                 EntityItem var4 = (EntityItem)var2.next();
 
                 /*

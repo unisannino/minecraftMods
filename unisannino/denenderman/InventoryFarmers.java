@@ -621,7 +621,7 @@ public class InventoryFarmers implements IInventory
         {
             var5 = var2[var4];
 
-            if (var5 != null && var5.isStackEqual(par1ItemStack))
+            if (var5 != null && var5.isItemEqual(par1ItemStack))
             {
                 return true;
             }
@@ -696,7 +696,7 @@ public class InventoryFarmers implements IInventory
 
         return true;
     }
-    
+
     protected int getEntityId()
     {
     	return this.farmer.entityId;

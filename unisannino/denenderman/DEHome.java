@@ -3,6 +3,7 @@ package unisannino.denenderman;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeMap;
 
 import net.minecraft.src.*;
 
@@ -26,7 +27,7 @@ public class DEHome
     private int tickCounter = 0;
     private int numVillagers = 0;
     private List villageAgressors = new ArrayList();
-    private int numIronGolems = 0;
+    private TreeMap field_82693_j = new TreeMap();
 
     public DEHome(World par1World)
     {
@@ -47,86 +48,17 @@ public class DEHome
             this.updateNumVillagers();
         }
 
-        if (par1 % 30 == 0)
-        {
-            this.updateNumIronGolems();
-        }
-
-        int var2 = this.numVillagers / 16;
-
-        if (this.numIronGolems < var2 && this.villageDoorInfoList.size() > 20 && this.worldObj.rand.nextInt(7000) == 0)
-        {
-            Vec3 var3 = this.tryGetIronGolemSpawningLocation(MathHelper.floor_float((float)this.center.posX), MathHelper.floor_float((float)this.center.posY), MathHelper.floor_float((float)this.center.posZ), 2, 4, 2);
-
-            if (var3 != null)
-            {
-                EntityIronGolem var4 = new EntityIronGolem(this.worldObj);
-                var4.setPosition(var3.xCoord, var3.yCoord, var3.zCoord);
-                this.worldObj.spawnEntityInWorld(var4);
-                ++this.numIronGolems;
-            }
-        }
-    }
-
-    /**
-     * Tries up to 10 times to get a valid spawning location before eventually failing and returning null.
-     */
-    private Vec3 tryGetIronGolemSpawningLocation(int par1, int par2, int par3, int par4, int par5, int par6)
-    {
-        for (int var7 = 0; var7 < 10; ++var7)
-        {
-            int var8 = par1 + this.worldObj.rand.nextInt(16) - 8;
-            int var9 = par2 + this.worldObj.rand.nextInt(6) - 3;
-            int var10 = par3 + this.worldObj.rand.nextInt(16) - 8;
-
-            if (this.isInRange(var8, var9, var10) && this.isValidIronGolemSpawningLocation(var8, var9, var10, par4, par5, par6))
-            {
-                return Vec3.getVec3Pool().getVecFromPool((double)var8, (double)var9, (double)var10);
-            }
-        }
-
-        return null;
-    }
-
-    private boolean isValidIronGolemSpawningLocation(int par1, int par2, int par3, int par4, int par5, int par6)
-    {
-        if (!this.worldObj.doesBlockHaveSolidTopSurface(par1, par2 - 1, par3))
-        {
-            return false;
-        }
-        else
-        {
-            int var7 = par1 - par4 / 2;
-            int var8 = par3 - par6 / 2;
-
-            for (int var9 = var7; var9 < var7 + par4; ++var9)
-            {
-                for (int var10 = par2; var10 < par2 + par5; ++var10)
-                {
-                    for (int var11 = var8; var11 < var8 + par6; ++var11)
-                    {
-                        if (this.worldObj.isBlockNormalCube(var9, var10, var11))
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-
-            return true;
-        }
-    }
-
-    private void updateNumIronGolems()
-    {
-        List var1 = this.worldObj.getEntitiesWithinAABB(EntityIronGolem.class, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool((double)(this.center.posX - this.villageRadius), (double)(this.center.posY - 4), (double)(this.center.posZ - this.villageRadius), (double)(this.center.posX + this.villageRadius), (double)(this.center.posY + 4), (double)(this.center.posZ + this.villageRadius)));
-        this.numIronGolems = var1.size();
     }
 
     private void updateNumVillagers()
     {
-        List var1 = this.worldObj.getEntitiesWithinAABB(EntityFarmers.class, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool((double)(this.center.posX - this.villageRadius), (double)(this.center.posY - 4), (double)(this.center.posZ - this.villageRadius), (double)(this.center.posX + this.villageRadius), (double)(this.center.posY + 4), (double)(this.center.posZ + this.villageRadius)));
+        List var1 = this.worldObj.getEntitiesWithinAABB(EntityVillager.class, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool((double)(this.center.posX - this.villageRadius), (double)(this.center.posY - 4), (double)(this.center.posZ - this.villageRadius), (double)(this.center.posX + this.villageRadius), (double)(this.center.posY + 4), (double)(this.center.posZ + this.villageRadius)));
         this.numVillagers = var1.size();
+
+        if (this.numVillagers == 0)
+        {
+            this.field_82693_j.clear();
+        }
     }
 
     public ChunkCoordinates getCenter()

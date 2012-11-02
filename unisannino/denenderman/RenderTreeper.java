@@ -22,7 +22,7 @@ public class RenderTreeper extends RenderLiving
     protected void updateTreeperScale(EntityTreeper entitytreeper, float f)
     {
         EntityTreeper entitycreeper1 = entitytreeper;
-        float f1 = entitycreeper1.setCreeperFlashTime(f);
+        float f1 = entitycreeper1.setTreeperFlashTime(f);
         float f2 = 1.0F + MathHelper.sin(f1 * 100F) * f1 * 0.01F;
 
         if (f1 < 0.0F)
@@ -45,7 +45,7 @@ public class RenderTreeper extends RenderLiving
     protected int updateCreeperColorMultiplier(EntityTreeper entitytreeper, float f, float f1)
     {
         EntityTreeper entitytreeper1 = entitytreeper;
-        float f2 = entitytreeper1.setCreeperFlashTime(f1);
+        float f2 = entitytreeper1.setTreeperFlashTime(f1);
 
         if ((int)(f2 * 10F) % 2 == 0)
         {

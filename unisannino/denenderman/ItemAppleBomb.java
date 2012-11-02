@@ -2,6 +2,9 @@ package unisannino.denenderman;
 
 import java.util.Random;
 
+import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.asm.SideOnly;
+
 import net.minecraft.src.*;
 
 public class ItemAppleBomb extends ItemEgg
@@ -13,8 +16,9 @@ public class ItemAppleBomb extends ItemEgg
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
-    public int getColorFromDamage(int i, int j)
+    public int func_82790_a(ItemStack par1ItemStack, int par2)
     {
         return 0x0000FF;
     }

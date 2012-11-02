@@ -1,6 +1,8 @@
 package unisannino.denenderman;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
@@ -161,14 +163,13 @@ public class Mod_DenEnderman_Core
 	@Init
 	public void load(FMLInitializationEvent event)
 	{
-		//this.instance = this;
 		addGui();
 		registBlocksForge();
 		registItemsForge();
 		addRecipes();
 		addEntities();
-		//Replace();
 		checkBooleans();
+
 		MinecraftForge.EVENT_BUS.register(new Mod_DenEnderman_Event());
 	}
 
@@ -198,8 +199,6 @@ public class Mod_DenEnderman_Core
 		DenenderBlock = new BlockDenEnder(deid).setHardness(0.6F).setStepSound(Block.soundGrassFootstep).setBlockName("Denender");
 		Lavender = new BlockFlowerForge(lid, Ltex).setHardness(0.0F).setStepSound(Block.soundGrassFootstep).setBlockName("lavender");
 		StarSand = new BlockStarSandlayer(ssid, 18).setHardness(0.1F).setStepSound(Block.soundSandFootstep).setBlockName("layeredsand").setLightOpacity(0);
-
-		this.DenenderBlock.requiresSelfNotify[this.DenenderBlock.blockID] = true;
 
 		GameRegistry.registerBlock(DenenderBlock);
 		GameRegistry.registerBlock(Lavender);

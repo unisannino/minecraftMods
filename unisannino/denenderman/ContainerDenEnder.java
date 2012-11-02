@@ -46,7 +46,8 @@ public class ContainerDenEnder extends Container
         return tileEntitydenender.isUseableByPlayer(entityplayer);
     }
 
-    public ItemStack transferStackInSlot(int i)
+    @Override
+    public ItemStack func_82846_b(EntityPlayer par1EntityPlayer, int i)
     {
         ItemStack itemstack = null;
         Slot slot = (Slot)inventorySlots.get(i);

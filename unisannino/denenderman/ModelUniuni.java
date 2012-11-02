@@ -26,12 +26,12 @@ public class ModelUniuni extends ModelBase
         setRotation(Shape2, 0F, 0F, 0F);
     }
 
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
+    public void render(Entity par1Entity, float par2, float par3, float par4, float par5, float par6, float par7)
     {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-        Shape1.render(f5);
-        Shape2.render(f5);
+        super.render(par1Entity, par2, par3, par4, par5, par6, par7);
+        setRotationAngles(par2, par3, par4, par5, par6, par7, par1Entity);
+        Shape1.render(par7);
+        Shape2.render(par7);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z)
@@ -41,8 +41,8 @@ public class ModelUniuni extends ModelBase
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5)
+    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity par7Entity)
     {
-        super.setRotationAngles(f, f1, f2, f3, f4, f5);
+        super.setRotationAngles(f, f1, f2, f3, f4, f5, par7Entity);
     }
 }

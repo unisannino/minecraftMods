@@ -10,10 +10,11 @@ public class ItemUniuniSoul extends ItemEgg
     {
         super(i);
         maxStackSize = 64;
+        this.setCreativeTab(CreativeTabs.tabMisc);
     }
 
     @Override
-    public int getColorFromDamage(int i, int j)
+    public int func_82790_a(ItemStack par1ItemStack, int par2)
     {
         return 0x41cd34;
     }

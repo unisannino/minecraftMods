@@ -6,7 +6,7 @@ import java.util.List;
 
 import net.minecraft.src.*;
 
-public class DEHomeCollection
+public class DEHomeCollection extends WorldSavedData
 {
     private World worldObj;
 
@@ -19,9 +19,16 @@ public class DEHomeCollection
     private final List villageList = new ArrayList();
     private int tickCounter = 0;
 
+    public DEHomeCollection(String par1Str)
+    {
+        super(par1Str);
+    }
+
     public DEHomeCollection(World par1World)
     {
+        super("villages");
         this.worldObj = par1World;
+        this.markDirty();
     }
 
     /**
@@ -148,6 +155,7 @@ public class DEHomeCollection
                 	DEHome var8 = new DEHome(this.worldObj);
                     var8.addVillageDoorInfo(var2);
                     this.villageList.add(var8);
+                    this.markDirty();
                 }
 
                 break;
@@ -304,5 +312,36 @@ public class DEHomeCollection
         int var4 = this.worldObj.getBlockId(par1, par2, par3);
         boolean var5 = this.worldObj.getBlockId(par1, par2 - 1, par3) == Block.glowStone.blockID;
         return var4 == Block.fenceGate.blockID && var5;
+    }
+
+    public void readFromNBT(NBTTagCompound par1NBTTagCompound)
+    {
+        this.tickCounter = par1NBTTagCompound.getInteger("Tick");
+        NBTTagList var2 = par1NBTTagCompound.getTagList("Villages");
+
+        for (int var3 = 0; var3 < var2.tagCount(); ++var3)
+        {
+            NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
+            Village var5 = new Village();
+            var5.func_82690_a(var4);
+            this.villageList.add(var5);
+        }
+    }
+
+    public void writeToNBT(NBTTagCompound par1NBTTagCompound)
+    {
+        par1NBTTagCompound.setInteger("Tick", this.tickCounter);
+        NBTTagList var2 = new NBTTagList("Villages");
+        Iterator var3 = this.villageList.iterator();
+
+        while (var3.hasNext())
+        {
+            Village var4 = (Village)var3.next();
+            NBTTagCompound var5 = new NBTTagCompound("Village");
+            var4.func_82689_b(var5);
+            var2.appendTag(var5);
+        }
+
+        par1NBTTagCompound.setTag("Villages", var2);
     }
 }

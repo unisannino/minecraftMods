@@ -16,7 +16,7 @@ public class Mod_DenEnderman_Packet implements IPacketHandler
 {
 
 	@Override
-	public void onPacketData(NetworkManager manager, Packet250CustomPayload packet, Player player)
+	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player)
 	{
 		ByteArrayDataInput dat = ByteStreams.newDataInput(packet.data);
 		if(packet.channel.equals("DenEnderman"))

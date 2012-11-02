@@ -4,41 +4,42 @@ import java.util.Random;
 
 import net.minecraft.src.*;
 
-public class TileEntityDenEnder extends TileEntity
-    implements IInventory
+public class TileEntityDenEnder extends TileEntity implements IInventory
 {
+    private ItemStack mainInv[];
+
     public TileEntityDenEnder()
     {
-        DenderContents = new ItemStack[54];
+        mainInv = new ItemStack[54];
     }
 
     public int getSizeInventory()
     {
-        return DenderContents.length;
+        return mainInv.length;
     }
 
     public ItemStack getStackInSlot(int i)
     {
-        return DenderContents[i];
+        return mainInv[i];
     }
 
     public ItemStack decrStackSize(int i, int j)
     {
-        if (DenderContents[i] != null)
+        if (mainInv[i] != null)
         {
-            if (DenderContents[i].stackSize <= j)
+            if (mainInv[i].stackSize <= j)
             {
-                ItemStack itemstack = DenderContents[i];
-                DenderContents[i] = null;
+                ItemStack itemstack = mainInv[i];
+                mainInv[i] = null;
                 onInventoryChanged();
                 return itemstack;
             }
 
-            ItemStack itemstack1 = DenderContents[i].splitStack(j);
+            ItemStack itemstack1 = mainInv[i].splitStack(j);
 
-            if (DenderContents[i].stackSize == 0)
+            if (mainInv[i].stackSize == 0)
             {
-                DenderContents[i] = null;
+                mainInv[i] = null;
             }
 
             onInventoryChanged();
@@ -52,10 +53,10 @@ public class TileEntityDenEnder extends TileEntity
 
     public ItemStack getStackInSlotOnClosing(int par1)
     {
-        if (DenderContents[par1] != null)
+        if (mainInv[par1] != null)
         {
-            ItemStack itemstack = DenderContents[par1];
-            DenderContents[par1] = null;
+            ItemStack itemstack = mainInv[par1];
+            mainInv[par1] = null;
             return itemstack;
         }
         else
@@ -66,7 +67,7 @@ public class TileEntityDenEnder extends TileEntity
 
     public void setInventorySlotContents(int i, ItemStack itemstack)
     {
-        DenderContents[i] = itemstack;
+        mainInv[i] = itemstack;
 
         if (itemstack != null && itemstack.stackSize > getInventoryStackLimit())
         {
@@ -85,16 +86,16 @@ public class TileEntityDenEnder extends TileEntity
     {
         super.readFromNBT(nbttagcompound);
         NBTTagList nbttaglist = nbttagcompound.getTagList("Items");
-        DenderContents = new ItemStack[getSizeInventory()];
+        mainInv = new ItemStack[getSizeInventory()];
 
         for (int i = 0; i < nbttaglist.tagCount(); i++)
         {
             NBTTagCompound nbttagcompound1 = (NBTTagCompound)nbttaglist.tagAt(i);
             int j = nbttagcompound1.getByte("Slot") & 0xff;
 
-            if (j >= 0 && j < DenderContents.length)
+            if (j >= 0 && j < mainInv.length)
             {
-                DenderContents[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
+                mainInv[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
             }
         }
     }
@@ -104,13 +105,13 @@ public class TileEntityDenEnder extends TileEntity
         super.writeToNBT(nbttagcompound);
         NBTTagList nbttaglist = new NBTTagList();
 
-        for (int i = 0; i < DenderContents.length; i++)
+        for (int i = 0; i < mainInv.length; i++)
         {
-            if (DenderContents[i] != null)
+            if (mainInv[i] != null)
             {
                 NBTTagCompound nbttagcompound1 = new NBTTagCompound();
                 nbttagcompound1.setByte("Slot", (byte)i);
-                DenderContents[i].writeToNBT(nbttagcompound1);
+                mainInv[i].writeToNBT(nbttagcompound1);
                 nbttaglist.appendTag(nbttagcompound1);
             }
         }
@@ -121,6 +122,19 @@ public class TileEntityDenEnder extends TileEntity
     public int getInventoryStackLimit()
     {
         return 64;
+    }
+
+    public int getFirstEmptyStack()
+    {
+        for (int var1 = 0; var1 < this.mainInv.length; ++var1)
+        {
+            if (this.mainInv[var1] == null)
+            {
+                return var1;
+            }
+        }
+
+        return -1;
     }
 
     public boolean isUseableByPlayer(EntityPlayer entityplayer)
@@ -140,6 +154,4 @@ public class TileEntityDenEnder extends TileEntity
     public void closeChest()
     {
     }
-
-    private ItemStack DenderContents[];
 }

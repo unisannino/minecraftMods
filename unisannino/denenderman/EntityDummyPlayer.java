@@ -23,9 +23,15 @@ public class EntityDummyPlayer extends EntityPlayer
 	}
 
 	@Override
-	public boolean canCommandSenderUseCommand(String var1)
-	{
+	public boolean canCommandSenderUseCommand(int var1, String var2) {
+		// TODO 自動生成されたメソッド・スタブ
 		return false;
+	}
+
+	@Override
+	public ChunkCoordinates func_82114_b() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
 	}
 
 }
