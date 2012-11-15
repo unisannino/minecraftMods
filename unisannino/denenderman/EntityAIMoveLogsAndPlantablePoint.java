@@ -109,7 +109,7 @@ public class EntityAIMoveLogsAndPlantablePoint extends EntityAIBase
 
             if (this.theFarmers.checkIsLogs(this.theWorld, var3, var4, var5) && this.theFarmers.underWoodBlock(this.theWorld, var3, var4, var5) && this.theFarmers.checkTopOfLogs(this.theWorld, var3, var4, var5))
             {
-                return this.theWorld.func_82732_R().getVecFromPool((double)var3, (double)var4, (double)var5);
+                return this.theWorld.getWorldVec3Pool().getVecFromPool((double)var3, (double)var4, (double)var5);
             }
         }
         return null;
@@ -146,7 +146,7 @@ public class EntityAIMoveLogsAndPlantablePoint extends EntityAIBase
 	        {
 	        	if(this.theFarmers.canPlanting(this.theWorld, var3, var4, var5))
 	        	{
-	        		return this.theWorld.func_82732_R().getVecFromPool((double)var3, (double)var4, (double)var5);
+	        		return this.theWorld.getWorldVec3Pool().getVecFromPool((double)var3, (double)var4, (double)var5);
 	        	}
 	        }
         }

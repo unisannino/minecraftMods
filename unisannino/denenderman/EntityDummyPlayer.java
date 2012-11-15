@@ -29,7 +29,11 @@ public class EntityDummyPlayer extends EntityPlayer
 	}
 
 	@Override
-	public ChunkCoordinates func_82114_b() {
+
+	/**
+	 * Return the coordinates for this player as ChunkCoordinates.
+	 */
+	public ChunkCoordinates getPlayerCoordinates() {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}

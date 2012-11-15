@@ -22,9 +22,12 @@ public class EntityFarmerSpawner extends EntityThrowable
 	@Override
 	protected void onImpact(MovingObjectPosition var1)
 	{
+
+		EntityPlayer player = (EntityPlayer) this.func_85052_h();
+
         if (var1.entityHit != null)
         {
-            if (!var1.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, thrower), 0));
+            if (!var1.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_85052_h()), 0));
         }
 
         if (!worldObj.isRemote)
@@ -34,6 +37,8 @@ public class EntityFarmerSpawner extends EntityThrowable
             EntityFarmers farmer = this.getFarmer();
             farmer.setDEHomePos(this.posX, this.posY, this.posZ);
             farmer.setLocationAndAngles(posX, posY, posZ, rotationYaw, 0.0F);
+            farmer.setOwner(player.username);
+            farmer.setTamed(true);
             worldObj.spawnEntityInWorld(farmer);
             farmer.spawnExplosionParticle();
         }

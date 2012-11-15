@@ -15,7 +15,9 @@ public class InventoryFarmers implements IInventory
     /** The index of the currently held item (0-8). */
     public int currentItem = 0;
     @SideOnly(Side.CLIENT)
-    private ItemStack field_70456_f;
+
+    /** The current ItemStack. */
+    private ItemStack currentItemStack;
 
     /** The player whose inventory this is. */
     public EntityFarmers farmer;
@@ -82,7 +84,7 @@ public class InventoryFarmers implements IInventory
     {
         for (int var2 = 0; var2 < this.mainInventory.length; ++var2)
         {
-            if (this.mainInventory[var2] != null && this.mainInventory[var2].itemID == par1ItemStack.itemID && this.mainInventory[var2].isStackable() && this.mainInventory[var2].stackSize < this.mainInventory[var2].getMaxStackSize() && this.mainInventory[var2].stackSize < this.getInventoryStackLimit() && (!this.mainInventory[var2].getHasSubtypes() || this.mainInventory[var2].getItemDamage() == par1ItemStack.getItemDamage()) && ItemStack.func_77970_a(this.mainInventory[var2], par1ItemStack))
+            if (this.mainInventory[var2] != null && this.mainInventory[var2].itemID == par1ItemStack.itemID && this.mainInventory[var2].isStackable() && this.mainInventory[var2].stackSize < this.mainInventory[var2].getMaxStackSize() && this.mainInventory[var2].stackSize < this.getInventoryStackLimit() && (!this.mainInventory[var2].getHasSubtypes() || this.mainInventory[var2].getItemDamage() == par1ItemStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(this.mainInventory[var2], par1ItemStack))
             {
                 return var2;
             }
@@ -115,7 +117,7 @@ public class InventoryFarmers implements IInventory
     public void setCurrentItem(int par1, int par2, boolean par3, boolean par4)
     {
         boolean var5 = true;
-        this.field_70456_f = this.getCurrentItem();
+        this.currentItemStack = this.getCurrentItem();
         int var7;
 
         if (par3)
@@ -187,7 +189,7 @@ public class InventoryFarmers implements IInventory
                 this.mainInventory[var3] = this.mainInventory[this.currentItem];
             }
 
-            if (this.field_70456_f != null && this.field_70456_f.isItemEnchantable() && this.getInventorySlotContainItemAndDamage(this.field_70456_f.itemID, this.field_70456_f.getItemDamageForDisplay()) == this.currentItem)
+            if (this.currentItemStack != null && this.currentItemStack.isItemEnchantable() && this.getInventorySlotContainItemAndDamage(this.currentItemStack.itemID, this.currentItemStack.getItemDamageForDisplay()) == this.currentItem)
             {
                 return;
             }

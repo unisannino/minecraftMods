@@ -47,7 +47,11 @@ public class ContainerDenEnder extends Container
     }
 
     @Override
-    public ItemStack func_82846_b(EntityPlayer par1EntityPlayer, int i)
+
+    /**
+     * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
+     */
+    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i)
     {
         ItemStack itemstack = null;
         Slot slot = (Slot)inventorySlots.get(i);

@@ -107,7 +107,7 @@ public class EntityAIPutDEBlock extends EntityAIBase
                     {
 
                         String s = "Oh No! Slot of DenEnderBlock is full!";
-            			if(!this.theWorld.isRemote)
+            			if(!this.theWorld.isRemote && this.theFarmers.mc.thePlayer.username.equalsIgnoreCase(this.theFarmers.getOwnerName()))
             			{
             				this.theFarmers.mc.thePlayer.addChatMessage(s);
             			}
@@ -121,7 +121,7 @@ public class EntityAIPutDEBlock extends EntityAIBase
             {
                 this.theWorld.playSoundAtEntity(this.theFarmers, "random.pop", 0.5F, (this.theFarmers.getRNG().nextFloat() - this.theFarmers.getRNG().nextFloat()) * 0.2F + 1.0F);
                 String s = "Putted Inventory Items!!";
-    			if(!this.theWorld.isRemote)
+    			if(!this.theWorld.isRemote && this.theFarmers.mc.thePlayer.username.equalsIgnoreCase(this.theFarmers.getOwnerName()))
     			{
         			this.theFarmers.mc.thePlayer.addChatMessage(s);
     			}

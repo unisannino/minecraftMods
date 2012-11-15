@@ -44,11 +44,11 @@ public class EntityAppleBomb extends EntityThrowable
         {
             if (movingobjectposition.entityHit != null)
             {
-            	if(movingobjectposition.entityHit == thrower)
+            	if(movingobjectposition.entityHit == this.func_85052_h())
             	{
             		return;
             	}
-                if (!movingobjectposition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, thrower), 0));
+                if (!movingobjectposition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_85052_h()), 0));
             }
         	createExplosionMobDamageA();
         	worldObj.createExplosion(this, posX, posY, posZ, 0.0F, true);
@@ -71,7 +71,7 @@ public class EntityAppleBomb extends EntityThrowable
         int j2 = MathHelper.floor_double(posZ + (double)explosionSize + 1.0D);
 
         List list = worldObj.getEntitiesWithinAABBExcludingEntity(this, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(k, k1, i2, i1, l1, j2));
-        Vec3 vec3d = this.worldObj.func_82732_R().getVecFromPool(posX, posY, posZ);
+        Vec3 vec3d = this.worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ);
 
         for (int k2 = 0; k2 < list.size(); k2++)
         {

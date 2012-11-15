@@ -24,14 +24,15 @@ public class EntityTreeper extends EntityFarmers
 		setSize(0.8F, 2.8F);
         moveSpeed = 0.28F;
 
-		favoriteItem = Mod_DenEnderman_Core.Lavender.blockID;
+		favoriteItem = Mod_DenEnderman_Core.lavender.blockID;
 		likeItem = Item.appleRed.shiftedIndex;
+		this.funcItem = Item.gunpowder.shiftedIndex;
 
 		setcanPickup(0, Block.wood.blockID);
 		setcanPickup(1, Block.sapling.blockID);
 		setcanPickup(2, Item.appleRed.shiftedIndex);
 		setcanPickup(3, Block.leaves.blockID);
-		setcanPickup(4, Mod_DenEnderman_Core.Lavender.blockID);
+		setcanPickup(4, Mod_DenEnderman_Core.lavender.blockID);
 		setcanPickup(5, Item.shears.shiftedIndex);
 
 		setLeavesType();
@@ -41,8 +42,9 @@ public class EntityTreeper extends EntityFarmers
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(0, new EntityAICuttingAndPlanting(this));
         this.tasks.addTask(0, new EntityAIPutDEBlock(this));
-        this.tasks.addTask(1, new EntityAINearestTargetItems(this, this.moveSpeed));
         this.tasks.addTask(1, new EntityAITempt(this, this.moveSpeed, this.likeItem, false));
+        this.tasks.addTask(1, this.aiSit);
+        this.tasks.addTask(2, new EntityAINearestTargetItems(this, this.moveSpeed));
         this.tasks.addTask(2, new EntityAIMoveLogsAndPlantablePoint(this, this.moveSpeed));
         this.tasks.addTask(2, new EntityAIMoveIngates(this));
         this.tasks.addTask(2, new EntityAIMoveDEBlock(this, this.moveSpeed));
@@ -95,7 +97,7 @@ public class EntityTreeper extends EntityFarmers
 	protected void entityInit()
 	{
 		super.entityInit();
-		dataWatcher.addObject(16, Byte.valueOf((byte) - 1));
+		dataWatcher.addObject(18, Byte.valueOf((byte) - 1));
 	}
 
 	public void onLivingUpdate()
@@ -148,15 +150,17 @@ public class EntityTreeper extends EntityFarmers
 		leavetype = nbttagcompound.getInteger("leaves");
 	}
 
-	protected String getHurtSound()
-	{
-		return "mob.creeper";
-	}
+	@Override
+    protected String getHurtSound()
+    {
+        return "mob.creeper.say";
+    }
 
-	protected String getDeathSound()
-	{
-		return "mob.creeperdeath";
-	}
+    @Override
+    protected String getDeathSound()
+    {
+        return "mob.creeper.death";
+    }
 
     @Override
     public void onDeath(DamageSource damagesource)
@@ -183,24 +187,18 @@ public class EntityTreeper extends EntityFarmers
 
 	private int getTreeperState()
 	{
-		return dataWatcher.getWatchableObjectByte(16);
+		return dataWatcher.getWatchableObjectByte(18);
 	}
 
 	private void setTreeperState(int i)
 	{
-		dataWatcher.updateObject(16, Byte.valueOf((byte)i));
+		dataWatcher.updateObject(18, Byte.valueOf((byte)i));
 	}
 
 
 	protected int getDropItemId()
 	{
-		return Mod_DenEnderman_Core.TreeperSeed.shiftedIndex;
-	}
-
-	@Override
-	public EntityAnimal spawnBabyAnimal(EntityAnimal entityanimal)
-	{
-		return null;
+		return Mod_DenEnderman_Core.treeperSeed.shiftedIndex;
 	}
 
     private void destroyBlocksInAABB(AxisAlignedBB par1AxisAlignedBB)

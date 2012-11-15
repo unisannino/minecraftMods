@@ -80,7 +80,10 @@ public class DEHomeCollection extends WorldSavedData
         }
     }
 
-    public List func_75540_b()
+    /**
+     * Get a list of villages.
+     */
+    public List getVillageList()
     {
         return this.villageList;
     }
@@ -323,7 +326,7 @@ public class DEHomeCollection extends WorldSavedData
         {
             NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
             Village var5 = new Village();
-            var5.func_82690_a(var4);
+            var5.readVillageDataFromNBT(var4);
             this.villageList.add(var5);
         }
     }
@@ -338,7 +341,7 @@ public class DEHomeCollection extends WorldSavedData
         {
             Village var4 = (Village)var3.next();
             NBTTagCompound var5 = new NBTTagCompound("Village");
-            var4.func_82689_b(var5);
+            var4.writeVillageDataToNBT(var5);
             var2.appendTag(var5);
         }
 

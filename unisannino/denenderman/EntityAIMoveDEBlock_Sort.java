@@ -98,7 +98,7 @@ public class EntityAIMoveDEBlock_Sort extends EntityAIBase
     		int var3 = target.xCoord;
     		int var4 = target.yCoord;
     		int var5 = target.zCoord;
-    		return this.theWorld.func_82732_R().getVecFromPool((double)var3, (double)var4, (double)var5);
+    		return this.theWorld.getWorldVec3Pool().getVecFromPool((double)var3, (double)var4, (double)var5);
     	}
 
         return null;

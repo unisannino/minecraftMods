@@ -13,16 +13,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.*;
 
-public class EntityFarmers extends EntityAnimal
+public class EntityFarmers extends EntityTameable
 {
     protected int heartpop;
     private int lovePoint;
 
     protected Minecraft mc = FMLClientHandler.instance().getClient();
     protected InventoryFarmers inventory;
-    protected PathEntity pathToCrop;
+    //protected PathEntity pathToCrop;
+
     protected int favoriteItem;
     protected int likeItem;
+    protected int funcItem;
+
     private List<Integer> canpickup;
     protected List<TileEntityDenEnder> serchedDE;
     private List<Integer> cantputItem;
@@ -39,14 +42,21 @@ public class EntityFarmers extends EntityAnimal
 
 	protected List<TileEntityDenEnder> deblockList;
 
+
     public EntityFarmers(World par1World)
     {
         super(par1World);
         this.inventory = new InventoryFarmers(this);
         this.inventory.currentItem = 0;
-        this.pathToCrop = null;
+        moveSpeed = 0.28F;
+        //this.pathToCrop = null;
+
         this.favoriteItem = Item.wheat.shiftedIndex;
         this.likeItem = Item.wheat.shiftedIndex;
+        this.funcItem = Item.hoeGold.shiftedIndex;
+
+        this.aiSit = new EntityAISitFarmers(this);
+
         this.serchedDE = new ArrayList<TileEntityDenEnder>();
         this.canpickup = new ArrayList<Integer>();
         this.cantputItem = new ArrayList<Integer>();
@@ -63,28 +73,25 @@ public class EntityFarmers extends EntityAnimal
     }
 
     @Override
-    public EntityAnimal spawnBabyAnimal(EntityAnimal entityanimal)
-    {
-        return null;
-    }
-
-    @Override
     protected int getExperiencePoints(EntityPlayer par1EntityPlayer)
     {
         return 0;
     }
 
+
     protected boolean hasPathCrops()
     {
-        return pathToCrop != null;
+    	return false;
+        //return pathToCrop != null;
     }
+
 
     /*
      * 微妙
      */
     public boolean canEntityItemBeSeen(Entity entity)
     {
-        return worldObj.rayTraceBlocks(this.worldObj.func_82732_R().getVecFromPool(posX, posY + (double)getEyeHeight(), posZ), this.worldObj.func_82732_R().getVecFromPool(entity.posX, entity.posY + ((entity.boundingBox.minY - entity.boundingBox.minY) / 2), entity.posZ)) == null;
+        return worldObj.rayTraceBlocks(this.worldObj.getWorldVec3Pool().getVecFromPool(posX, posY + (double)getEyeHeight(), posZ), this.worldObj.getWorldVec3Pool().getVecFromPool(entity.posX, entity.posY + ((entity.boundingBox.minY - entity.boundingBox.minY) / 2), entity.posZ)) == null;
     }
 
     @Override
@@ -277,6 +284,38 @@ public class EntityFarmers extends EntityAnimal
     }
 
     @Override
+    public boolean attackEntityFrom(DamageSource par1DamageSource, int par2)
+    {
+        Entity var3 = par1DamageSource.getEntity();
+        this.aiSit.setSitting(false);
+
+        if (var3 != null)
+        {
+        	if(var3 instanceof EntityPlayer)
+        	{
+            	EntityPlayer var4 = (EntityPlayer) var3;
+            	if(this.canTouch(var4.username))
+            	//if(var4.username.equalsIgnoreCase(this.getOwnerName()))
+            	{
+            		return super.attackEntityFrom(par1DamageSource, par2);
+            	}
+        	}
+
+        	if(var3 instanceof EntityArrow)
+        	{
+        		EntityArrow var5 = (EntityArrow) var3;
+            	EntityPlayer var6 = (EntityPlayer) var5.shootingEntity;
+            	if(this.canTouch(var6.username))
+            	//if(var6.username.equalsIgnoreCase(this.getOwnerName()))
+            	{
+            		return super.attackEntityFrom(par1DamageSource, par2);
+            	}
+        	}
+        }
+            return false;
+    }
+
+    @Override
     public void onDeath(DamageSource damagesource)
     {
         super.onDeath(damagesource);
@@ -364,7 +403,7 @@ public class EntityFarmers extends EntityAnimal
     }
 
     @Override
-    public boolean isWheat(ItemStack par1ItemStack)
+    public boolean isBreedingItem(ItemStack par1ItemStack)
     {
         return par1ItemStack.itemID == likeItem;
     }
@@ -374,68 +413,78 @@ public class EntityFarmers extends EntityAnimal
         return par1ItemStack.itemID == favoriteItem;
     }
 
+    protected boolean isCauseFunc(ItemStack par1ItemStack)
+    {
+		return par1ItemStack.itemID == funcItem;
+    }
+
     @Override
     public boolean interact(EntityPlayer entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getCurrentItem();
 
-        if (itemstack != null && isFavorite(itemstack) && getGrowingAge() == 0)
+        if (itemstack != null)
         {
-            itemstack.stackSize--;
-
-            if (itemstack.stackSize <= 0)
-            {
-                entityplayer.inventory.setInventorySlotContents(entityplayer.inventory.currentItem, null);
-            }
-
-            heartpop = 600;
-            heal(1);
-
-            for (int i = 0; i < 7; i++)
-            {
-                double d = rand.nextGaussian() * 0.02D;
-                double d1 = rand.nextGaussian() * 0.02D;
-                double d2 = rand.nextGaussian() * 0.02D;
-                worldObj.spawnParticle("heart", (posX + (double)(rand.nextFloat() * width * 2.0F)) - (double)width, posY + 0.5D + (double)(rand.nextFloat() * height), (posZ + (double)(rand.nextFloat() * width * 2.0F)) - (double)width, d, d1, d2);
-            }
-
-            if (lovePoint < 100)
-            {
-                lovePoint++;
-                if(!this.worldObj.isRemote)
-                {
-                    String s = new StringBuilder(getEntityString()).append("Now LovePoint: ").append(lovePoint).toString();
-                    entityplayer.addChatMessage(s);
-                }
-                return true;
-            }
-
-            if(lovePoint + rand.nextInt(199) > 200)
-            {
-            	if(entityplayer.inventory.addItemStackToInventory(new ItemStack(Block.blockDiamond, 1)))
-            	{
-                    if(!this.worldObj.isRemote)
+        		if(isFavorite(itemstack))
+        		{
+                    if (!entityplayer.capabilities.isCreativeMode)
                     {
-                        String s = new StringBuilder(getEntityString()).append(" has sent a present for you!").toString();
-                        entityplayer.addChatMessage(s);
+                        --itemstack.stackSize;
                     }
-                    lovePoint = 0;
-            	}
-            }
 
-            return true;
+                    if (itemstack.stackSize <= 0)
+                    {
+                        entityplayer.inventory.setInventorySlotContents(entityplayer.inventory.currentItem, null);
+                    }
+
+                    heartpop = 600;
+                    heal(1);
+
+                    this.playTameEffect(true);
+
+                    if (lovePoint < 100)
+                    {
+                        lovePoint++;
+                        if(!this.worldObj.isRemote)
+                        {
+                            String s = new StringBuilder(getEntityString()).append("Now LovePoint: ").append(lovePoint).toString();
+                            entityplayer.addChatMessage(s);
+                        }
+                        return true;
+                    }
+
+                    if(lovePoint + rand.nextInt(199) > 200)
+                    {
+                    	if(entityplayer.inventory.addItemStackToInventory(new ItemStack(Block.blockDiamond, 1)))
+                    	{
+                            if(!this.worldObj.isRemote)
+                            {
+                                String s = new StringBuilder(getEntityString()).append(" has sent a present for you!").toString();
+                                entityplayer.addChatMessage(s);
+                            }
+                            worldObj.playSoundAtEntity(this, "random.levelup", 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                            lovePoint = 0;
+                    	}
+                    }
+        		}else
+        		if(itemstack.itemID == Item.hoeDiamond.shiftedIndex && this.canTouch(entityplayer.username))
+        		{
+                    //ModLoader.openGUI(entityplayer, new GuiChest(entityplayer.inventory,  inventory));
+                	entityplayer.openGui(Mod_DenEnderman_Core.instance, this.entityId, this.worldObj, (int)this.posX, (int)this.posY, (int)this.posZ);
+                	this.inventory.getEntityId();
+                    return true;
+        		}else
+        		if (this.canTouch(entityplayer.username) && !this.worldObj.isRemote && itemstack.itemID != this.funcItem)
+                {
+        			worldObj.playSoundAtEntity(this, "random.pop", 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                    this.aiSit.setSitting(!this.isSitting());
+                    this.isJumping = false;
+                    this.setPathToEntity((PathEntity)null);
+                }
+
         }
-        else if (itemstack != null && itemstack.itemID == Item.hoeDiamond.shiftedIndex)
-        {
-            //ModLoader.openGUI(entityplayer, new GuiChest(entityplayer.inventory,  inventory));
-        	entityplayer.openGui(Mod_DenEnderman_Core.instance, this.entityId, this.worldObj, (int)this.posX, (int)this.posY, (int)this.posZ);
-        	this.inventory.getEntityId();
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     public void dropFarmerItemWithRandomChoice(ItemStack itemstack, boolean flag)
@@ -537,7 +586,7 @@ public class EntityFarmers extends EntityAnimal
 
             EntityPlayer entityplayer = (EntityPlayer)entity;
 
-            if (entityplayer.getCurrentEquippedItem() == null || !isWheat(entityplayer.getCurrentEquippedItem()))
+            if (entityplayer.getCurrentEquippedItem() == null || !isBreedingItem(entityplayer.getCurrentEquippedItem()))
             {
                 entityToAttack = null;
             }
@@ -657,10 +706,12 @@ public class EntityFarmers extends EntityAnimal
 				int j = MathHelper.floor_double((posY - 1.0D) + rand.nextDouble() * height);
 				int k = MathHelper.floor_double((posZ - (rand.nextDouble() * 9D)) + checkXZ);
 
-				if (worldObj.getBlockId(i, j, k) == Mod_DenEnderman_Core.DenenderBlock.blockID)
+				if (worldObj.getBlockId(i, j, k) == Mod_DenEnderman_Core.denenderBlock.blockID)
 				{
+					/*
 					pathToCrop = worldObj.getEntityPathToXYZ(this, i, j, k, 16F, true, false, false, true);
 					setPathToEntity(pathToCrop);
+					*/
 				}
 			}
 		}
@@ -700,8 +751,10 @@ public class EntityFarmers extends EntityAnimal
 
                     if (myDBlock != null)
                     {
+                    	/*
                         myDBlock = null;
                         pathToCrop = null;
+                        */
                     }
                 }
             }
@@ -764,9 +817,20 @@ public class EntityFarmers extends EntityAnimal
 		return this.homePos;
 	}
 
+	private boolean canTouch(String name)
+	{
+		return !Mod_DenEnderman_Core.canTouchOwnerOnly || name.equalsIgnoreCase(this.getOwnerName());
+	}
+
 
 	public String getFarmersName()
 	{
 		return this.getEntityName();
+	}
+
+	@Override
+	public EntityAgeable func_90011_a(EntityAgeable var1)
+	{
+		return null;
 	}
 }

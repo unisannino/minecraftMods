@@ -22,39 +22,44 @@ public class EntityAIMoveIngates extends EntityAIBase
      */
     public boolean shouldExecute()
     {
-        if (this.isRestTime())
-        {
-        	/*
-            if (this.entityObj.getRNG().nextInt(50) != 0)
+    	if(!this.theFarmers.isSitting())
+    	{
+            if (this.isRestTime())
             {
-            	System.out.println("aaaa");
-                return false;
-            }
-            else */
-            if (this.insidePosX != -1 && this.theFarmers.getDistanceSq((double)this.insidePosX, this.theFarmers.posY, (double)this.insidePosZ) < 4.0D)
-            {
-                return false;
-            }
-            else
-            {
-                DEHome var1 = this.dehomeCollection.findNearestDEHome(MathHelper.floor_double(this.theFarmers.posX), MathHelper.floor_double(this.theFarmers.posY), MathHelper.floor_double(this.theFarmers.posZ), 14);
-
-                if (var1 == null)
+            	/*
+                if (this.entityObj.getRNG().nextInt(50) != 0)
+                {
+                	System.out.println("aaaa");
+                    return false;
+                }
+                else */
+                if (this.insidePosX != -1 && this.theFarmers.getDistanceSq((double)this.insidePosX, this.theFarmers.posY, (double)this.insidePosZ) < 4.0D)
                 {
                     return false;
                 }
                 else
                 {
-                    this.gateInfo = var1.findNearestGateUnrestricted(MathHelper.floor_double(this.theFarmers.posX), MathHelper.floor_double(this.theFarmers.posY), MathHelper.floor_double(this.theFarmers.posZ));
-                    //System.out.println(this.gateInfo.posX +"plus"+ this.gateInfo.insideDirectionX +" "+ this.gateInfo.posZ +"plus"+ this.gateInfo.insideDirectionZ);
-                    return this.gateInfo != null;
+                    DEHome var1 = this.dehomeCollection.findNearestDEHome(MathHelper.floor_double(this.theFarmers.posX), MathHelper.floor_double(this.theFarmers.posY), MathHelper.floor_double(this.theFarmers.posZ), 14);
+
+                    if (var1 == null)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        this.gateInfo = var1.findNearestGateUnrestricted(MathHelper.floor_double(this.theFarmers.posX), MathHelper.floor_double(this.theFarmers.posY), MathHelper.floor_double(this.theFarmers.posZ));
+                        //System.out.println(this.gateInfo.posX +"plus"+ this.gateInfo.insideDirectionX +" "+ this.gateInfo.posZ +"plus"+ this.gateInfo.insideDirectionZ);
+                        return this.gateInfo != null;
+                    }
                 }
             }
-        }
-        else
-        {
-            return this.hasHomesInfo()&& !this.isRestTime();
-        }
+            else
+            {
+                return this.hasHomesInfo()&& !this.isRestTime();
+            }
+    	}
+
+    	return false;
     }
 
     /**
@@ -69,7 +74,7 @@ public class EntityAIMoveIngates extends EntityAIBase
 
             if (this.theFarmers.getDistanceSq((double)this.gateInfo.getInsidePosX(), (double)this.gateInfo.posY, (double)this.gateInfo.getInsidePosZ()) > 256.0D)
             {
-                Vec3 var1 = RandomPositionGenerator.findRandomTargetBlockTowards(this.theFarmers, 14, 3, this.theFarmers.worldObj.func_82732_R().getVecFromPool((double)this.gateInfo.getInsidePosX() + 0.5D, (double)this.gateInfo.getInsidePosY(), (double)this.gateInfo.getInsidePosZ() + 0.5D));
+                Vec3 var1 = RandomPositionGenerator.findRandomTargetBlockTowards(this.theFarmers, 14, 3, this.theFarmers.worldObj.getWorldVec3Pool().getVecFromPool((double)this.gateInfo.getInsidePosX() + 0.5D, (double)this.gateInfo.getInsidePosY(), (double)this.gateInfo.getInsidePosZ() + 0.5D));
 
                 if (var1 != null)
                 {

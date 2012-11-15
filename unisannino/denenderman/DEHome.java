@@ -27,7 +27,9 @@ public class DEHome
     private int tickCounter = 0;
     private int numVillagers = 0;
     private List villageAgressors = new ArrayList();
-    private TreeMap field_82693_j = new TreeMap();
+
+    /** List of player reputations with this village */
+    private TreeMap playerReputation = new TreeMap();
 
     public DEHome(World par1World)
     {
@@ -57,7 +59,7 @@ public class DEHome
 
         if (this.numVillagers == 0)
         {
-            this.field_82693_j.clear();
+            this.playerReputation.clear();
         }
     }
 

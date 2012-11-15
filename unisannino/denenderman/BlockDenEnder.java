@@ -59,7 +59,7 @@ public class BlockDenEnder extends BlockContainer
 
     private void InsertDenenderPearl(World world, int i, int j, int k)
     {
-        ItemStack pearl = new ItemStack(Mod_DenEnderman_Core.DenEnderPearl, 1);
+        ItemStack pearl = new ItemStack(Mod_DenEnderman_Core.denEnderPearl, 1);
         TileEntityDenEnder myDBlock = (TileEntityDenEnder) world.getBlockTileEntity(i, j, k);
 
         if (random.nextInt(2000) == 0)

@@ -9,7 +9,11 @@ public abstract class EntityAIGateInteract extends EntityAIBase
     protected int entityPosY;
     protected int entityPosZ;
     protected BlockFenceGate targetDoor;
-    boolean field_75350_f;
+
+    /**
+     * If is true then the Entity has stopped Door Interaction and compoleted the task.
+     */
+    boolean hasStoppedDoorInteraction;
     float entityPositionX;
     float entityPositionZ;
 
@@ -73,7 +77,7 @@ public abstract class EntityAIGateInteract extends EntityAIBase
      */
     public boolean continueExecuting()
     {
-        return !this.field_75350_f;
+        return !this.hasStoppedDoorInteraction;
     }
 
     /**
@@ -81,7 +85,7 @@ public abstract class EntityAIGateInteract extends EntityAIBase
      */
     public void startExecuting()
     {
-        this.field_75350_f = false;
+        this.hasStoppedDoorInteraction = false;
         this.entityPositionX = (float)((double)((float)this.entityPosX + 0.5F) - this.theEntity.posX);
         this.entityPositionZ = (float)((double)((float)this.entityPosZ + 0.5F) - this.theEntity.posZ);
     }
@@ -97,7 +101,7 @@ public abstract class EntityAIGateInteract extends EntityAIBase
 
         if (var3 < 0.0F)
         {
-            this.field_75350_f = true;
+            this.hasStoppedDoorInteraction = true;
         }
     }
 

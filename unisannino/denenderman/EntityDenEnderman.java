@@ -44,14 +44,18 @@ public class EntityDenEnderman extends EntityFarmers
         stepHeight = 1.0F;
 
         isJumping =false;
-        favoriteItem = Mod_DenEnderman_Core.Lavender.blockID;
+
+        favoriteItem = Mod_DenEnderman_Core.lavender.blockID;
+        this.likeItem = Mod_DenEnderman_Core.lavender.blockID;
+        this.funcItem = Item.potatoe.shiftedIndex;
+
         setcanPickup(0, Item.wheat.shiftedIndex);
         setcanPickup(1, Item.seeds.shiftedIndex);
         setcanPickup(2, Item.melon.shiftedIndex);
         setcanPickup(3, Block.pumpkin.blockID);
         setcanPickup(4, Item.melonSeeds.shiftedIndex);
         setcanPickup(5, Item.pumpkinSeeds.shiftedIndex);
-        setcanPickup(6, Mod_DenEnderman_Core.Lavender.blockID);
+        setcanPickup(6, Mod_DenEnderman_Core.lavender.blockID);
 
         setcantPutItem(0, Item.seeds.shiftedIndex);
         setcantPutItem(1, Item.dyePowder.shiftedIndex);
@@ -64,8 +68,9 @@ public class EntityDenEnderman extends EntityFarmers
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(0, new EntityAIPlantAndHervestCrops(this));
         this.tasks.addTask(0, new EntityAIPutDEBlock(this));
-        this.tasks.addTask(1, new EntityAINearestTargetItems(this, this.moveSpeed));
-        this.tasks.addTask(1, new EntityAITempt(this, this.moveSpeed, this.favoriteItem, false));
+        this.tasks.addTask(1, new EntityAITempt(this, this.moveSpeed, this.likeItem, false));
+        this.tasks.addTask(1, this.aiSit);
+        this.tasks.addTask(2, new EntityAINearestTargetItems(this, this.moveSpeed));
         this.tasks.addTask(2, new EntityAIMoveCrops(this, this.moveSpeed));
         this.tasks.addTask(2, new EntityAIMoveIngates(this));
         this.tasks.addTask(2, new EntityAIMoveDEBlock(this, this.moveSpeed));
@@ -81,8 +86,7 @@ public class EntityDenEnderman extends EntityFarmers
     protected void entityInit()
     {
         super.entityInit();
-        dataWatcher.addObject(16, new Byte((byte)0));
-        this.dataWatcher.addObject(17, new Byte((byte)0));
+        this.dataWatcher.addObject(18, new Byte((byte)0));
     }
 
 
@@ -149,15 +153,6 @@ public class EntityDenEnderman extends EntityFarmers
     {
         super.onLivingUpdate();
 
-        if(this.findItems || this.hervestSeed)
-        {
-        	this.setFaceAngry(true);
-        }else
-        {
-        	this.setFaceAngry(false);
-        }
-
-
         for (int k = 0; k < 2; k++)
         {
             worldObj.spawnParticle("reddust", posX + (rand.nextDouble() - 0.5D) * (double)width, (posY + rand.nextDouble() * (double)height) - 0.25D, posZ + (rand.nextDouble() - 0.5D) * (double)width, 2.0D, 200.0D, 00D);
@@ -184,6 +179,29 @@ public class EntityDenEnderman extends EntityFarmers
 			}
     	}
     	return super.checkItemID(i);
+    }
+
+    @Override
+    public boolean interact(EntityPlayer par1Entityplayer)
+    {
+        ItemStack itemstack = par1Entityplayer.inventory.getCurrentItem();
+
+        if (itemstack != null && itemstack.itemID == this.funcItem && par1Entityplayer.username.equalsIgnoreCase(this.getOwnerName()))
+        {
+            if (!par1Entityplayer.capabilities.isCreativeMode)
+            {
+                --itemstack.stackSize;
+            }
+
+            if (itemstack.stackSize <= 0)
+            {
+                par1Entityplayer.inventory.setInventorySlotContents(par1Entityplayer.inventory.currentItem, null);
+            }
+
+            this.setFaceAngry(!this.getFaceAngry());
+        }
+
+        return super.interact(par1Entityplayer);
     }
 
     @Override
@@ -251,7 +269,7 @@ public class EntityDenEnderman extends EntityFarmers
     @Override
     protected int getDropItemId()
     {
-        return Mod_DenEnderman_Core.DenEnderPearl.shiftedIndex;
+        return Mod_DenEnderman_Core.denEnderPearl.shiftedIndex;
     }
 
     /*
@@ -274,7 +292,7 @@ public class EntityDenEnderman extends EntityFarmers
             	return true;
             }else
             {
-            	if(Mod_DenEnderman_Core.ToggleXies)
+            	if(Mod_DenEnderman_Core.toggleXies)
             	{
             		/*
                     try
@@ -324,12 +342,12 @@ public class EntityDenEnderman extends EntityFarmers
 
 		}catch(ClassNotFoundException e)
 		{
-			System.out.println("error");
+			e.printStackTrace();
 			return false;
 
 		}catch(Exception e)
 		{
-			System.out.println("error");
+			e.printStackTrace();
 			return false;
 		}
     }
@@ -337,12 +355,12 @@ public class EntityDenEnderman extends EntityFarmers
     @SideOnly(Side.CLIENT)
     public boolean getFaceAngry()
     {
-        return this.dataWatcher.getWatchableObjectByte(17) > 0;
+        return this.dataWatcher.getWatchableObjectByte(18) > 0;
     }
 
     public void setFaceAngry(boolean par1)
     {
-        this.dataWatcher.updateObject(17, Byte.valueOf((byte)(par1 ? 1 : 0)));
+        this.dataWatcher.updateObject(18, Byte.valueOf((byte)(par1 ? 1 : 0)));
     }
 
 }

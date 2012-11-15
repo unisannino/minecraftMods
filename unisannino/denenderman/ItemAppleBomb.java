@@ -18,7 +18,7 @@ public class ItemAppleBomb extends ItemEgg
 
     @SideOnly(Side.CLIENT)
     @Override
-    public int func_82790_a(ItemStack par1ItemStack, int par2)
+    public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
     {
         return 0x0000FF;
     }

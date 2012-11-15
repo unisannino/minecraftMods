@@ -16,7 +16,7 @@ public class ItemFarmerSeeds extends Item implements IPlantable
     }
 
     @Override
-    public int func_82790_a(ItemStack par1ItemStack, int par2)
+    public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
     {
         return 0x7b2fbe;
     }
@@ -36,7 +36,7 @@ public class ItemFarmerSeeds extends Item implements IPlantable
 	@Override
 	public int getPlantID(World world, int x, int y, int z)
 	{
-		return Mod_DenEnderman_Core.Lavender.blockID;
+		return Mod_DenEnderman_Core.lavender.blockID;
 	}
 
 	@Override

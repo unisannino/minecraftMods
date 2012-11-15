@@ -47,7 +47,7 @@ public class EntitySeedBullet extends EntityThrowable
             	EntityLiving targetmob = (EntityLiving)par1MovingObjectPosition.entityHit;
             	targetmob.heal(0);
             }
-            if (!par1MovingObjectPosition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, thrower), damage));
+            if (!par1MovingObjectPosition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_85052_h()), damage));
         }
 
         if (knockback > 0)

@@ -90,9 +90,9 @@ public class EntityAIMoveDEBlock extends EntityAIBase
             int var4 = MathHelper.floor_double(this.theFarmers.boundingBox.minY + (double)var1.nextInt(6) - 3.0D);
             int var5 = MathHelper.floor_double(this.theFarmers.posZ + (double)var1.nextInt(20) - 10.0D);
 
-            if (this.theWorld.getBlockId(var3, var4, var5) == Mod_DenEnderman_Core.DenenderBlock.blockID)
+            if (this.theWorld.getBlockId(var3, var4, var5) == Mod_DenEnderman_Core.denenderBlock.blockID)
             {
-                return this.theWorld.func_82732_R().getVecFromPool((double)var3, (double)var4, (double)var5);
+                return this.theWorld.getWorldVec3Pool().getVecFromPool((double)var3, (double)var4, (double)var5);
             }
         }
         return null;

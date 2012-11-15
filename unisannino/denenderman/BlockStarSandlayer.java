@@ -96,7 +96,7 @@ public class BlockStarSandlayer extends Block
 
     public void harvestBlock(World world, EntityPlayer entityplayer, int i, int j, int k, int l)
     {
-        int i1 = Mod_DenEnderman_Core.StarPowder.shiftedIndex;
+        int i1 = Mod_DenEnderman_Core.starPowder.shiftedIndex;
         float f = 0.7F;
         double d = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
         double d1 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
@@ -110,7 +110,7 @@ public class BlockStarSandlayer extends Block
 
     public int idDropped(int i, Random random, int j)
     {
-        return Mod_DenEnderman_Core.StarPowder.shiftedIndex;
+        return Mod_DenEnderman_Core.starPowder.shiftedIndex;
     }
 
     public int quantityDropped(Random random)

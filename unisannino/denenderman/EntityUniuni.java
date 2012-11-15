@@ -9,6 +9,7 @@ import net.minecraft.src.*;
 public class EntityUniuni extends EntityFarmers
 {
     private boolean eatingmelon;
+    private static int[] eatableIBlocks = {Block.tallGrass.blockID, Block.vine.blockID, Block.crops.blockID, Block.leaves.blockID, Block.melon.blockID};
 
     public EntityUniuni(World world)
     {
@@ -16,13 +17,36 @@ public class EntityUniuni extends EntityFarmers
         texture = "/denender/uniuni.png";
         setSize(0.8F, 0.6F);
         yOffset = 0.16F;
-		favoriteItem = Mod_DenEnderman_Core.Lavender.blockID;
+		favoriteItem = Mod_DenEnderman_Core.lavender.blockID;
 		likeItem = Item.melon.shiftedIndex;
+
+        this.getNavigator().setBreakDoors(true);
+        this.getNavigator().setAvoidsWater(true);
+        this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(0, new EntityAIUniHervestableAndEatable(this));
+        this.tasks.addTask(0, new EntityAIPutDEBlock(this));
+        this.tasks.addTask(1, new EntityAITempt(this, this.moveSpeed, this.likeItem, false));
+        this.tasks.addTask(1, this.aiSit);
+        this.tasks.addTask(2, new EntityAINearestTargetItems(this, this.moveSpeed));
+        this.tasks.addTask(2, new EntityAIMoveUniHervestableAndEatable(this, this.moveSpeed));
+        this.tasks.addTask(2, new EntityAIMoveDEBlock(this, this.moveSpeed));
+        this.tasks.addTask(3, new EntityAIRestrictOpenGate(this));
+        this.tasks.addTask(4, new EntityAIMoveTwardsRestriction(this, this.moveSpeed));
+        this.tasks.addTask(6, new EntityAIWander(this, this.moveSpeed));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(7, new EntityAILookIdle(this));
+        //this.targetTasks.addTask(1, new EntityAINearestAttackableTarget(this, EntityDenEnderman.class, 16.0F, 0, true));
     }
 
     @Override
     protected void addConfigPickupItems()
     {
+    }
+
+    @Override
+    protected boolean isAIEnabled()
+    {
+        return true;
     }
 
     @Override
@@ -41,24 +65,27 @@ public class EntityUniuni extends EntityFarmers
         	{
         		motionY += 0.02D;
         	}
-        	if(entityToAttack instanceof EntityDenEnderman)
+        	if(this.getAttackTarget() instanceof EntityDenEnderman)
         	{
+        		System.out.println("denender");
         		heartpop++;
+        		/*
         		if(rand.nextInt(100) == 0)
         		{
-        			entityToAttack = null;
+        			this.setAttackTarget(null);
         		}
+        		*/
         	}
-            int i = MathHelper.floor_double((posX - 1.0D) + rand.nextDouble() * 2D);
-            int l = MathHelper.floor_double(posY);
-            int j1 = MathHelper.floor_double((posZ - 1.0D) + rand.nextDouble() * 2D);
-            Eating(worldObj);
-            HervestSugercane(worldObj);
-            HervestNether(worldObj);
+
+            /*
+            eating(worldObj);
+            hervestSugercane(worldObj);
+            hervestNether(worldObj);
+            */
 
             if (this.health > 0 && rand.nextInt(10) == 0)
             {
-                Healing();
+                healing();
             }
 
             for (int j = 0; j < 4; j++)
@@ -67,15 +94,15 @@ public class EntityUniuni extends EntityFarmers
                 int j11 = MathHelper.floor_double(posY);
                 int k1 = MathHelper.floor_double(posZ + (double)((float)(((j / 2) % 2) * 2 - 1) * 0.25F));
 
-                if (worldObj.getBlockId(l11, j11, k1) == 0 && Mod_DenEnderman_Core.StarSand.canPlaceBlockAt(worldObj, l11, j11, k1))
+                if (worldObj.getBlockId(l11, j11, k1) == 0 && Mod_DenEnderman_Core.starSand.canPlaceBlockAt(worldObj, l11, j11, k1))
                 {
-                    worldObj.setBlockWithNotify(l11, j11, k1, Mod_DenEnderman_Core.StarSandID);
+                    worldObj.setBlockWithNotify(l11, j11, k1, Mod_DenEnderman_Core.starSandID);
                 }
             }
         }
     }
 
-    private void Healing()
+    private void healing()
     {
         if (this.health < this.getMaxHealth() - 1)
         {
@@ -101,9 +128,10 @@ public class EntityUniuni extends EntityFarmers
     @Override
     protected int getDropItemId()
     {
-        return Mod_DenEnderman_Core.UniuniSoul.shiftedIndex;
+        return Mod_DenEnderman_Core.uniuniSoul.shiftedIndex;
     }
 
+    /*
     protected void updateEntityActionState()
     {
         super.updateEntityActionState();
@@ -118,33 +146,6 @@ public class EntityUniuni extends EntityFarmers
             }
         }
     }
-    /*
-        public boolean attackEntityFrom(DamageSource damagesource, int i)
-        {
-            Entity entity = damagesource.getEntity();
-            if(super.attackEntityFrom(damagesource, i))
-            {
-                if(entity != this && entity != null)
-                {
-                    if(entity instanceof EntityPlayer)
-                    {
-                        return true;
-                    }
-                    entityToAttack = entity;
-                }
-                return true;
-            }else
-            	return false;
-        }
-        */
-
-    /*    public boolean getCanSpawnHere()
-        {
-            int i = MathHelper.floor_double(posX);
-            int j = MathHelper.floor_double(boundingBox.minY);
-            int k = MathHelper.floor_double(posZ);
-            return  worldObj.getBlockId(i, j - 1, k) == Block.grass.blockID  && worldObj.getFullBlockLightValue(i, j, k) > 8;
-        }
     */
 
     protected String getLivingSound()
@@ -186,50 +187,52 @@ public class EntityUniuni extends EntityFarmers
         super.interact(entityplayer);
         ItemStack itemstack = entityplayer.inventory.getCurrentItem();
 
-        if (itemstack != null && isWheat(itemstack) && getGrowingAge() == 0)
+        if(itemstack != null)
         {
-            itemstack.stackSize--;
-
-            if (itemstack.stackSize <= 0)
+            if (this.isBreedingItem(itemstack) && getGrowingAge() == 0)
             {
-                entityplayer.inventory.setInventorySlotContents(entityplayer.inventory.currentItem, null);
+                itemstack.stackSize--;
+
+                if (itemstack.stackSize <= 0)
+                {
+                    entityplayer.inventory.setInventorySlotContents(entityplayer.inventory.currentItem, null);
+                }
+
+                heartpop = 600;
+                heal(1);
+
+                for (int i = 0; i < 7; i++)
+                {
+                    double d = rand.nextGaussian() * 0.02D;
+                    double d1 = rand.nextGaussian() * 0.02D;
+                    double d2 = rand.nextGaussian() * 0.02D;
+                    worldObj.spawnParticle("heart", (posX + (double)(rand.nextFloat() * width * 2.0F)) - (double)width, posY + 0.5D + (double)(rand.nextFloat() * height), (posZ + (double)(rand.nextFloat() * width * 2.0F)) - (double)width, d, d1, d2);
+                }
             }
 
-            heartpop = 600;
-            heal(1);
-
-            for (int i = 0; i < 7; i++)
+            if (itemstack.itemID == Block.melon.blockID)
             {
-                double d = rand.nextGaussian() * 0.02D;
-                double d1 = rand.nextGaussian() * 0.02D;
-                double d2 = rand.nextGaussian() * 0.02D;
-                worldObj.spawnParticle("heart", (posX + (double)(rand.nextFloat() * width * 2.0F)) - (double)width, posY + 0.5D + (double)(rand.nextFloat() * height), (posZ + (double)(rand.nextFloat() * width * 2.0F)) - (double)width, d, d1, d2);
+                itemstack.stackSize--;
+
+                if (itemstack.stackSize <= 0)
+                {
+                    entityplayer.inventory.setInventorySlotContents(entityplayer.inventory.currentItem, null);
+                }
+
+                if (!worldObj.isRemote && (ridingEntity == null || ridingEntity == entityplayer))
+                {
+                    this.mountEntity(entityplayer);
+                }
             }
-        }
-
-        if (itemstack != null && itemstack.itemID == Block.melon.blockID)
-        {
-            itemstack.stackSize--;
-
-            if (itemstack.stackSize <= 0)
-            {
-                entityplayer.inventory.setInventorySlotContents(entityplayer.inventory.currentItem, null);
-            }
-
-            if (!worldObj.isRemote && (ridingEntity == null || ridingEntity == entityplayer))
-            {
-                this.mountEntity(entityplayer);
-            }
-
-            //inventory.dropAllItems();
         }
 
         return true;
     }
 
-    private void Eating(World world)
+    @Deprecated
+    private void eating(World world)
     {
-        if (rand.nextInt(20) == 0 || this.health < this.getMaxHealth())
+        if (rand.nextInt(20) == 0 || this.getHealth() < this.getMaxHealth())
         {
             for (double checkXZ = 10; checkXZ > 0; checkXZ--)
             {
@@ -239,17 +242,19 @@ public class EntityUniuni extends EntityFarmers
                     int l = MathHelper.floor_double((posY - 1.0D) + rand.nextDouble() * checkheight);
                     int j1 = MathHelper.floor_double((posZ - (rand.nextDouble() * 9D)) + checkXZ);
 
-                    if (canEat(world, i1, l, j1) && !hasPathCrops())
+                    if (canEatBlocks(world, i1, l, j1) && !hasPathCrops())
                     {
+                    	/*
                         pathToCrop = world.getEntityPathToXYZ(this, i1, l, j1, 16F, true, false, false, true);
                         setPathToEntity(pathToCrop);
+                        */
                     }
                     int x = MathHelper.floor_double((posX - 1.0D) + rand.nextDouble() * 2D);
                     int y = MathHelper.floor_double(posY + rand.nextDouble() * 2D);
                     int z = MathHelper.floor_double((posZ - 1.0D) + rand.nextDouble() * 2D);
                     int r = world.getBlockId(x, y, z);
 
-                    if (canEat(world, x, y, z))
+                    if (canEatBlocks(world, x, y, z))
                     {
                         StepSound stepsound = Block.grass.stepSound;
 
@@ -281,35 +286,30 @@ public class EntityUniuni extends EntityFarmers
                         }
 
                         eatingmelon = false;
-                        pathToCrop = null;
+                        //pathToCrop = null;
                     }
                 }
             }
         }
     }
 
-    private boolean canEat(World world, int i, int l, int j1)
+    protected boolean canEatBlocks(World world, int x, int y, int z)
     {
-        int check = worldObj.getBlockId(i, l, j1);
+        int target = worldObj.getBlockId(x, y, z);
 
-        if (check == Block.tallGrass.blockID
-                || check == Block.vine.blockID
-                || check == Block.crops.blockID
-                || check == Block.leaves.blockID)
+        for(int i =0; i < this.eatableIBlocks.length;i++)
         {
-            return true;
+        	int eatable = this.eatableIBlocks[i];
+            if (target == eatable)
+            {
+            	return true;
+            }
         }
-
-        if (check ==  Block.melon.blockID)
-        {
-            eatingmelon = true;
-            return true;
-        }
-
         return false;
     }
 
-    private void HervestSugercane(World world)
+    @Deprecated
+    private void hervestSugercane(World world)
     {
         for (double checkXZ = 10; checkXZ > 0; checkXZ--)
         {
@@ -327,8 +327,10 @@ public class EntityUniuni extends EntityFarmers
 
                     if (l2 == Block.reed.blockID && l3 == Block.reed.blockID)
                     {
+                    	/*
                         pathToCrop = world.getEntityPathToXYZ(this, i, l, j1, 16F, true, false, false, true);
                         setPathToEntity(pathToCrop);
+                        */
                     }
                 }
                 int x = MathHelper.floor_double((posX - 1.0D) + rand.nextDouble() * 2D);
@@ -354,7 +356,7 @@ public class EntityUniuni extends EntityFarmers
                 */
 
                 //else
-                	if(r > 0 && r1 > 0)
+                if(r > 0 && r1 > 0)
                 {
                     Block crops = Block.blocksList[r];
                     if(crops instanceof BlockReed && r == r1)
@@ -364,14 +366,15 @@ public class EntityUniuni extends EntityFarmers
                             world.setBlockWithNotify(x, y , z, 0);
                             world.setBlockWithNotify(x, y , z, crops.blockID);
                             crops.dropBlockAsItemWithChance(worldObj, x, y, z, 0, 1.0F, 0);
-                            pathToCrop = null;
+                            //pathToCrop = null;
                     }
                 }
             }
         }
     }
 
-    private void HervestNether(World world)
+    @Deprecated
+    private void hervestNether(World world)
     {
         for (double checkXZ = 10; checkXZ > 0; checkXZ--)
         {
@@ -385,8 +388,10 @@ public class EntityUniuni extends EntityFarmers
 
                 if (l1 == Block.netherStalk.blockID && l2 == 3 && !hasPathCrops())
                 {
+                	/*
                     pathToCrop = world.getEntityPathToXYZ(this, i, l, j1, 16F, true, false, false, true);
                     setPathToEntity(pathToCrop);
+                    */
                 }
                 int x = MathHelper.floor_double((posX - 1.0D) + rand.nextDouble() * 2D);
                 int y = MathHelper.floor_double(posY + rand.nextDouble() * 2D);
@@ -418,7 +423,7 @@ public class EntityUniuni extends EntityFarmers
                             worldObj.playSoundAtEntity(this, stepsound.getBreakSound(), stepsound.getPitch(), stepsound.getPitch());
                             world.setBlockAndMetadataWithNotify(x, y, z, crops.blockID, 0);
                             crops.dropBlockAsItemWithChance(worldObj, x, y, z, 3, 1.0F, 0);
-                            pathToCrop = null;
+                            //pathToCrop = null;
                     }
                 }
             }

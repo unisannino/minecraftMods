@@ -28,7 +28,7 @@ public class RenderThrowingItemColor extends RenderSnowball
         float bright = entitydenenderpearl.getEntityBrightness(f1);
         GL11.glColor4f(red * bright, green * bright, blue * bright, 1.0F);
         */
-        int k1 = Item.itemsList[colorItem.itemID].func_82790_a(this.colorItem, 0);
+        int k1 = Item.itemsList[colorItem.itemID].getColorFromItemStack(this.colorItem, 0);
         float f3 = 1.0F;
         float f9 = (float)(k1 >> 16 & 0xff) / 255F;
         float f12 = (float)(k1 >> 8 & 0xff) / 255F;

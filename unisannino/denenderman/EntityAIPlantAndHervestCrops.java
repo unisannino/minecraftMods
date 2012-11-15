@@ -109,7 +109,7 @@ public class EntityAIPlantAndHervestCrops extends EntityAIBase
                 }else
                 try
                 {
-                	if(Mod_DenEnderman_Core.ToggleXies)
+                	if(Mod_DenEnderman_Core.toggleXies)
                 	{
                 		/*
                     	if(mod_XieClient.class.getClass() != null)
@@ -334,13 +334,13 @@ public class EntityAIPlantAndHervestCrops extends EntityAIBase
             {
                 if (l13 == Block.grass.blockID && l15 == 0)
                 {
-                    if (this.theFarmers.inventory.consumeInventoryItem(Mod_DenEnderman_Core.FarmerSeeds.shiftedIndex))
+                    if (this.theFarmers.inventory.consumeInventoryItem(Mod_DenEnderman_Core.farmerSeeds.shiftedIndex))
                     {
                     	//this.theFarmers.facetoPath(fposX, l14, fposZ, 100F, 100F);
                         StepSound stepsound1 = Block.plantRed.stepSound;
             			this.theFarmers.getLookHelper().setLookPosition(fposX, fposYup, fposZ, 100F, 100F);
                         this.theWorld.playSoundAtEntity(this.theFarmers, stepsound1.getStepSound(), stepsound1.getPitch(), stepsound1.getPitch());
-                        this.theWorld.setBlockWithNotify(fposX, l14, fposZ, Mod_DenEnderman_Core.Lavender.blockID);
+                        this.theWorld.setBlockWithNotify(fposX, l14, fposZ, Mod_DenEnderman_Core.lavender.blockID);
                     }
                 }
             }

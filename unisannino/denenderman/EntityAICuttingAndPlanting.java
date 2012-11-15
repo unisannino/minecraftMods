@@ -81,14 +81,11 @@ public class EntityAICuttingAndPlanting extends EntityAIBase
 			int targetid = this.theWorld.getBlockId(x, y, z);
 			int targetmeta = this.theWorld.getBlockMetadata(x, y, z);
 
-			if (targetid == Block.wood.blockID)
+			if (this.theFarmers.underWoodBlock(this.theWorld, x, y, z) && this.theFarmers.checkTopOfLogs(this.theWorld, x, y, z) && this.theFarmers.checkIsLogs(this.theWorld, x, y, z))
 			{
-				if (this.theFarmers.underWoodBlock(this.theWorld, x, y, z) && this.theFarmers.checkTopOfLogs(this.theWorld, x, y, z) && this.theFarmers.checkIsLogs(this.theWorld, x, y, z))
-				{
-					this.theWorld.createExplosion(this.theFarmers, x, y, z, 0F, true);
-					this.theFarmers.getLookHelper().setLookPosition(x, y, z, 10.0F, (float)this.theFarmers.getVerticalFaceSpeed());
-					this.cutting(x, y, z, targetid, targetmeta);
-				}
+				this.theWorld.createExplosion(this.theFarmers, x, y, z, 0F, true);
+				this.theFarmers.getLookHelper().setLookPosition(x, y, z, 10.0F, (float)this.theFarmers.getVerticalFaceSpeed());
+				this.cutting(x, y, z, targetid, targetmeta);
 			}
 		}
 				//System.out.println("Under No");

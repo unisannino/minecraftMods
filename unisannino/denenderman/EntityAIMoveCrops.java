@@ -97,7 +97,7 @@ public class EntityAIMoveCrops extends EntityAIBase
 
             if (this.theFarmers.canHervest(theWorld, var3, var4, var5))
             {
-                return this.theWorld.func_82732_R().getVecFromPool((double)var3, (double)var4, (double)var5);
+                return this.theWorld.getWorldVec3Pool().getVecFromPool((double)var3, (double)var4, (double)var5);
             }
         }
         return null;
@@ -150,7 +150,7 @@ public class EntityAIMoveCrops extends EntityAIBase
 	        {
 	        	if(Block.blocksList[var6] != null && Block.blocksList[var6].isFertile(this.theWorld, var3, var4, var5) && this.theWorld.isAirBlock(var3, var4 + 1, var5))
 	        	{
-	        		return this.theWorld.func_82732_R().getVecFromPool((double)var3, (double)var4, (double)var5);
+	        		return this.theWorld.getWorldVec3Pool().getVecFromPool((double)var3, (double)var4, (double)var5);
 	        	}
 	        }
         }
