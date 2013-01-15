@@ -1,8 +1,7 @@
 package unisannino.denenderman;
 
-import java.util.Random;
-
-import net.minecraft.src.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.world.World;
 
 public class EntityUniuniSoul extends EntityFarmerSpawner
 {

@@ -2,12 +2,12 @@ package unisannino.denenderman;
 
 import java.util.List;
 
-import net.minecraft.src.*;
-
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.player.EntityInteractEvent;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.Mod.Instance;
+import net.minecraft.client.gui.inventory.GuiChest;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ContainerChest;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 public class Mod_DenEnderman_CommonProxy implements IGuiHandler

@@ -2,7 +2,15 @@ package unisannino.denenderman;
 
 import java.util.Random;
 
-import net.minecraft.src.*;
+import net.minecraft.block.BlockContainer;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 public class BlockDenEnder extends BlockContainer
 {
@@ -81,7 +89,8 @@ public class BlockDenEnder extends BlockContainer
         }
     }
 
-    public void onBlockAdded(World par1World, int par2, int par3, int par4)
+    @Override
+	public void onBlockAdded(World par1World, int par2, int par3, int par4)
     {
         super.onBlockAdded(par1World, par2, par3, par4);
     }
@@ -121,7 +130,7 @@ public class BlockDenEnder extends BlockContainer
                 }
 
                 itemstack.stackSize -= i1;
-                EntityItem entityitem = new EntityItem(par1World, (float)par2 + f, (float)par3 + f1, (float)par4 + f2, new ItemStack(itemstack.itemID, i1, itemstack.getItemDamage()));
+                EntityItem entityitem = new EntityItem(par1World, par2 + f, par3 + f1, par4 + f2, new ItemStack(itemstack.itemID, i1, itemstack.getItemDamage()));
                 float f3 = 0.05F;
                 entityitem.motionX = (float)random.nextGaussian() * f3;
                 entityitem.motionY = (float)random.nextGaussian() * f3 + 0.2F;

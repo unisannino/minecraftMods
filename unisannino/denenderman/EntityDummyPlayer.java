@@ -1,6 +1,8 @@
 package unisannino.denenderman;
 
-import net.minecraft.src.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChunkCoordinates;
 
 public class EntityDummyPlayer extends EntityPlayer
 {

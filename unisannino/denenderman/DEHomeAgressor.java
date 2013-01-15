@@ -1,6 +1,6 @@
 package unisannino.denenderman;
 
-import net.minecraft.src.*;
+import net.minecraft.entity.EntityLiving;
 
 class DEHomeAgressor
 {

@@ -1,22 +1,14 @@
 package unisannino.denenderman;
 
-import java.util.*;
-
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.Block;
-import net.minecraft.src.EntityAIBase;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemSeeds;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.MathHelper;
-import net.minecraft.src.ModLoader;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.Vec3;
-import net.minecraft.src.World;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import cpw.mods.fml.client.FMLClientHandler;
 
 @Deprecated
 public class EntityAIMoveDEBlock_Sort extends EntityAIBase

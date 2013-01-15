@@ -2,8 +2,11 @@ package unisannino.denenderman;
 
 import java.util.Random;
 
-import net.minecraft.src.*;
-
+import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.BiomeGenBeach;
+import net.minecraft.world.biome.WorldChunkManager;
+import net.minecraft.world.chunk.IChunkProvider;
 import cpw.mods.fml.common.IWorldGenerator;
 
 public class Mod_DenEnderman_WorldGene implements IWorldGenerator

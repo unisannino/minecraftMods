@@ -1,11 +1,17 @@
 package unisannino.denenderman;
 
 import java.util.ArrayList;
-import java.util.Random;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import net.minecraft.src.*;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockNetherStalk;
+import net.minecraft.block.BlockReed;
+import net.minecraft.block.StepSound;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 
 public class EntityAIUniHervestableAndEatable extends EntityAIBase
 {

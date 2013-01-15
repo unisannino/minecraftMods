@@ -2,7 +2,9 @@ package unisannino.denenderman;
 
 import java.util.Random;
 
-import net.minecraft.src.*;
+import net.minecraft.block.Block;
+import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.WorldGenerator;
 
 public class WorldGenMelon extends WorldGenerator
 {

@@ -1,9 +1,8 @@
 package unisannino.denenderman;
 
 import java.util.Comparator;
-import java.util.Random;
-import net.minecraft.src.*;
-import net.minecraftforge.common.ForgeDirection;
+
+import net.minecraft.entity.Entity;
 
 public class DEBlockSorter implements Comparator
 {
@@ -21,7 +20,8 @@ public class DEBlockSorter implements Comparator
         return var3 < var5 ? -1 : (var3 > var5 ? 1 : 0);
     }
 
-    public int compare(Object par1Obj, Object par2Obj)
+    @Override
+	public int compare(Object par1Obj, Object par2Obj)
     {
         return this.sortDEBlockbyDistance((TileEntityDenEnder)par1Obj, (TileEntityDenEnder)par2Obj);
     }

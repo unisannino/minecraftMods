@@ -2,16 +2,30 @@ package unisannino.denenderman;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
-
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.*;
+import net.minecraft.client.particle.EntityPickupFX;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.passive.EntityTameable;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntityFarmers extends EntityTameable
 {
@@ -51,9 +65,9 @@ public class EntityFarmers extends EntityTameable
         moveSpeed = 0.28F;
         //this.pathToCrop = null;
 
-        this.favoriteItem = Item.wheat.shiftedIndex;
-        this.likeItem = Item.wheat.shiftedIndex;
-        this.funcItem = Item.hoeGold.shiftedIndex;
+        this.favoriteItem = Item.wheat.itemID;
+        this.likeItem = Item.wheat.itemID;
+        this.funcItem = Item.hoeGold.itemID;
 
         this.aiSit = new EntityAISitFarmers(this);
 
@@ -91,7 +105,7 @@ public class EntityFarmers extends EntityTameable
      */
     public boolean canEntityItemBeSeen(Entity entity)
     {
-        return worldObj.rayTraceBlocks(this.worldObj.getWorldVec3Pool().getVecFromPool(posX, posY + (double)getEyeHeight(), posZ), this.worldObj.getWorldVec3Pool().getVecFromPool(entity.posX, entity.posY + ((entity.boundingBox.minY - entity.boundingBox.minY) / 2), entity.posZ)) == null;
+        return worldObj.rayTraceBlocks(this.worldObj.getWorldVec3Pool().getVecFromPool(posX, posY + getEyeHeight(), posZ), this.worldObj.getWorldVec3Pool().getVecFromPool(entity.posX, entity.posY + ((entity.boundingBox.minY - entity.boundingBox.minY) / 2), entity.posZ)) == null;
     }
 
     @Override
@@ -150,7 +164,7 @@ public class EntityFarmers extends EntityTameable
                     double d = rand.nextGaussian() * 0.02D;
                     double d1 = rand.nextGaussian() * 0.02D;
                     double d2 = rand.nextGaussian() * 0.02D;
-                    worldObj.spawnParticle(s, (posX + (double)(rand.nextFloat() * width * 2.0F)) - (double)width, posY + 0.5D + (double)(rand.nextFloat() * height), (posZ + (double)(rand.nextFloat() * width * 2.0F)) - (double)width, d, d1, d2);
+                    worldObj.spawnParticle(s, (posX + (rand.nextFloat() * width * 2.0F)) - width, posY + 0.5D + (rand.nextFloat() * height), (posZ + (rand.nextFloat() * width * 2.0F)) - width, d, d1, d2);
                 }
             }
         }
@@ -174,16 +188,16 @@ public class EntityFarmers extends EntityTameable
                     int i1 = 0;
                     EntityItem pickupitem = (EntityItem)entity;
 
-                    if (checkItemID(pickupitem.item.itemID) || this instanceof EntityUniuni)
+                    if (checkItemID(pickupitem.func_92014_d().itemID) || this instanceof EntityUniuni)
                     {
-                        i1 = pickupitem.item.stackSize;
+                        i1 = pickupitem.func_92014_d().stackSize;
 
-                        if (!(pickupitem.delayBeforeCanPickup == 0 && inventory.addItemStackToInventory(pickupitem.item)))
+                        if (!(pickupitem.delayBeforeCanPickup == 0 && inventory.addItemStackToInventory(pickupitem.func_92014_d())))
                         {
                             return;
                         }
 
-                        if (pickupitem.item.stackSize <= 0)
+                        if (pickupitem.func_92014_d().stackSize <= 0)
                         {
                             pickupitem.setDead();
                         }
@@ -200,7 +214,7 @@ public class EntityFarmers extends EntityTameable
     {
         for (int j = 0; j < canpickup.size(); j++)
         {
-            if ((Integer)canpickup.get(j) == i)
+            if (canpickup.get(j) == i)
             {
                 //System.out.println(i+" is can pick up");
                 return true;
@@ -214,7 +228,7 @@ public class EntityFarmers extends EntityTameable
     {
         for (int j = 0; j < cantputItem.size(); j++)
         {
-            if ((Integer)cantputItem.get(j) == i)
+            if (cantputItem.get(j) == i)
             {
                 return false;
             }
@@ -467,7 +481,7 @@ public class EntityFarmers extends EntityTameable
                     	}
                     }
         		}else
-        		if(itemstack.itemID == Item.hoeDiamond.shiftedIndex && this.canTouch(entityplayer.username))
+        		if(itemstack.itemID == Item.hoeDiamond.itemID && this.canTouch(entityplayer.username))
         		{
                     //ModLoader.openGUI(entityplayer, new GuiChest(entityplayer.inventory,  inventory));
                 	entityplayer.openGui(Mod_DenEnderman_Core.instance, this.entityId, this.worldObj, (int)this.posX, (int)this.posY, (int)this.posZ);
@@ -494,7 +508,7 @@ public class EntityFarmers extends EntityTameable
             return;
         }
 
-        EntityItem entityitem = new EntityItem(worldObj, posX, (posY - 0.3D) + (double)getEyeHeight(), posZ, itemstack);
+        EntityItem entityitem = new EntityItem(worldObj, posX, (posY - 0.3D) + getEyeHeight(), posZ, itemstack);
         entityitem.delayBeforeCanPickup = 40;
         joinEntityItemWithWorld(entityitem);
     }
@@ -511,9 +525,9 @@ public class EntityFarmers extends EntityTameable
     @Deprecated
     public void facetoPath(int x, int y, int z, float f, float f1)
     {
-        double d = (double)x - posX;
-        double d2 = (double)z - posZ;
-        double d1 = (double)y - (posY + (double)getEyeHeight());
+        double d = x - posX;
+        double d2 = z - posZ;
+        double d1 = y - (posY + getEyeHeight());
 
         double d3 = MathHelper.sqrt_double(d * d + d2 * d2);
         float f2 = (float)((Math.atan2(d2, d) * 180D) / Math.PI) - 90F;
@@ -532,11 +546,11 @@ public class EntityFarmers extends EntityTameable
         if (par1Entity instanceof EntityLiving)
         {
             EntityLiving entityliving = (EntityLiving)par1Entity;
-            d1 = (posY + (double)getEyeHeight()) - (entityliving.posY + (double)entityliving.getEyeHeight());
+            d1 = (posY + getEyeHeight()) - (entityliving.posY + entityliving.getEyeHeight());
         }
         else
         {
-            d1 = (par1Entity.boundingBox.minY + par1Entity.boundingBox.maxY) / 2D - (posY + (double)getEyeHeight());
+            d1 = (par1Entity.boundingBox.minY + par1Entity.boundingBox.maxY) / 2D - (posY + getEyeHeight());
         }
 
         double d3 = MathHelper.sqrt_double(d * d + d2 * d2);
@@ -616,7 +630,7 @@ public class EntityFarmers extends EntityTameable
         }
         else
         {
-            myDBlock = (IInventory)tedenender;
+            myDBlock = tedenender;
             return true;
         }
     }
@@ -829,7 +843,7 @@ public class EntityFarmers extends EntityTameable
 	}
 
 	@Override
-	public EntityAgeable func_90011_a(EntityAgeable var1)
+	public EntityAgeable createChild(EntityAgeable var1)
 	{
 		return null;
 	}

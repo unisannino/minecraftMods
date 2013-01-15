@@ -1,6 +1,12 @@
 package unisannino.denenderman;
 
-import net.minecraft.src.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.monster.EntityBlaze;
+import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
 
 public class EntitySeedBullet extends EntityThrowable
 {
@@ -26,7 +32,8 @@ public class EntitySeedBullet extends EntityThrowable
         knockback = 0;
     }
 
-    public void onUpdate()
+    @Override
+	public void onUpdate()
     {
     	super.onUpdate();
     }
@@ -34,7 +41,8 @@ public class EntitySeedBullet extends EntityThrowable
     /**
      * Called when the throwable hits a block or entity.
      */
-    protected void onImpact(MovingObjectPosition par1MovingObjectPosition)
+    @Override
+	protected void onImpact(MovingObjectPosition par1MovingObjectPosition)
     {
         if (par1MovingObjectPosition.entityHit != null)
         {
@@ -47,7 +55,7 @@ public class EntitySeedBullet extends EntityThrowable
             	EntityLiving targetmob = (EntityLiving)par1MovingObjectPosition.entityHit;
             	targetmob.heal(0);
             }
-            if (!par1MovingObjectPosition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_85052_h()), damage));
+            if (!par1MovingObjectPosition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), damage));
         }
 
         if (knockback > 0)
@@ -56,7 +64,7 @@ public class EntitySeedBullet extends EntityThrowable
 
             if (f7 > 0.0F)
             {
-                par1MovingObjectPosition.entityHit.addVelocity((motionX * (double)knockback * 0.60000002384185791D) / (double)f7, 0.10000000000000001D, (motionZ * (double)knockback * 0.60000002384185791D) / (double)f7);
+                par1MovingObjectPosition.entityHit.addVelocity((motionX * knockback * 0.60000002384185791D) / f7, 0.10000000000000001D, (motionZ * knockback * 0.60000002384185791D) / f7);
             }
         }
 

@@ -2,7 +2,15 @@ package unisannino.denenderman;
 
 import java.util.Random;
 
-import net.minecraft.src.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.stats.StatList;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 
 public class BlockStarSandlayer extends Block
 {
@@ -14,13 +22,14 @@ public class BlockStarSandlayer extends Block
         rand = new Random();
     }
 
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int i, int j, int k)
+    @Override
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int i, int j, int k)
     {
         int l = world.getBlockMetadata(i, j, k) & 7;
 
         if (l >= 3)
         {
-            return AxisAlignedBB.getAABBPool().addOrModifyAABBInPool((double)i + minX, (double)j + minY, (double)k + minZ, (double)i + maxX, (float)j + 0.5F, (double)k + maxZ);
+            return AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(i + minX, j + minY, k + minZ, i + maxX, j + 0.5F, k + maxZ);
         }
         else
         {
@@ -28,36 +37,42 @@ public class BlockStarSandlayer extends Block
         }
     }
 
-    public int getRenderColor(int i)
+    @Override
+	public int getRenderColor(int i)
     {
         return 0x41cd34;
         //0xfcedba;
     }
 
-    public int colorMultiplier(IBlockAccess iblockaccess, int i, int j, int k)
+    @Override
+	public int colorMultiplier(IBlockAccess iblockaccess, int i, int j, int k)
     {
         return 0x41cd34;
         //0xfcedba;
     }
 
-    public boolean isOpaqueCube()
+    @Override
+	public boolean isOpaqueCube()
     {
         return false;
     }
 
-    public boolean renderAsNormalBlock()
+    @Override
+	public boolean renderAsNormalBlock()
     {
         return false;
     }
 
-    public void setBlockBoundsBasedOnState(IBlockAccess iblockaccess, int i, int j, int k)
+    @Override
+	public void setBlockBoundsBasedOnState(IBlockAccess iblockaccess, int i, int j, int k)
     {
         int l = iblockaccess.getBlockMetadata(i, j, k) & 7;
-        float f = (float)(2 * (1 + l)) / 16F;
+        float f = (2 * (1 + l)) / 16F;
         setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, f, 1.0F);
     }
 
-    public boolean canPlaceBlockAt(World world, int i, int j, int k)
+    @Override
+	public boolean canPlaceBlockAt(World world, int i, int j, int k)
     {
         int l = world.getBlockId(i, j - 1, k);
 
@@ -71,7 +86,8 @@ public class BlockStarSandlayer extends Block
         }
     }
 
-    public void onNeighborBlockChange(World world, int i, int j, int k, int l)
+    @Override
+	public void onNeighborBlockChange(World world, int i, int j, int k, int l)
     {
         func_314_h(world, i, j, k);
 
@@ -94,36 +110,41 @@ public class BlockStarSandlayer extends Block
         }
     }
 
-    public void harvestBlock(World world, EntityPlayer entityplayer, int i, int j, int k, int l)
+    @Override
+	public void harvestBlock(World world, EntityPlayer entityplayer, int i, int j, int k, int l)
     {
-        int i1 = Mod_DenEnderman_Core.starPowder.shiftedIndex;
+        int i1 = Mod_DenEnderman_Core.starPowder.itemID;
         float f = 0.7F;
-        double d = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-        double d1 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-        double d2 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-        EntityItem entityitem = new EntityItem(world, (double)i + d, (double)j + d1, (double)k + d2, new ItemStack(i1, 1, 0));
+        double d = (world.rand.nextFloat() * f) + (1.0F - f) * 0.5D;
+        double d1 = (world.rand.nextFloat() * f) + (1.0F - f) * 0.5D;
+        double d2 = (world.rand.nextFloat() * f) + (1.0F - f) * 0.5D;
+        EntityItem entityitem = new EntityItem(world, i + d, j + d1, k + d2, new ItemStack(i1, 1, 0));
         entityitem.delayBeforeCanPickup = 10;
         world.spawnEntityInWorld(entityitem);
         world.setBlockWithNotify(i, j, k, 0);
         entityplayer.addStat(StatList.mineBlockStatArray[blockID], 1);
     }
 
-    public int idDropped(int i, Random random, int j)
+    @Override
+	public int idDropped(int i, Random random, int j)
     {
-        return Mod_DenEnderman_Core.starPowder.shiftedIndex;
+        return Mod_DenEnderman_Core.starPowder.itemID;
     }
 
-    public int quantityDropped(Random random)
+    @Override
+	public int quantityDropped(Random random)
     {
         return 0;
     }
 
-    public void updateTick(World world, int i, int j, int k, Random random)
+    @Override
+	public void updateTick(World world, int i, int j, int k, Random random)
     {
         world.setBlockWithNotify(i, j, k, 0);
     }
 
-    public boolean shouldSideBeRendered(IBlockAccess iblockaccess, int i, int j, int k, int l)
+    @Override
+	public boolean shouldSideBeRendered(IBlockAccess iblockaccess, int i, int j, int k, int l)
     {
         if (l == 1)
         {

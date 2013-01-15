@@ -4,7 +4,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.src.*;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.pathfinding.PathEntity;
 
 public class EntityAINearestTargetItems extends EntityAIBase
 {
@@ -29,7 +31,7 @@ public class EntityAINearestTargetItems extends EntityAIBase
     {
         if (this.theOwner.inventory.getFirstEmptyStack() > -1)
         {
-            List var1 = this.theOwner.worldObj.getEntitiesWithinAABB(net.minecraft.src.EntityItem.class, this.theOwner.boundingBox.expand(8F, 2D, 8F));
+            List var1 = this.theOwner.worldObj.getEntitiesWithinAABB(EntityItem.class, this.theOwner.boundingBox.expand(8F, 2D, 8F));
             Collections.sort(var1, this.sorter);
             Iterator var2 = var1.iterator();
 
@@ -44,7 +46,7 @@ public class EntityAINearestTargetItems extends EntityAIBase
                  */
                 if (!var4.isDead && var4.onGround && var4.delayBeforeCanPickup <= 0/* && this.theOwner.canEntityItemBeSeen(var4)*/)
                 {
-                    if (this.theOwner.checkItemID(var4.item.itemID) || this.theOwner instanceof EntityUniuni)
+                    if (this.theOwner.checkItemID(var4.func_92014_d().itemID) || this.theOwner instanceof EntityUniuni)
                     {
                     	this.targetEntity = var4;
                         return true;

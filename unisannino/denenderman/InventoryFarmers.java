@@ -1,9 +1,16 @@
 package unisannino.denenderman;
 
-import net.minecraft.src.*;
-
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class InventoryFarmers implements IInventory
 {
@@ -182,7 +189,7 @@ public class InventoryFarmers implements IInventory
     {
         if (par1Item != null)
         {
-            int var3 = this.getInventorySlotContainItemAndDamage(par1Item.shiftedIndex, par2);
+            int var3 = this.getInventorySlotContainItemAndDamage(par1Item.itemID, par2);
 
             if (var3 >= 0)
             {
@@ -194,7 +201,7 @@ public class InventoryFarmers implements IInventory
                 return;
             }
 
-            this.mainInventory[this.currentItem] = new ItemStack(Item.itemsList[par1Item.shiftedIndex], 1, par2);
+            this.mainInventory[this.currentItem] = new ItemStack(Item.itemsList[par1Item.itemID], 1, par2);
         }
     }
 
@@ -363,7 +370,8 @@ public class InventoryFarmers implements IInventory
      * Removes from an inventory slot (first arg) up to a specified number (second arg) of items and returns them in a
      * new stack.
      */
-    public ItemStack decrStackSize(int par1, int par2)
+    @Override
+	public ItemStack decrStackSize(int par1, int par2)
     {
         ItemStack[] var3 = this.mainInventory;
 
@@ -404,7 +412,8 @@ public class InventoryFarmers implements IInventory
      * When some containers are closed they call this on each slot, then drop whatever it returns as an EntityItem -
      * like when you close a workbench GUI.
      */
-    public ItemStack getStackInSlotOnClosing(int par1)
+    @Override
+	public ItemStack getStackInSlotOnClosing(int par1)
     {
         ItemStack[] var2 = this.mainInventory;
 
@@ -428,7 +437,8 @@ public class InventoryFarmers implements IInventory
     /**
      * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
      */
-    public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
+    @Override
+	public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
     {
         ItemStack[] var3 = this.mainInventory;
 
@@ -504,7 +514,8 @@ public class InventoryFarmers implements IInventory
     /**
      * Returns the number of slots in the inventory.
      */
-    public int getSizeInventory()
+    @Override
+	public int getSizeInventory()
     {
         return this.mainInventory.length + 4;
     }
@@ -512,7 +523,8 @@ public class InventoryFarmers implements IInventory
     /**
      * Returns the stack in slot i
      */
-    public ItemStack getStackInSlot(int par1)
+    @Override
+	public ItemStack getStackInSlot(int par1)
     {
         ItemStack[] var2 = this.mainInventory;
 
@@ -527,7 +539,8 @@ public class InventoryFarmers implements IInventory
     /**
      * Returns the name of the inventory.
      */
-    public String getInvName()
+    @Override
+	public String getInvName()
     {
         return "container.inventory";
     }
@@ -536,7 +549,8 @@ public class InventoryFarmers implements IInventory
      * Returns the maximum stack size for a inventory slot. Seems to always be 64, possibly will be extended. *Isn't
      * this more of a set than a get?*
      */
-    public int getInventoryStackLimit()
+    @Override
+	public int getInventoryStackLimit()
     {
         return 64;
     }
@@ -550,21 +564,6 @@ public class InventoryFarmers implements IInventory
         return var2 != null ? var2.getDamageVsEntity(par1Entity) : 1;
     }
 
-    /**
-     * Returns whether the current item (tool) can harvest from the specified block (actually get a result).
-     */
-    public boolean canHarvestBlock(Block par1Block)
-    {
-        if (par1Block.blockMaterial.isHarvestable())
-        {
-            return true;
-        }
-        else
-        {
-            ItemStack var2 = this.getStackInSlot(this.currentItem);
-            return var2 != null ? var2.canHarvestBlock(par1Block) : false;
-        }
-    }
 
     /**
      * Drop all armor and main inventory items.
@@ -586,7 +585,8 @@ public class InventoryFarmers implements IInventory
     /**
      * Called when an the contents of an Inventory change, usually
      */
-    public void onInventoryChanged()
+    @Override
+	public void onInventoryChanged()
     {
         this.inventoryChanged = true;
     }
@@ -604,7 +604,8 @@ public class InventoryFarmers implements IInventory
     /**
      * Do not make give this method the name canInteractWith because it clashes with Container
      */
-    public boolean isUseableByPlayer(EntityPlayer par1EntityPlayer)
+    @Override
+	public boolean isUseableByPlayer(EntityPlayer par1EntityPlayer)
     {
         return this.farmer.isDead ? false : par1EntityPlayer.getDistanceSqToEntity(this.farmer) <= 64.0D;
     }
@@ -632,9 +633,11 @@ public class InventoryFarmers implements IInventory
         return false;
     }
 
-    public void openChest() {}
+    @Override
+	public void openChest() {}
 
-    public void closeChest() {}
+    @Override
+	public void closeChest() {}
 
     /**
      * Copy the ItemStack contents from another InventoryPlayer instance

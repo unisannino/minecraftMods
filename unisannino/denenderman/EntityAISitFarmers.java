@@ -1,6 +1,7 @@
 package unisannino.denenderman;
 
-import net.minecraft.src.*;
+import net.minecraft.entity.ai.EntityAISit;
+import net.minecraft.entity.passive.EntityTameable;
 
 public class EntityAISitFarmers extends EntityAISit
 {
@@ -19,7 +20,8 @@ public class EntityAISitFarmers extends EntityAISit
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
-    public boolean shouldExecute()
+    @Override
+	public boolean shouldExecute()
     {
         if (!this.theEntity.isTamed())
         {
@@ -42,7 +44,8 @@ public class EntityAISitFarmers extends EntityAISit
     /**
      * Execute a one shot task or start executing a continuous task
      */
-    public void startExecuting()
+    @Override
+	public void startExecuting()
     {
         this.theEntity.getNavigator().clearPathEntity();
         this.theEntity.setSitting(true);
@@ -51,7 +54,8 @@ public class EntityAISitFarmers extends EntityAISit
     /**
      * Resets the task
      */
-    public void resetTask()
+    @Override
+	public void resetTask()
     {
         this.theEntity.setSitting(false);
     }
@@ -59,7 +63,8 @@ public class EntityAISitFarmers extends EntityAISit
     /**
      * Sets the sitting flag.
      */
-    public void setSitting(boolean par1)
+    @Override
+	public void setSitting(boolean par1)
     {
         this.isSitting = par1;
     }

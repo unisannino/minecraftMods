@@ -1,30 +1,29 @@
 package unisannino.denenderman;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import java.util.logging.Level;
 
-import net.minecraft.src.*;
-import net.minecraft.src.Block;
-import net.minecraft.src.Item;
-import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
-
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.Mod.*;
-import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.*;
+import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "D.Enderman_unisannino", name = "Den-Endermans", version = "ver 2.1.0")
+@Mod(modid = "D.Enderman_unisannino", name = "Den-Endermans", version = "ver 2.2.0")
 @NetworkMod(channels = {"DenEnderman", "SeedBullet"}, packetHandler = Mod_DenEnderman_Packet.class , clientSideRequired = true, serverSideRequired = false)
 public class Mod_DenEnderman_Core
 {
@@ -111,6 +110,7 @@ public class Mod_DenEnderman_Core
 		{
 			conf.load();
 
+
 			denenblockID = conf.get("DenEnderBlockID", Configuration.CATEGORY_BLOCK, 161).getInt();
 			lavenderID = conf.get("LavenderID", Configuration.CATEGORY_BLOCK, 162).getInt();
 			starSandID = conf.get("StarSandID", Configuration.CATEGORY_BLOCK, 163).getInt();
@@ -139,8 +139,8 @@ public class Mod_DenEnderman_Core
 			geneMelonsP.comment = "If you choose true, generate melons on surface of ground";
 			geneMelons = geneMelonsP.getBoolean(true);
 
-			Property canTouchOwnerOnlyP = conf.get("canTouch", Configuration.CATEGORY_GENERAL, true);
-			geneMelonsP.comment = "If you choose true, DenEndermans no longer touch without owner";
+			Property canTouchOwnerOnlyP = conf.get("canTouch", Configuration.CATEGORY_GENERAL, false);
+			canTouchOwnerOnlyP.comment = "If you choose true, DenEndermans no longer touch without owner";
 			canTouchOwnerOnly = canTouchOwnerOnlyP.getBoolean(false);
 			/*
 			@MLProp(info = "If you choose \"true\", Treeper break leaves around logs.(it is coarse processing)")
@@ -205,9 +205,9 @@ public class Mod_DenEnderman_Core
 		lavender = new BlockFlowerForge(lid, Ltex).setHardness(0.0F).setStepSound(Block.soundGrassFootstep).setBlockName("lavender");
 		starSand = new BlockStarSandlayer(ssid, 18).setHardness(0.1F).setStepSound(Block.soundSandFootstep).setBlockName("layeredsand").setLightOpacity(0);
 
-		GameRegistry.registerBlock(denenderBlock);
-		GameRegistry.registerBlock(lavender);
-		GameRegistry.registerBlock(starSand);
+		GameRegistry.registerBlock(denenderBlock, "DenEnder Block");
+		GameRegistry.registerBlock(lavender, "Lavender");
+		GameRegistry.registerBlock(starSand, "Uni Sand");
 		LanguageRegistry.addName(denenderBlock, "DenEnder Block");
 		LanguageRegistry.addName(lavender, "Lavender");
 		LanguageRegistry.addName(starSand, "Uni Sand");
@@ -334,7 +334,7 @@ public class Mod_DenEnderman_Core
 					'S', Item.silk, 'L', Item.leather,
 					'B', Item.stick,
 				});
-		GameRegistry.addSmelting(this.starPowder.shiftedIndex, new ItemStack(Block.sand), 0.1F);
+		GameRegistry.addSmelting(this.starPowder.itemID, new ItemStack(Block.sand), 0.1F);
 		GameRegistry.addSmelting(this.lavender.blockID, new ItemStack(Item.dyePowder, 2, 5), 0.7F);
 	}
 }

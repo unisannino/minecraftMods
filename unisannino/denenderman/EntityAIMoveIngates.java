@@ -1,6 +1,10 @@
 package unisannino.denenderman;
 
-import net.minecraft.src.*;
+import net.minecraft.block.Block;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 
 public class EntityAIMoveIngates extends EntityAIBase
 {
@@ -33,7 +37,7 @@ public class EntityAIMoveIngates extends EntityAIBase
                     return false;
                 }
                 else */
-                if (this.insidePosX != -1 && this.theFarmers.getDistanceSq((double)this.insidePosX, this.theFarmers.posY, (double)this.insidePosZ) < 4.0D)
+                if (this.insidePosX != -1 && this.theFarmers.getDistanceSq(this.insidePosX, this.theFarmers.posY, this.insidePosZ) < 4.0D)
                 {
                     return false;
                 }
@@ -72,9 +76,9 @@ public class EntityAIMoveIngates extends EntityAIBase
         {
         	this.theFarmers.setDEHomePos(this.theFarmers.posX, this.theFarmers.posY, this.theFarmers.posZ);
 
-            if (this.theFarmers.getDistanceSq((double)this.gateInfo.getInsidePosX(), (double)this.gateInfo.posY, (double)this.gateInfo.getInsidePosZ()) > 256.0D)
+            if (this.theFarmers.getDistanceSq(this.gateInfo.getInsidePosX(), this.gateInfo.posY, this.gateInfo.getInsidePosZ()) > 256.0D)
             {
-                Vec3 var1 = RandomPositionGenerator.findRandomTargetBlockTowards(this.theFarmers, 14, 3, this.theFarmers.worldObj.getWorldVec3Pool().getVecFromPool((double)this.gateInfo.getInsidePosX() + 0.5D, (double)this.gateInfo.getInsidePosY(), (double)this.gateInfo.getInsidePosZ() + 0.5D));
+                Vec3 var1 = RandomPositionGenerator.findRandomTargetBlockTowards(this.theFarmers, 14, 3, this.theFarmers.worldObj.getWorldVec3Pool().getVecFromPool(this.gateInfo.getInsidePosX() + 0.5D, this.gateInfo.getInsidePosY(), this.gateInfo.getInsidePosZ() + 0.5D));
 
                 if (var1 != null)
                 {
@@ -88,7 +92,7 @@ public class EntityAIMoveIngates extends EntityAIBase
             else
             {
                //this.entityObj.getNavigator().tryMoveToXYZ((double)this.gateInfo.getInsidePosX() + 0.5D, (double)this.gateInfo.getInsidePosY(), (double)this.gateInfo.getInsidePosZ() + 0.5D, 0.3F);
-               if(this.teleportTo((double)this.gateInfo.getInsidePosX() + 0.5D, (double)this.gateInfo.getInsidePosY(), (double)this.gateInfo.getInsidePosZ() + 0.5D))
+               if(this.teleportTo(this.gateInfo.getInsidePosX() + 0.5D, this.gateInfo.getInsidePosY(), this.gateInfo.getInsidePosZ() + 0.5D))
                {
             	   this.theFarmers.homePos.isinHome = true;
                }
@@ -176,14 +180,14 @@ public class EntityAIMoveIngates extends EntityAIBase
 
                 for (var18 = 0; var18 < var30; ++var18)
                 {
-                    double var19 = (double)var18 / ((double)var30 - 1.0D);
+                    double var19 = var18 / (var30 - 1.0D);
                     float var21 = (this.theFarmers.getRNG().nextFloat() - 0.5F) * 0.2F;
                     float var22 = (this.theFarmers.getRNG().nextFloat() - 0.5F) * 0.2F;
                     float var23 = (this.theFarmers.getRNG().nextFloat() - 0.5F) * 0.2F;
-                    double var24 = var7 + (this.theFarmers.posX - var7) * var19 + (this.theFarmers.getRNG().nextDouble() - 0.5D) * (double)this.theFarmers.width * 2.0D;
-                    double var26 = var9 + (this.theFarmers.posY - var9) * var19 + this.theFarmers.getRNG().nextDouble() * (double)this.theFarmers.height;
-                    double var28 = var11 + (this.theFarmers.posZ - var11) * var19 + (this.theFarmers.getRNG().nextDouble() - 0.5D) * (double)this.theFarmers.width * 2.0D;
-                    this.theFarmers.worldObj.spawnParticle("portal", var24, var26, var28, (double)var21, (double)var22, (double)var23);
+                    double var24 = var7 + (this.theFarmers.posX - var7) * var19 + (this.theFarmers.getRNG().nextDouble() - 0.5D) * this.theFarmers.width * 2.0D;
+                    double var26 = var9 + (this.theFarmers.posY - var9) * var19 + this.theFarmers.getRNG().nextDouble() * this.theFarmers.height;
+                    double var28 = var11 + (this.theFarmers.posZ - var11) * var19 + (this.theFarmers.getRNG().nextDouble() - 0.5D) * this.theFarmers.width * 2.0D;
+                    this.theFarmers.worldObj.spawnParticle("portal", var24, var26, var28, var21, var22, var23);
                 }
         	}
 

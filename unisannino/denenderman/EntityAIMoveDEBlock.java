@@ -1,26 +1,16 @@
 package unisannino.denenderman;
 
-import java.util.*;
-
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import java.util.Random;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.Block;
-import net.minecraft.src.EntityAIBase;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemSeeds;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.MathHelper;
-import net.minecraft.src.ModLoader;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.Vec3;
-import net.minecraft.src.World;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import cpw.mods.fml.client.FMLClientHandler;
 
 public class EntityAIMoveDEBlock extends EntityAIBase
 {
-
     private EntityFarmers theFarmers;
     private double blockPosX;
     private double blockPosY;
@@ -86,9 +76,9 @@ public class EntityAIMoveDEBlock extends EntityAIBase
 
         for (int var2 = 0; var2 < 10; ++var2)
         {
-            int var3 = MathHelper.floor_double(this.theFarmers.posX + (double)var1.nextInt(20) - 10.0D);
-            int var4 = MathHelper.floor_double(this.theFarmers.boundingBox.minY + (double)var1.nextInt(6) - 3.0D);
-            int var5 = MathHelper.floor_double(this.theFarmers.posZ + (double)var1.nextInt(20) - 10.0D);
+            int var3 = MathHelper.floor_double(this.theFarmers.posX + var1.nextInt(20) - 10.0D);
+            int var4 = MathHelper.floor_double(this.theFarmers.boundingBox.minY + var1.nextInt(6) - 3.0D);
+            int var5 = MathHelper.floor_double(this.theFarmers.posZ + var1.nextInt(20) - 10.0D);
 
             if (this.theWorld.getBlockId(var3, var4, var5) == Mod_DenEnderman_Core.denenderBlock.blockID)
             {

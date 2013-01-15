@@ -1,14 +1,28 @@
 package unisannino.denenderman;
 
 import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
-import net.minecraft.src.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockCrops;
+import net.minecraft.block.BlockFlower;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIMoveTwardsRestriction;
+import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityAITempt;
+import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemSeeds;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntityDenEnderman extends EntityFarmers
 {
@@ -47,18 +61,18 @@ public class EntityDenEnderman extends EntityFarmers
 
         favoriteItem = Mod_DenEnderman_Core.lavender.blockID;
         this.likeItem = Mod_DenEnderman_Core.lavender.blockID;
-        this.funcItem = Item.potatoe.shiftedIndex;
+        this.funcItem = Item.potato.itemID;
 
-        setcanPickup(0, Item.wheat.shiftedIndex);
-        setcanPickup(1, Item.seeds.shiftedIndex);
-        setcanPickup(2, Item.melon.shiftedIndex);
+        setcanPickup(0, Item.wheat.itemID);
+        setcanPickup(1, Item.seeds.itemID);
+        setcanPickup(2, Item.melon.itemID);
         setcanPickup(3, Block.pumpkin.blockID);
-        setcanPickup(4, Item.melonSeeds.shiftedIndex);
-        setcanPickup(5, Item.pumpkinSeeds.shiftedIndex);
+        setcanPickup(4, Item.melonSeeds.itemID);
+        setcanPickup(5, Item.pumpkinSeeds.itemID);
         setcanPickup(6, Mod_DenEnderman_Core.lavender.blockID);
 
-        setcantPutItem(0, Item.seeds.shiftedIndex);
-        setcantPutItem(1, Item.dyePowder.shiftedIndex);
+        setcantPutItem(0, Item.seeds.itemID);
+        setcantPutItem(1, Item.dyePowder.itemID);
 
         this.randomTickDivider = 0;
         this.hervestSeed = false;
@@ -155,7 +169,7 @@ public class EntityDenEnderman extends EntityFarmers
 
         for (int k = 0; k < 2; k++)
         {
-            worldObj.spawnParticle("reddust", posX + (rand.nextDouble() - 0.5D) * (double)width, (posY + rand.nextDouble() * (double)height) - 0.25D, posZ + (rand.nextDouble() - 0.5D) * (double)width, 2.0D, 200.0D, 00D);
+            worldObj.spawnParticle("reddust", posX + (rand.nextDouble() - 0.5D) * width, (posY + rand.nextDouble() * height) - 0.25D, posZ + (rand.nextDouble() - 0.5D) * width, 2.0D, 200.0D, 00D);
         }
     }
 
@@ -269,7 +283,7 @@ public class EntityDenEnderman extends EntityFarmers
     @Override
     protected int getDropItemId()
     {
-        return Mod_DenEnderman_Core.denEnderPearl.shiftedIndex;
+        return Mod_DenEnderman_Core.denEnderPearl.itemID;
     }
 
     /*

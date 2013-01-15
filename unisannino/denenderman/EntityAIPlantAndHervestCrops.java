@@ -2,9 +2,18 @@ package unisannino.denenderman;
 
 import java.util.Random;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockCrops;
+import net.minecraft.block.StepSound;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemDye;
+import net.minecraft.item.ItemSeedFood;
+import net.minecraft.item.ItemSeeds;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import net.minecraft.src.*;
-import net.minecraftforge.common.ForgeDirection;
 
 public class EntityAIPlantAndHervestCrops extends EntityAIBase
 {
@@ -235,7 +244,7 @@ public class EntityAIPlantAndHervestCrops extends EntityAIBase
 							if(obj instanceof ItemSeeds)
 							{
 								seeds = (ItemSeeds)obj;
-								if(seeds.shiftedIndex == Item.pumpkinSeeds.shiftedIndex || seeds.shiftedIndex == Item.melonSeeds.shiftedIndex)
+								if(seeds.itemID == Item.pumpkinSeeds.itemID || seeds.itemID == Item.melonSeeds.itemID)
 								{
 									continue;
 								}
@@ -316,7 +325,7 @@ public class EntityAIPlantAndHervestCrops extends EntityAIBase
             //骨粉ばらまき
             if (onFarmland == Block.crops.blockID && l4 < 7)
             {
-            	if(this.theFarmers.inventory.consumeInventoryItem(Item.dyePowder.shiftedIndex, 15))
+            	if(this.theFarmers.inventory.consumeInventoryItem(Item.dyePowder.itemID, 15))
             	{
                 	//this.theFarmers.facetoPath(fposX, fposYup, fposZ, 100F, 100F);
         			this.theFarmers.getLookHelper().setLookPosition(fposX, fposYup, fposZ, 100F, 100F);
@@ -334,7 +343,7 @@ public class EntityAIPlantAndHervestCrops extends EntityAIBase
             {
                 if (l13 == Block.grass.blockID && l15 == 0)
                 {
-                    if (this.theFarmers.inventory.consumeInventoryItem(Mod_DenEnderman_Core.farmerSeeds.shiftedIndex))
+                    if (this.theFarmers.inventory.consumeInventoryItem(Mod_DenEnderman_Core.farmerSeeds.itemID))
                     {
                     	//this.theFarmers.facetoPath(fposX, l14, fposZ, 100F, 100F);
                         StepSound stepsound1 = Block.plantRed.stepSound;

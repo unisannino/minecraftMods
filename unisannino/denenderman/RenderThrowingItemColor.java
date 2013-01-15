@@ -1,11 +1,14 @@
 package unisannino.denenderman;
 
-import net.minecraft.src.*;
+import net.minecraft.client.renderer.entity.RenderSnowball;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderThrowingItemColor extends RenderSnowball
@@ -30,9 +33,9 @@ public class RenderThrowingItemColor extends RenderSnowball
         */
         int k1 = Item.itemsList[colorItem.itemID].getColorFromItemStack(this.colorItem, 0);
         float f3 = 1.0F;
-        float f9 = (float)(k1 >> 16 & 0xff) / 255F;
-        float f12 = (float)(k1 >> 8 & 0xff) / 255F;
-        float f14 = (float)(k1 & 0xff) / 255F;
+        float f9 = (k1 >> 16 & 0xff) / 255F;
+        float f12 = (k1 >> 8 & 0xff) / 255F;
+        float f14 = (k1 & 0xff) / 255F;
         GL11.glColor4f(f9 * f3, f12 * f3, f14 * f3, 1.0F);
         super.doRender(entity, d, d1, d2, f, f1);
     }

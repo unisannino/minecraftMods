@@ -1,6 +1,7 @@
 package unisannino.denenderman;
 
-import net.minecraft.src.*;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 public class SlotDenEnder extends Slot
 {

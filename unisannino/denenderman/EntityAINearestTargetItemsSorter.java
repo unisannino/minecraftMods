@@ -2,7 +2,7 @@ package unisannino.denenderman;
 
 import java.util.Comparator;
 
-import net.minecraft.src.Entity;
+import net.minecraft.entity.Entity;
 
 public class EntityAINearestTargetItemsSorter implements Comparator
 {
@@ -23,7 +23,8 @@ public class EntityAINearestTargetItemsSorter implements Comparator
         return var3 < var5 ? -1 : (var3 > var5 ? 1 : 0);
     }
 
-    public int compare(Object par1Obj, Object par2Obj)
+    @Override
+	public int compare(Object par1Obj, Object par2Obj)
     {
         return this.func_48469_a((Entity)par1Obj, (Entity)par2Obj);
     }

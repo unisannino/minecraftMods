@@ -1,8 +1,14 @@
 package unisannino.denenderman;
 
 import java.util.Random;
-import net.minecraft.src.*;
-import net.minecraftforge.common.ForgeDirection;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockSapling;
+import net.minecraft.block.StepSound;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 
 public class EntityAICuttingAndPlanting extends EntityAIBase
 {
@@ -84,7 +90,7 @@ public class EntityAICuttingAndPlanting extends EntityAIBase
 			if (this.theFarmers.underWoodBlock(this.theWorld, x, y, z) && this.theFarmers.checkTopOfLogs(this.theWorld, x, y, z) && this.theFarmers.checkIsLogs(this.theWorld, x, y, z))
 			{
 				this.theWorld.createExplosion(this.theFarmers, x, y, z, 0F, true);
-				this.theFarmers.getLookHelper().setLookPosition(x, y, z, 10.0F, (float)this.theFarmers.getVerticalFaceSpeed());
+				this.theFarmers.getLookHelper().setLookPosition(x, y, z, 10.0F, this.theFarmers.getVerticalFaceSpeed());
 				this.cutting(x, y, z, targetid, targetmeta);
 			}
 		}
@@ -162,7 +168,7 @@ public class EntityAICuttingAndPlanting extends EntityAIBase
 					{
 						this.theWorld.setBlockAndMetadataWithNotify(fposX, fposY + h + 1, fposZ, itemstack.itemID, itemstack.getItemDamage());
 						StepSound stepsound = Block.sapling.stepSound;
-						this.theFarmers.getLookHelper().setLookPosition(fposX, fposYup, fposZ, 10.0F, (float)this.theFarmers.getVerticalFaceSpeed());
+						this.theFarmers.getLookHelper().setLookPosition(fposX, fposYup, fposZ, 10.0F, this.theFarmers.getVerticalFaceSpeed());
 						this.theWorld.playSoundAtEntity(this.theFarmers, stepsound.getStepSound(), stepsound.getPitch(), stepsound.getPitch());
 						break;
 					}

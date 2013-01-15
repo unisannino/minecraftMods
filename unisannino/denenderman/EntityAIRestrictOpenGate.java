@@ -1,6 +1,8 @@
 package unisannino.denenderman;
 
-import net.minecraft.src.*;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.util.MathHelper;
 
 public class EntityAIRestrictOpenGate extends EntityAIBase
 {

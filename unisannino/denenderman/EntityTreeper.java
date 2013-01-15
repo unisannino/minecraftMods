@@ -1,10 +1,27 @@
 package unisannino.denenderman;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import net.minecraft.src.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockFlower;
+import net.minecraft.block.BlockSapling;
+import net.minecraft.block.StepSound;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIMoveTwardsRestriction;
+import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityAITempt;
+import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemSeeds;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 
 public class EntityTreeper extends EntityFarmers
@@ -25,15 +42,15 @@ public class EntityTreeper extends EntityFarmers
         moveSpeed = 0.28F;
 
 		favoriteItem = Mod_DenEnderman_Core.lavender.blockID;
-		likeItem = Item.appleRed.shiftedIndex;
-		this.funcItem = Item.gunpowder.shiftedIndex;
+		likeItem = Item.appleRed.itemID;
+		this.funcItem = Item.gunpowder.itemID;
 
 		setcanPickup(0, Block.wood.blockID);
 		setcanPickup(1, Block.sapling.blockID);
-		setcanPickup(2, Item.appleRed.shiftedIndex);
+		setcanPickup(2, Item.appleRed.itemID);
 		setcanPickup(3, Block.leaves.blockID);
 		setcanPickup(4, Mod_DenEnderman_Core.lavender.blockID);
-		setcanPickup(5, Item.shears.shiftedIndex);
+		setcanPickup(5, Item.shears.itemID);
 
 		setLeavesType();
 
@@ -198,7 +215,7 @@ public class EntityTreeper extends EntityFarmers
 
 	protected int getDropItemId()
 	{
-		return Mod_DenEnderman_Core.treeperSeed.shiftedIndex;
+		return Mod_DenEnderman_Core.treeperSeed.itemID;
 	}
 
     private void destroyBlocksInAABB(AxisAlignedBB par1AxisAlignedBB)
@@ -240,9 +257,9 @@ public class EntityTreeper extends EntityFarmers
         						{
         							for(ItemStack sheared : target.onSheared(item, this.worldObj, x, y, z, 0))
         							{
-        		                    	if(inventory.getInventorySlotContainItem(Item.shears.shiftedIndex) > -1 && inventory.addItemStackToInventory(sheared))
+        		                    	if(inventory.getInventorySlotContainItem(Item.shears.itemID) > -1 && inventory.addItemStackToInventory(sheared))
         		                    	{
-        		                    		inventory.mainInventory[inventory.getInventorySlotContainItem(Item.shears.shiftedIndex)].damageItem(1, this);
+        		                    		inventory.mainInventory[inventory.getInventorySlotContainItem(Item.shears.itemID)].damageItem(1, this);
         		                    	}
         							}
         						}

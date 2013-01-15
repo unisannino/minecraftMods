@@ -1,9 +1,14 @@
 package unisannino.denenderman;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
-import net.minecraft.src.*;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 @Deprecated
 public class EntityAIPutDEBlock_Sort extends EntityAIBase

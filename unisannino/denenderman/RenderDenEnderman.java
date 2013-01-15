@@ -2,13 +2,13 @@ package unisannino.denenderman;
 
 import java.util.Random;
 
-import net.minecraft.src.*;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderDenEnderman extends RenderLiving
@@ -49,24 +49,28 @@ public class RenderDenEnderman extends RenderLiving
     }
 
 
-    protected int shouldRenderPass(EntityLiving entityliving, int i, float f)
+    @Override
+	protected int shouldRenderPass(EntityLiving entityliving, int i, float f)
     {
         return super.shouldRenderPass(entityliving, i, f);
         //return renderHats((EntityDenEnderman)entityliving, i, f);
     }
 
-    protected void renderEquippedItems(EntityLiving entityliving, float f)
+    @Override
+	protected void renderEquippedItems(EntityLiving entityliving, float f)
     {
         renderCarrying((EntityDenEnderman)entityliving, f);
     }
 
-    public void doRenderLiving(EntityLiving entityliving, double d, double d1, double d2,
+    @Override
+	public void doRenderLiving(EntityLiving entityliving, double d, double d1, double d2,
             float f, float f1)
     {
         renderEnderman((EntityDenEnderman)entityliving, d, d1, d2, f, f1);
     }
 
-    public void doRender(Entity entity, double d, double d1, double d2,
+    @Override
+	public void doRender(Entity entity, double d, double d1, double d2,
             float f, float f1)
     {
         renderEnderman((EntityDenEnderman)entity, d, d1, d2, f, f1);

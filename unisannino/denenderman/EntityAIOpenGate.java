@@ -1,6 +1,6 @@
 package unisannino.denenderman;
 
-import net.minecraft.src.*;
+import net.minecraft.entity.EntityLiving;
 
 public class EntityAIOpenGate extends EntityAIGateInteract
 {
@@ -17,7 +17,8 @@ public class EntityAIOpenGate extends EntityAIGateInteract
     /**
      * Returns whether an in-progress EntityAIBase should continue executing
      */
-    public boolean continueExecuting()
+    @Override
+	public boolean continueExecuting()
     {
         return this.field_75361_i && this.field_75360_j > 0 && super.continueExecuting();
     }
@@ -25,7 +26,8 @@ public class EntityAIOpenGate extends EntityAIGateInteract
     /**
      * Execute a one shot task or start executing a continuous task
      */
-    public void startExecuting()
+    @Override
+	public void startExecuting()
     {
     	//System.out.println("start");
         this.field_75360_j = 20;
@@ -47,7 +49,8 @@ public class EntityAIOpenGate extends EntityAIGateInteract
     /**
      * Updates the task
      */
-    public void updateTask()
+    @Override
+	public void updateTask()
     {
         --this.field_75360_j;
         super.updateTask();

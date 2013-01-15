@@ -1,12 +1,15 @@
 package unisannino.denenderman;
 
-import net.minecraft.src.*;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderSeedBullet extends Render
@@ -64,10 +67,10 @@ public class RenderSeedBullet extends Render
 
     private void func_40265_a(Tessellator par1Tessellator, int par2)
     {
-        float f = (float)((par2 % 16) * 16 + 0) / 256F;
-        float f1 = (float)((par2 % 16) * 16 + 16) / 256F;
-        float f2 = (float)((par2 / 16) * 16 + 0) / 256F;
-        float f3 = (float)((par2 / 16) * 16 + 16) / 256F;
+        float f = ((par2 % 16) * 16 + 0) / 256F;
+        float f1 = ((par2 % 16) * 16 + 16) / 256F;
+        float f2 = ((par2 / 16) * 16 + 0) / 256F;
+        float f3 = ((par2 / 16) * 16 + 16) / 256F;
         float f4 = 1.0F;
         float f5 = 0.5F;
         float f6 = 0.25F;

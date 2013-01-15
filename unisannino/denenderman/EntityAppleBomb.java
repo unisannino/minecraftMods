@@ -1,8 +1,16 @@
 package unisannino.denenderman;
 
 import java.util.List;
-import java.util.Random;
-import net.minecraft.src.*;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 
 public class EntityAppleBomb extends EntityThrowable
 {
@@ -21,7 +29,8 @@ public class EntityAppleBomb extends EntityThrowable
         super(world, d, d1, d2);
     }
 
-    public void onUpdate()
+    @Override
+	public void onUpdate()
     {
         float f1 = 0.25F;
 
@@ -29,7 +38,7 @@ public class EntityAppleBomb extends EntityThrowable
         {
             for (int i = 0; i < 4; i++)
             {
-                worldObj.spawnParticle("bubble", posX - motionX * (double)f1, posY - motionY * (double)f1, posZ - motionZ * (double)f1, motionX, motionY, motionZ);
+                worldObj.spawnParticle("bubble", posX - motionX * f1, posY - motionY * f1, posZ - motionZ * f1, motionX, motionY, motionZ);
             }
             setDead();
         	worldObj.playSoundAtEntity(this, "random.fizz", 0.7F, 1.6F + (rand.nextFloat() - rand.nextFloat()) * 0.4F);
@@ -44,11 +53,7 @@ public class EntityAppleBomb extends EntityThrowable
         {
             if (movingobjectposition.entityHit != null)
             {
-            	if(movingobjectposition.entityHit == this.func_85052_h())
-            	{
-            		return;
-            	}
-                if (!movingobjectposition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_85052_h()), 0));
+                if (!movingobjectposition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0));
             }
         	createExplosionMobDamageA();
         	worldObj.createExplosion(this, posX, posY, posZ, 0.0F, true);
@@ -63,12 +68,12 @@ public class EntityAppleBomb extends EntityThrowable
     private void createExplosionMobDamageA()
     {
     	float explosionSize = 2.0F * 2.0F;
-        int k = MathHelper.floor_double(posX - (double)explosionSize - 1.0D);
-        int i1 = MathHelper.floor_double(posX + (double)explosionSize + 1.0D);
-        int k1 = MathHelper.floor_double(posY - (double)explosionSize - 1.0D);
-        int l1 = MathHelper.floor_double(posY + (double)explosionSize + 1.0D);
-        int i2 = MathHelper.floor_double(posZ - (double)explosionSize - 1.0D);
-        int j2 = MathHelper.floor_double(posZ + (double)explosionSize + 1.0D);
+        int k = MathHelper.floor_double(posX - explosionSize - 1.0D);
+        int i1 = MathHelper.floor_double(posX + explosionSize + 1.0D);
+        int k1 = MathHelper.floor_double(posY - explosionSize - 1.0D);
+        int l1 = MathHelper.floor_double(posY + explosionSize + 1.0D);
+        int i2 = MathHelper.floor_double(posZ - explosionSize - 1.0D);
+        int j2 = MathHelper.floor_double(posZ + explosionSize + 1.0D);
 
         List list = worldObj.getEntitiesWithinAABBExcludingEntity(this, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(k, k1, i2, i1, l1, j2));
         Vec3 vec3d = this.worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ);
@@ -76,7 +81,7 @@ public class EntityAppleBomb extends EntityThrowable
         for (int k2 = 0; k2 < list.size(); k2++)
         {
             Entity entity = (Entity)list.get(k2);
-            double d4 = entity.getDistance(posX, posY, posZ) / (double)explosionSize;
+            double d4 = entity.getDistance(posX, posY, posZ) / explosionSize;
 
             if (d4 <= 1.0D)
             {
@@ -89,7 +94,7 @@ public class EntityAppleBomb extends EntityThrowable
                 d10 /= d11;
                 double d12 = worldObj.getBlockDensity(vec3d, entity.boundingBox);
                 double d13 = (1.0D - d4) * d12;
-                entity.attackEntityFrom(DamageSource.explosion, (int)(((d13 * d13 + d13) / 2D) * 8D * (double)explosionSize + 1.0D));
+                entity.attackEntityFrom(DamageSource.explosion, (int)(((d13 * d13 + d13) / 2D) * 8D * explosionSize + 1.0D));
                 double d14 = d13;
                 entity.motionX += d6 * d14 * 2.0F;
                 entity.motionY += d8 * d14 * 2.0F;
@@ -114,7 +119,7 @@ public class EntityAppleBomb extends EntityThrowable
         d3 /= d6;
         d4 /= d6;
         d5 /= d6;
-        double d7 = 0.5D / (d6 / (double)esize + 0.1D);
+        double d7 = 0.5D / (d6 / esize + 0.1D);
         d7 *= worldObj.rand.nextFloat() * worldObj.rand.nextFloat() + 0.3F;
         d3 *= d7;
         d4 *= d7;

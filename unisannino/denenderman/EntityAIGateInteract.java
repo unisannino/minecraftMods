@@ -1,6 +1,13 @@
 package unisannino.denenderman;
 
-import net.minecraft.src.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockFenceGate;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.pathfinding.PathNavigate;
+import net.minecraft.pathfinding.PathPoint;
+import net.minecraft.util.MathHelper;
 
 public abstract class EntityAIGateInteract extends EntityAIBase
 {
@@ -86,8 +93,8 @@ public abstract class EntityAIGateInteract extends EntityAIBase
     public void startExecuting()
     {
         this.hasStoppedDoorInteraction = false;
-        this.entityPositionX = (float)((double)((float)this.entityPosX + 0.5F) - this.theEntity.posX);
-        this.entityPositionZ = (float)((double)((float)this.entityPosZ + 0.5F) - this.theEntity.posZ);
+        this.entityPositionX = (float)((double)(this.entityPosX + 0.5F) - this.theEntity.posX);
+        this.entityPositionZ = (float)((double)(this.entityPosZ + 0.5F) - this.theEntity.posZ);
     }
 
     /**
@@ -95,8 +102,8 @@ public abstract class EntityAIGateInteract extends EntityAIBase
      */
     public void updateTask()
     {
-        float var1 = (float)((double)((float)this.entityPosX + 0.5F) - this.theEntity.posX);
-        float var2 = (float)((double)((float)this.entityPosZ + 0.5F) - this.theEntity.posZ);
+        float var1 = (float)((double)(this.entityPosX + 0.5F) - this.theEntity.posX);
+        float var2 = (float)((double)(this.entityPosZ + 0.5F) - this.theEntity.posZ);
         float var3 = this.entityPositionX * var1 + this.entityPositionZ * var2;
 
         if (var3 < 0.0F)

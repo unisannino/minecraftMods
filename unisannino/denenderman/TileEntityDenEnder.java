@@ -1,8 +1,11 @@
 package unisannino.denenderman;
 
-import java.util.Random;
-
-import net.minecraft.src.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityDenEnder extends TileEntity implements IInventory
 {
@@ -13,17 +16,20 @@ public class TileEntityDenEnder extends TileEntity implements IInventory
         mainInv = new ItemStack[54];
     }
 
-    public int getSizeInventory()
+    @Override
+	public int getSizeInventory()
     {
         return mainInv.length;
     }
 
-    public ItemStack getStackInSlot(int i)
+    @Override
+	public ItemStack getStackInSlot(int i)
     {
         return mainInv[i];
     }
 
-    public ItemStack decrStackSize(int i, int j)
+    @Override
+	public ItemStack decrStackSize(int i, int j)
     {
         if (mainInv[i] != null)
         {
@@ -51,7 +57,8 @@ public class TileEntityDenEnder extends TileEntity implements IInventory
         }
     }
 
-    public ItemStack getStackInSlotOnClosing(int par1)
+    @Override
+	public ItemStack getStackInSlotOnClosing(int par1)
     {
         if (mainInv[par1] != null)
         {
@@ -65,7 +72,8 @@ public class TileEntityDenEnder extends TileEntity implements IInventory
         }
     }
 
-    public void setInventorySlotContents(int i, ItemStack itemstack)
+    @Override
+	public void setInventorySlotContents(int i, ItemStack itemstack)
     {
         mainInv[i] = itemstack;
 
@@ -77,12 +85,14 @@ public class TileEntityDenEnder extends TileEntity implements IInventory
         onInventoryChanged();
     }
 
-    public String getInvName()
+    @Override
+	public String getInvName()
     {
         return "Crops";
     }
 
-    public void readFromNBT(NBTTagCompound nbttagcompound)
+    @Override
+	public void readFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readFromNBT(nbttagcompound);
         NBTTagList nbttaglist = nbttagcompound.getTagList("Items");
@@ -100,7 +110,8 @@ public class TileEntityDenEnder extends TileEntity implements IInventory
         }
     }
 
-    public void writeToNBT(NBTTagCompound nbttagcompound)
+    @Override
+	public void writeToNBT(NBTTagCompound nbttagcompound)
     {
         super.writeToNBT(nbttagcompound);
         NBTTagList nbttaglist = new NBTTagList();
@@ -119,7 +130,8 @@ public class TileEntityDenEnder extends TileEntity implements IInventory
         nbttagcompound.setTag("Items", nbttaglist);
     }
 
-    public int getInventoryStackLimit()
+    @Override
+	public int getInventoryStackLimit()
     {
         return 64;
     }
@@ -137,21 +149,24 @@ public class TileEntityDenEnder extends TileEntity implements IInventory
         return -1;
     }
 
-    public boolean isUseableByPlayer(EntityPlayer entityplayer)
+    @Override
+	public boolean isUseableByPlayer(EntityPlayer entityplayer)
     {
         if (worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this)
         {
             return false;
         }
 
-        return entityplayer.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64D;
+        return entityplayer.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) <= 64D;
     }
 
-    public void openChest()
+    @Override
+	public void openChest()
     {
     }
 
-    public void closeChest()
+    @Override
+	public void closeChest()
     {
     }
 }

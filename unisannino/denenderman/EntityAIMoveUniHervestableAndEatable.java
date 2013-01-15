@@ -1,7 +1,12 @@
 package unisannino.denenderman;
 
 import java.util.Random;
-import net.minecraft.src.*;
+
+import net.minecraft.block.Block;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 
 public class EntityAIMoveUniHervestableAndEatable extends EntityAIBase
 {
@@ -84,9 +89,9 @@ public class EntityAIMoveUniHervestableAndEatable extends EntityAIBase
 
         for (int var2 = 0; var2 < 10; ++var2)
         {
-            int var3 = MathHelper.floor_double(this.theFarmers.posX + (double)var1.nextInt(20) - 10.0D);
-            int var4 = MathHelper.floor_double(this.theFarmers.boundingBox.minY + (double)var1.nextInt(6) - 3.0D);
-            int var5 = MathHelper.floor_double(this.theFarmers.posZ + (double)var1.nextInt(20) - 10.0D);
+            int var3 = MathHelper.floor_double(this.theFarmers.posX + var1.nextInt(20) - 10.0D);
+            int var4 = MathHelper.floor_double(this.theFarmers.boundingBox.minY + var1.nextInt(6) - 3.0D);
+            int var5 = MathHelper.floor_double(this.theFarmers.posZ + var1.nextInt(20) - 10.0D);
             int var6 = this.theWorld.getBlockId(var3, var4, var5);
             int var7 = this.theWorld.getBlockMetadata(var3, var4, var5);
 
@@ -114,9 +119,9 @@ public class EntityAIMoveUniHervestableAndEatable extends EntityAIBase
 
         for (int var2 = 0; var2 < 10; ++var2)
         {
-            int var3 = MathHelper.floor_double(this.theFarmers.posX + (double)var1.nextInt(20) - 10.0D);
-            int var4 = MathHelper.floor_double(this.theFarmers.boundingBox.minY + (double)var1.nextInt(6) - 3.0D);
-            int var5 = MathHelper.floor_double(this.theFarmers.posZ + (double)var1.nextInt(20) - 10.0D);
+            int var3 = MathHelper.floor_double(this.theFarmers.posX + var1.nextInt(20) - 10.0D);
+            int var4 = MathHelper.floor_double(this.theFarmers.boundingBox.minY + var1.nextInt(6) - 3.0D);
+            int var5 = MathHelper.floor_double(this.theFarmers.posZ + var1.nextInt(20) - 10.0D);
             int var6 = this.theWorld.getBlockId(var3, var4, var5);
             int var7 = this.theWorld.getBlockMetadata(var3, var4, var5);
 

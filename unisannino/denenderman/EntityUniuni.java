@@ -1,10 +1,21 @@
 package unisannino.denenderman;
 
-import java.util.List;
-
-import net.minecraft.client.Minecraft;
-
-import net.minecraft.src.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockNetherStalk;
+import net.minecraft.block.BlockReed;
+import net.minecraft.block.StepSound;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIMoveTwardsRestriction;
+import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityAITempt;
+import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 
 public class EntityUniuni extends EntityFarmers
 {
@@ -18,7 +29,7 @@ public class EntityUniuni extends EntityFarmers
         setSize(0.8F, 0.6F);
         yOffset = 0.16F;
 		favoriteItem = Mod_DenEnderman_Core.lavender.blockID;
-		likeItem = Item.melon.shiftedIndex;
+		likeItem = Item.melon.itemID;
 
         this.getNavigator().setBreakDoors(true);
         this.getNavigator().setAvoidsWater(true);
@@ -90,9 +101,9 @@ public class EntityUniuni extends EntityFarmers
 
             for (int j = 0; j < 4; j++)
             {
-                int l11 = MathHelper.floor_double(posX + (double)((float)((j % 2) * 2 - 1) * 0.25F));
+                int l11 = MathHelper.floor_double(posX + (((j % 2) * 2 - 1) * 0.25F));
                 int j11 = MathHelper.floor_double(posY);
-                int k1 = MathHelper.floor_double(posZ + (double)((float)(((j / 2) % 2) * 2 - 1) * 0.25F));
+                int k1 = MathHelper.floor_double(posZ + ((((j / 2) % 2) * 2 - 1) * 0.25F));
 
                 if (worldObj.getBlockId(l11, j11, k1) == 0 && Mod_DenEnderman_Core.starSand.canPlaceBlockAt(worldObj, l11, j11, k1))
                 {
@@ -108,9 +119,9 @@ public class EntityUniuni extends EntityFarmers
         {
             if (inventory.consumeInventoryItem(Block.tallGrass.blockID)
                     || inventory.consumeInventoryItem(Block.vine.blockID)
-                    || inventory.consumeInventoryItem(Item.wheat.shiftedIndex)
+                    || inventory.consumeInventoryItem(Item.wheat.itemID)
                     || inventory.consumeInventoryItem(Block.leaves.blockID)
-                    || inventory.consumeInventoryItem(Item.melon.shiftedIndex))
+                    || inventory.consumeInventoryItem(Item.melon.itemID))
             {
                 heal(1);
                 return;
@@ -128,7 +139,7 @@ public class EntityUniuni extends EntityFarmers
     @Override
     protected int getDropItemId()
     {
-        return Mod_DenEnderman_Core.uniuniSoul.shiftedIndex;
+        return Mod_DenEnderman_Core.uniuniSoul.itemID;
     }
 
     /*
@@ -148,17 +159,20 @@ public class EntityUniuni extends EntityFarmers
     }
     */
 
-    protected String getLivingSound()
+    @Override
+	protected String getLivingSound()
     {
         return "mob.silverfish.say";
     }
 
-    protected String getHurtSound()
+    @Override
+	protected String getHurtSound()
     {
         return "mob.silverfish.hit";
     }
 
-    protected String getDeathSound()
+    @Override
+	protected String getDeathSound()
     {
         return "mob.silverfish.kill";
     }
@@ -173,11 +187,11 @@ public class EntityUniuni extends EntityFarmers
     {
         if ((ridingEntity instanceof EntityPlayer) && !worldObj.isRemote)
         {
-            return (double)(yOffset - 1.15F);
+            return (yOffset - 1.15F);
         }
         else
         {
-            return (double)yOffset;
+            return yOffset;
         }
     }
 
@@ -206,7 +220,7 @@ public class EntityUniuni extends EntityFarmers
                     double d = rand.nextGaussian() * 0.02D;
                     double d1 = rand.nextGaussian() * 0.02D;
                     double d2 = rand.nextGaussian() * 0.02D;
-                    worldObj.spawnParticle("heart", (posX + (double)(rand.nextFloat() * width * 2.0F)) - (double)width, posY + 0.5D + (double)(rand.nextFloat() * height), (posZ + (double)(rand.nextFloat() * width * 2.0F)) - (double)width, d, d1, d2);
+                    worldObj.spawnParticle("heart", (posX + (rand.nextFloat() * width * 2.0F)) - width, posY + 0.5D + (rand.nextFloat() * height), (posZ + (rand.nextFloat() * width * 2.0F)) - width, d, d1, d2);
                 }
             }
 
@@ -297,9 +311,9 @@ public class EntityUniuni extends EntityFarmers
     {
         int target = worldObj.getBlockId(x, y, z);
 
-        for(int i =0; i < this.eatableIBlocks.length;i++)
+        for(int i =0; i < EntityUniuni.eatableIBlocks.length;i++)
         {
-        	int eatable = this.eatableIBlocks[i];
+        	int eatable = EntityUniuni.eatableIBlocks[i];
             if (target == eatable)
             {
             	return true;

@@ -4,7 +4,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.src.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockDirectional;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.village.Village;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldSavedData;
 
 public class DEHomeCollection extends WorldSavedData
 {
@@ -107,7 +114,7 @@ public class DEHomeCollection extends WorldSavedData
             {
                 int var10 = par4 + var8.getVillageRadius();
 
-                if (var9 <= (float)(var10 * var10))
+                if (var9 <= (var10 * var10))
                 {
                     var5 = var8;
                     var6 = var9;
@@ -234,7 +241,7 @@ public class DEHomeCollection extends WorldSavedData
 
     private void addDoorToNewListIfAppropriate(int par1, int par2, int par3)
     {
-        int var4 = ((BlockFenceGate)Block.fenceGate).getDirection(this.worldObj.getBlockMetadata(par1, par2, par3));
+        int var4 = BlockDirectional.getDirection(this.worldObj.getBlockMetadata(par1, par2, par3));
         //int var4 = this.worldObj.getBlockMetadata(par1, par2, par3) | 3;
     	int var5;
         int var6;
@@ -317,7 +324,8 @@ public class DEHomeCollection extends WorldSavedData
         return var4 == Block.fenceGate.blockID && var5;
     }
 
-    public void readFromNBT(NBTTagCompound par1NBTTagCompound)
+    @Override
+	public void readFromNBT(NBTTagCompound par1NBTTagCompound)
     {
         this.tickCounter = par1NBTTagCompound.getInteger("Tick");
         NBTTagList var2 = par1NBTTagCompound.getTagList("Villages");
@@ -331,7 +339,8 @@ public class DEHomeCollection extends WorldSavedData
         }
     }
 
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound)
+    @Override
+	public void writeToNBT(NBTTagCompound par1NBTTagCompound)
     {
         par1NBTTagCompound.setInteger("Tick", this.tickCounter);
         NBTTagList var2 = new NBTTagList("Villages");

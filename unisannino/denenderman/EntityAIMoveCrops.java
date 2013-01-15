@@ -1,7 +1,16 @@
 package unisannino.denenderman;
 
 import java.util.Random;
-import net.minecraft.src.*;
+
+import net.minecraft.block.Block;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemSeedFood;
+import net.minecraft.item.ItemSeeds;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 
 public class EntityAIMoveCrops extends EntityAIBase
 {
@@ -91,9 +100,9 @@ public class EntityAIMoveCrops extends EntityAIBase
 
         for (int var2 = 0; var2 < 10; ++var2)
         {
-            int var3 = MathHelper.floor_double(this.theFarmers.posX + (double)var1.nextInt(20) - 10.0D);
-            int var4 = MathHelper.floor_double(this.theFarmers.boundingBox.minY + (double)var1.nextInt(6) - 3.0D);
-            int var5 = MathHelper.floor_double(this.theFarmers.posZ + (double)var1.nextInt(20) - 10.0D);
+            int var3 = MathHelper.floor_double(this.theFarmers.posX + var1.nextInt(20) - 10.0D);
+            int var4 = MathHelper.floor_double(this.theFarmers.boundingBox.minY + var1.nextInt(6) - 3.0D);
+            int var5 = MathHelper.floor_double(this.theFarmers.posZ + var1.nextInt(20) - 10.0D);
 
             if (this.theFarmers.canHervest(theWorld, var3, var4, var5))
             {
@@ -109,9 +118,9 @@ public class EntityAIMoveCrops extends EntityAIBase
 
         for (int var2 = 0; var2 < 10; ++var2)
         {
-            int var3 = MathHelper.floor_double(this.theFarmers.posX + (double)var1.nextInt(20) - 10.0D);
-            int var4 = MathHelper.floor_double(this.theFarmers.boundingBox.minY + (double)var1.nextInt(6) - 3.0D);
-            int var5 = MathHelper.floor_double(this.theFarmers.posZ + (double)var1.nextInt(20) - 10.0D);
+            int var3 = MathHelper.floor_double(this.theFarmers.posX + var1.nextInt(20) - 10.0D);
+            int var4 = MathHelper.floor_double(this.theFarmers.boundingBox.minY + var1.nextInt(6) - 3.0D);
+            int var5 = MathHelper.floor_double(this.theFarmers.posZ + var1.nextInt(20) - 10.0D);
             int var6 = this.theWorld.getBlockId(var3, var4, var5);
             int var7 = this.theWorld.getBlockId(var3, var4 + 1, var5);
             int var8 = var4 + 1;
@@ -130,7 +139,7 @@ public class EntityAIMoveCrops extends EntityAIBase
 					if(obj instanceof ItemSeeds)
 					{
 						seeds = (ItemSeeds)obj;
-						if(seeds.shiftedIndex == Item.pumpkinSeeds.shiftedIndex || seeds.shiftedIndex == Item.melonSeeds.shiftedIndex)
+						if(seeds.itemID == Item.pumpkinSeeds.itemID || seeds.itemID == Item.melonSeeds.itemID)
 						{
 							continue;
 						}

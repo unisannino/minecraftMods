@@ -1,8 +1,12 @@
 package unisannino.denenderman;
 
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
-import net.minecraft.src.*;
+
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.MathHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ModelDenEnderman extends ModelBase
@@ -61,7 +65,8 @@ public class ModelDenEnderman extends ModelBase
         bipedHead.setTextureSize(64, 64).setTextureOffset(0, 32).addBox(-3F, -13F, -3F, 6, 4, 6, f1);
     }
 
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
+    @Override
+	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
         setRotationAngles(f, f1, f2, f3, f4, f5);
         bipedHead.render(f5);
@@ -100,12 +105,12 @@ public class ModelDenEnderman extends ModelBase
 
         if (field_1279_h != 0)
         {
-            bipedLeftArm.rotateAngleX = bipedLeftArm.rotateAngleX * 0.5F - ((float)Math.PI / 10F) * (float)field_1279_h;
+            bipedLeftArm.rotateAngleX = bipedLeftArm.rotateAngleX * 0.5F - ((float)Math.PI / 10F) * field_1279_h;
         }
 
         if (field_1278_i != 0)
         {
-            bipedRightArm.rotateAngleX = bipedRightArm.rotateAngleX * 0.5F - ((float)Math.PI / 10F) * (float)field_1278_i;
+            bipedRightArm.rotateAngleX = bipedRightArm.rotateAngleX * 0.5F - ((float)Math.PI / 10F) * field_1278_i;
         }
 
         bipedRightArm.rotateAngleY = 0.0F;
@@ -130,7 +135,7 @@ public class ModelDenEnderman extends ModelBase
             float f8 = MathHelper.sin(f6 * (float)Math.PI);
             float f10 = MathHelper.sin(onGround * (float)Math.PI) * -(bipedHead.rotateAngleX - 0.7F) * 0.75F;
 
-            bipedRightArm.rotateAngleX -= (double)f8 * 1.2D + (double)f10;
+            bipedRightArm.rotateAngleX -= f8 * 1.2D + f10;
             bipedRightArm.rotateAngleY += bipedBody.rotateAngleY * 2.0F;
             bipedRightArm.rotateAngleZ = MathHelper.sin(onGround * (float)Math.PI) * -0.4F;
         }

@@ -5,7 +5,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
-import net.minecraft.src.*;
+import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.world.World;
 
 public class DEHome
 {
@@ -54,7 +59,7 @@ public class DEHome
 
     private void updateNumVillagers()
     {
-        List var1 = this.worldObj.getEntitiesWithinAABB(EntityVillager.class, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool((double)(this.center.posX - this.villageRadius), (double)(this.center.posY - 4), (double)(this.center.posZ - this.villageRadius), (double)(this.center.posX + this.villageRadius), (double)(this.center.posY + 4), (double)(this.center.posZ + this.villageRadius)));
+        List var1 = this.worldObj.getEntitiesWithinAABB(EntityVillager.class, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool((this.center.posX - this.villageRadius), (this.center.posY - 4), (this.center.posZ - this.villageRadius), (this.center.posX + this.villageRadius), (this.center.posY + 4), (this.center.posZ + this.villageRadius)));
         this.numVillagers = var1.size();
 
         if (this.numVillagers == 0)
@@ -97,7 +102,7 @@ public class DEHome
      */
     public boolean isInRange(int par1, int par2, int par3)
     {
-        return this.center.getDistanceSquared(par1, par2, par3) < (float)(this.villageRadius * this.villageRadius);
+        return this.center.getDistanceSquared(par1, par2, par3) < (this.villageRadius * this.villageRadius);
     }
 
     /**
@@ -166,7 +171,7 @@ public class DEHome
 
     public DEHomeGateInfo getVillageDoorAt(int par1, int par2, int par3)
     {
-        if (this.center.getDistanceSquared(par1, par2, par3) > (float)(this.villageRadius * this.villageRadius))
+        if (this.center.getDistanceSquared(par1, par2, par3) > (this.villageRadius * this.villageRadius))
         {
             return null;
         }
@@ -323,7 +328,7 @@ public class DEHome
                 var4 = (DEHomeGateInfo)var3.next();
             }
 
-            this.villageRadius = Math.max(32, (int)Math.sqrt((double)var2) + 1);
+            this.villageRadius = Math.max(32, (int)Math.sqrt(var2) + 1);
         }
     }
 }

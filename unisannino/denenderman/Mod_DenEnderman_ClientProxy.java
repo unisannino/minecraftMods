@@ -1,13 +1,9 @@
 package unisannino.denenderman;
 
-import net.minecraft.src.*;
-
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.network.IGuiHandler;
 
 public class Mod_DenEnderman_ClientProxy extends Mod_DenEnderman_CommonProxy
 {

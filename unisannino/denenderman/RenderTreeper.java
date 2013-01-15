@@ -1,14 +1,20 @@
 package unisannino.denenderman;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.*;
+import net.minecraft.client.model.ModelCreeper;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderTreeper extends RenderLiving
@@ -81,7 +87,7 @@ public class RenderTreeper extends RenderLiving
         ItemStack itemstack = new ItemStack(Block.leaves, 1, treeper.getLeavesType());
         float randcolor = (float) treeper.getRNG().nextGaussian();
 
-        if (itemstack != null && itemstack.getItem().shiftedIndex < 256)
+        if (itemstack != null && itemstack.getItem().itemID < 256)
         {
             GL11.glPushMatrix();
             basecreeper.head.postRender(0.0625F);
