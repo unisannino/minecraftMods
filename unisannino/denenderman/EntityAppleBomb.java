@@ -10,6 +10,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 public class EntityAppleBomb extends EntityThrowable
@@ -32,14 +33,8 @@ public class EntityAppleBomb extends EntityThrowable
     @Override
 	public void onUpdate()
     {
-        float f1 = 0.25F;
-
         if (isInWater())
         {
-            for (int i = 0; i < 4; i++)
-            {
-                worldObj.spawnParticle("bubble", posX - motionX * f1, posY - motionY * f1, posZ - motionZ * f1, motionX, motionY, motionZ);
-            }
             setDead();
         	worldObj.playSoundAtEntity(this, "random.fizz", 0.7F, 1.6F + (rand.nextFloat() - rand.nextFloat()) * 0.4F);
         }
@@ -55,7 +50,7 @@ public class EntityAppleBomb extends EntityThrowable
             {
                 if (!movingobjectposition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0));
             }
-        	createExplosionMobDamageA();
+            this.newExplosionAb(this, this.posX, this.posY, this.posZ,  2.0F * 2.0F, false, true);
         	worldObj.createExplosion(this, posX, posY, posZ, 0.0F, true);
         }
 
@@ -65,66 +60,14 @@ public class EntityAppleBomb extends EntityThrowable
         }
     }
 
-    private void createExplosionMobDamageA()
+    public Explosion newExplosionAb(Entity par1Entity, double par2, double par4, double par6, float par8, boolean par9, boolean par10)
     {
-    	float explosionSize = 2.0F * 2.0F;
-        int k = MathHelper.floor_double(posX - explosionSize - 1.0D);
-        int i1 = MathHelper.floor_double(posX + explosionSize + 1.0D);
-        int k1 = MathHelper.floor_double(posY - explosionSize - 1.0D);
-        int l1 = MathHelper.floor_double(posY + explosionSize + 1.0D);
-        int i2 = MathHelper.floor_double(posZ - explosionSize - 1.0D);
-        int j2 = MathHelper.floor_double(posZ + explosionSize + 1.0D);
-
-        List list = worldObj.getEntitiesWithinAABBExcludingEntity(this, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(k, k1, i2, i1, l1, j2));
-        Vec3 vec3d = this.worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ);
-
-        for (int k2 = 0; k2 < list.size(); k2++)
-        {
-            Entity entity = (Entity)list.get(k2);
-            double d4 = entity.getDistance(posX, posY, posZ) / explosionSize;
-
-            if (d4 <= 1.0D)
-            {
-                double d6 = entity.posX - posX;
-                double d8 = entity.posY - posY;
-                double d10 = entity.posZ - posZ;
-                double d11 = MathHelper.sqrt_double(d6 * d6 + d8 * d8 + d10 * d10);
-                d6 /= d11;
-                d8 /= d11;
-                d10 /= d11;
-                double d12 = worldObj.getBlockDensity(vec3d, entity.boundingBox);
-                double d13 = (1.0D - d4) * d12;
-                entity.attackEntityFrom(DamageSource.explosion, (int)(((d13 * d13 + d13) / 2D) * 8D * explosionSize + 1.0D));
-                double d14 = d13;
-                entity.motionX += d6 * d14 * 2.0F;
-                entity.motionY += d8 * d14 * 2.0F;
-                entity.motionZ += d10 * d14 * 2.0F;
-            }
-        }
-        createExplosionMobDamageB(explosionSize);
+        Explosion explosion = new ExplosionAppleBomb(this.worldObj, par1Entity, par2, par4, par6, par8);
+        explosion.isFlaming = par9;
+        explosion.isSmoking = par10;
+        explosion.doExplosionA();
+        explosion.doExplosionB(true);
+        return explosion;
     }
 
-    private void createExplosionMobDamageB(float esize)
-    {
-        //worldObj.playSoundEffect(posX, posY, posZ, "random.explode", 4F, (1.0F + (worldObj.rand.nextFloat() - worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
-        worldObj.spawnParticle("hugeexplosion", posX, posY, posZ, 0.0D, 0.0D, 0.0D);
-
-        double d = (float)Math.floor(posX) + worldObj.rand.nextFloat();
-        double d1 = (float)Math.floor(posY) + worldObj.rand.nextFloat();
-        double d2 = (float)Math.floor(posZ) + worldObj.rand.nextFloat();
-        double d3 = d - posX;
-        double d4 = d1 - posY;
-        double d5 = d2 - posZ;
-        double d6 = MathHelper.sqrt_double(d3 * d3 + d4 * d4 + d5 * d5);
-        d3 /= d6;
-        d4 /= d6;
-        d5 /= d6;
-        double d7 = 0.5D / (d6 / esize + 0.1D);
-        d7 *= worldObj.rand.nextFloat() * worldObj.rand.nextFloat() + 0.3F;
-        d3 *= d7;
-        d4 *= d7;
-        d5 *= d7;
-        worldObj.spawnParticle("explode", (d + posX * 1.0D) / 2D, (d1 + posY * 1.0D) / 2D, (d2 + posZ * 1.0D) / 2D, d3, d4, d5);
-        worldObj.spawnParticle("smoke", d, d1, d2, d3, d4, d5);
-    }
 }

@@ -46,7 +46,7 @@ public class EntityAINearestTargetItems extends EntityAIBase
                  */
                 if (!var4.isDead && var4.onGround && var4.delayBeforeCanPickup <= 0/* && this.theOwner.canEntityItemBeSeen(var4)*/)
                 {
-                    if (this.theOwner.checkItemID(var4.func_92014_d().itemID) || this.theOwner instanceof EntityUniuni)
+                    if (this.theOwner.checkItemID(var4.getEntityItem().itemID) || this.theOwner instanceof EntityUniuni)
                     {
                     	this.targetEntity = var4;
                         return true;
@@ -84,7 +84,7 @@ public class EntityAINearestTargetItems extends EntityAIBase
         this.theOwner.getLookHelper().setLookPositionWithEntity(this.targetEntity, 30F, this.theOwner.getVerticalFaceSpeed());
         if(!this.theOwner.worldObj.isRemote)
         {
-        	this.theOwner.findItems = true;
+        	this.theOwner.setfindItems(true);
         }
 
         if (this.theOwner.getNavigator().noPath())

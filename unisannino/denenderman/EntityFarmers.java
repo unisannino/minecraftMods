@@ -30,7 +30,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class EntityFarmers extends EntityTameable
 {
     protected int heartpop;
-    private int lovePoint;
 
     protected Minecraft mc = FMLClientHandler.instance().getClient();
     protected InventoryFarmers inventory;
@@ -48,8 +47,6 @@ public class EntityFarmers extends EntityTameable
     public TileEntity myTile;
     @SideOnly(Side.CLIENT)
     protected boolean sayLogs;
-    @SideOnly(Side.CLIENT)
-    public boolean findItems;
 
     protected DEHomeCollection homecollection;
 	protected DEHomePosition homePos;
@@ -74,13 +71,40 @@ public class EntityFarmers extends EntityTameable
         this.serchedDE = new ArrayList<TileEntityDenEnder>();
         this.canpickup = new ArrayList<Integer>();
         this.cantputItem = new ArrayList<Integer>();
-        this.sayLogs = false;
-        this.findItems = false;
+        //this.sayLogs = false;
         this.homecollection = new DEHomeCollection(this.worldObj);
         this.deblockList = new ArrayList<TileEntityDenEnder>();
 
         addConfigPickupItems();
     }
+
+    @Override
+    protected void entityInit()
+	{
+    	super.entityInit();
+		this.dataWatcher.addObject(18, Integer.valueOf(0)); // lovePoint
+		this.dataWatcher.addObject(19, Byte.valueOf((byte) 0)); // findItems
+	}
+
+    public int getLovePoint()
+	{
+		return this.dataWatcher.getWatchableObjectInt(18);
+	}
+
+    public void setLovePoint(int i)
+	{
+    	this.dataWatcher.updateObject(18, Integer.valueOf(i));
+	}
+
+    public boolean getfindItems()
+	{
+		return this.dataWatcher.getWatchableObjectInt(19) == 1;
+	}
+
+    public void setfindItems(boolean b)
+	{
+    	this.dataWatcher.updateObject(19, Byte.valueOf((byte)(b ? 1 : 0)));
+	}
 
     protected void addConfigPickupItems()
     {
@@ -169,7 +193,6 @@ public class EntityFarmers extends EntityTameable
             }
         }
 
-        Mod_DenEnderman_Packet.getPacket(this);
         super.onLivingUpdate();
     }
 
@@ -188,22 +211,25 @@ public class EntityFarmers extends EntityTameable
                     int i1 = 0;
                     EntityItem pickupitem = (EntityItem)entity;
 
-                    if (checkItemID(pickupitem.func_92014_d().itemID) || this instanceof EntityUniuni)
+                    if (checkItemID(pickupitem.getEntityItem().itemID) || this instanceof EntityUniuni)
                     {
-                        i1 = pickupitem.func_92014_d().stackSize;
+                        i1 = pickupitem.getEntityItem().stackSize;
 
-                        if (!(pickupitem.delayBeforeCanPickup == 0 && inventory.addItemStackToInventory(pickupitem.func_92014_d())))
+                        if (!(pickupitem.delayBeforeCanPickup == 0 && inventory.addItemStackToInventory(pickupitem.getEntityItem())))
                         {
                             return;
                         }
 
-                        if (pickupitem.func_92014_d().stackSize <= 0)
+                        if (pickupitem.getEntityItem().stackSize <= 0)
                         {
                             pickupitem.setDead();
                         }
 
-                        worldObj.playSoundAtEntity(this, "random.pop", 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                        mc.effectRenderer.addEffect(new EntityPickupFX(mc.theWorld, entity, this, 0.1F));
+                        if (this.worldObj.isRemote)
+						{
+                            worldObj.playSoundAtEntity(this, "random.pop", 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                            mc.effectRenderer.addEffect(new EntityPickupFX(mc.theWorld, entity, this, 0.1F));
+						}
                     }
                 }
             }
@@ -350,7 +376,7 @@ public class EntityFarmers extends EntityTameable
     {
         super.writeEntityToNBT(nbt);
         nbt.setTag("Inventory", inventory.writeToNBT(new NBTTagList()));
-        nbt.setInteger("Friend", lovePoint);
+        nbt.setInteger("Friend", this.getLovePoint());
 
         //おうちの座標
         if(this.homePos != null)
@@ -383,7 +409,7 @@ public class EntityFarmers extends EntityTameable
         super.readEntityFromNBT(nbt);
         NBTTagList nbttaglist = nbt.getTagList("Inventory");
         inventory.readFromNBT(nbttaglist);
-        lovePoint = nbt.getInteger("Friend");
+        this.setLovePoint(nbt.getInteger("Friend"));
 
         double x = nbt.getDouble("homePosX");
         double y = nbt.getDouble("homePosY");
@@ -456,18 +482,18 @@ public class EntityFarmers extends EntityTameable
 
                     this.playTameEffect(true);
 
-                    if (lovePoint < 100)
+                    if (this.getLovePoint() < 100)
                     {
-                        lovePoint++;
+                        this.setLovePoint(this.getLovePoint() + 1);
                         if(!this.worldObj.isRemote)
                         {
-                            String s = new StringBuilder(getEntityString()).append("Now LovePoint: ").append(lovePoint).toString();
+                            String s = new StringBuilder(getEntityString()).append("Now LovePoint: ").append(this.getLovePoint()).toString();
                             entityplayer.addChatMessage(s);
                         }
                         return true;
                     }
 
-                    if(lovePoint + rand.nextInt(199) > 200)
+                    if(this.getLovePoint() + rand.nextInt(199) > 200)
                     {
                     	if(entityplayer.inventory.addItemStackToInventory(new ItemStack(Block.blockDiamond, 1)))
                     	{
@@ -477,7 +503,7 @@ public class EntityFarmers extends EntityTameable
                                 entityplayer.addChatMessage(s);
                             }
                             worldObj.playSoundAtEntity(this, "random.levelup", 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                            lovePoint = 0;
+                            this.setLovePoint(0);
                     	}
                     }
         		}else
@@ -671,7 +697,7 @@ public class EntityFarmers extends EntityTameable
                         {
                             worldObj.playSoundAtEntity(this, "random.pop", 0.5F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
                             String s = "Putted Inventory Items!!";
-                			if(!this.worldObj.isRemote)
+                			if(this.worldObj.isRemote)
                 			{
                     			mc.thePlayer.addChatMessage(s);
                 			}
@@ -679,7 +705,7 @@ public class EntityFarmers extends EntityTameable
                         else
                         {
                             String s = "Oh No! Slot of DenEnderBlock is full!";
-                			if(!this.worldObj.isRemote)
+                			if(this.worldObj.isRemote)
                 			{
                     			mc.thePlayer.addChatMessage(s);
                 			}

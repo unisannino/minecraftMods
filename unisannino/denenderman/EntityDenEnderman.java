@@ -27,31 +27,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class EntityDenEnderman extends EntityFarmers
 {
     private EntityPlayer player;
-    private int teleportDelay;
-    private int field_35185_e;
-    public int HeadID;
-
-    private int stackamount;
-	private int randomTickDivider;
 	private DEHome homeObj;
-
-	@SideOnly(Side.CLIENT)
-    protected boolean hervestSeed;
 
     public EntityDenEnderman(World world)
     {
         super(world);
-        teleportDelay = 0;
-        field_35185_e = 0;
 
-        if (Mod_DenEnderman_Core.onepiece)
-        {
-            texture = "/denender/denendermanMonkey.png";
-        }
-        else
-        {
-            texture = "/denender/denenderman.png";
-        }
+        texture = "/mods/denender/textures/mobs/denenderman.png";
 
         moveSpeed = 0.28F;
         setSize(0.6F, 2.9F);
@@ -74,13 +56,10 @@ public class EntityDenEnderman extends EntityFarmers
         setcantPutItem(0, Item.seeds.itemID);
         setcantPutItem(1, Item.dyePowder.itemID);
 
-        this.randomTickDivider = 0;
-        this.hervestSeed = false;
-
         this.getNavigator().setBreakDoors(true);
         this.getNavigator().setAvoidsWater(true);
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(0, new EntityAIPlantAndHervestCrops(this));
+        this.tasks.addTask(0, new EntityAIPlantAndHarvestCrops(this));
         this.tasks.addTask(0, new EntityAIPutDEBlock(this));
         this.tasks.addTask(1, new EntityAITempt(this, this.moveSpeed, this.likeItem, false));
         this.tasks.addTask(1, this.aiSit);
@@ -100,7 +79,40 @@ public class EntityDenEnderman extends EntityFarmers
     protected void entityInit()
     {
         super.entityInit();
-        this.dataWatcher.addObject(18, new Byte((byte)0));
+        this.dataWatcher.addObject(20, Byte.valueOf((byte) 0)); // faceAngry
+        this.dataWatcher.addObject(21, Integer.valueOf(0)); // randomTickDivider
+        this.dataWatcher.addObject(22, Byte.valueOf((byte)0)); // harvestCrops
+    }
+
+    public boolean getFaceAngry()
+    {
+        return this.dataWatcher.getWatchableObjectByte(20) > 0;
+    }
+
+    public void setFaceAngry(boolean par1)
+    {
+        this.dataWatcher.updateObject(20, Byte.valueOf((byte)(par1 ? 1 : 0)));
+    }
+
+
+    public int getrandomTickDivider()
+	{
+		return this.dataWatcher.getWatchableObjectInt(21);
+	}
+
+    public void setrandomTickDivider(int i)
+	{
+		this.dataWatcher.updateObject(21, Integer.valueOf(i));
+	}
+
+    public boolean getHarvestCrops()
+    {
+        return this.dataWatcher.getWatchableObjectByte(22) > 0;
+    }
+
+    public void setHarvestCrops(boolean par1)
+    {
+        this.dataWatcher.updateObject(22, Byte.valueOf((byte)(par1 ? 1 : 0)));
     }
 
 
@@ -113,10 +125,12 @@ public class EntityDenEnderman extends EntityFarmers
     @Override
     protected void updateAITick()
     {
-        if (--this.randomTickDivider <= 0)
+    	this.setrandomTickDivider(this.getrandomTickDivider() - 1);
+
+        if (this.getrandomTickDivider() <= 0)
         {
         	this.homecollection.addVillagerPosition(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ));
-            this.randomTickDivider = 70 + this.rand.nextInt(50);
+            this.setrandomTickDivider(70 + this.rand.nextInt(50));
             this.homeObj = this.homecollection.findNearestDEHome(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ), 32);
 
             if (this.homeObj == null)
@@ -222,7 +236,6 @@ public class EntityDenEnderman extends EntityFarmers
     public void writeEntityToNBT(NBTTagCompound nbttagcompound)
     {
         super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setInteger("Head", HeadID);
 
     }
 
@@ -230,7 +243,6 @@ public class EntityDenEnderman extends EntityFarmers
     public void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readEntityFromNBT(nbttagcompound);
-        HeadID = nbttagcompound.getInteger("Head");
     }
 
     @Override
@@ -304,33 +316,6 @@ public class EntityDenEnderman extends EntityFarmers
 			}else if(crops instanceof BlockCrops && crops.idDropped(meta, rand, 0) > 0)
             {
             	return true;
-            }else
-            {
-            	if(Mod_DenEnderman_Core.toggleXies)
-            	{
-            		/*
-                    try
-                    {
-                    	if(mod_XieClient.class.getClass() != null)
-                    	{
-                        	if(crops instanceof net.minecraft.src.xie.blocks.XieBlockPlant)
-                        	{
-                        		net.minecraft.src.xie.blocks.XieBlockPlant xiecrops = (net.minecraft.src.xie.blocks.XieBlockPlant)crops;
-                    			if(ModLoader.getPrivateValue(net.minecraft.src.xie.blocks.XieBlockPlant.class, xiecrops, "drops") != null)
-                    			{
-                    				int metaxie = world.getBlockMetadata(i, j, k);
-                    				if(metaxie == xiecrops.maxGrowth)
-                    				{
-                    					return true;
-                    				}
-                    			}
-                        	}
-                    	}
-                    }catch(Exception e)
-                    {
-                    }
-                    */
-            	}
             }
 
 		}else if(crops instanceof BlockCrops && meta == 7)
@@ -364,17 +349,6 @@ public class EntityDenEnderman extends EntityFarmers
 			e.printStackTrace();
 			return false;
 		}
-    }
-
-    @SideOnly(Side.CLIENT)
-    public boolean getFaceAngry()
-    {
-        return this.dataWatcher.getWatchableObjectByte(18) > 0;
-    }
-
-    public void setFaceAngry(boolean par1)
-    {
-        this.dataWatcher.updateObject(18, Byte.valueOf((byte)(par1 ? 1 : 0)));
     }
 
 }

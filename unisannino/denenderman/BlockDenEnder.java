@@ -2,104 +2,50 @@ package unisannino.denenderman;
 
 import java.util.Random;
 
+import cpw.mods.fml.common.FMLLog;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.Icon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class BlockDenEnder extends BlockContainer
 {
+
+    private Random random;
+    private IInventory playerinvently;
+    private boolean spawncheck[];
+
     public BlockDenEnder(int i)
     {
-        super(i, Material.sponge);
+        super(i, Material.rock);
         random = new Random();
-        setTickRandomly(true);
         this.setCreativeTab(CreativeTabs.tabDecorations);
-        this.setRequiresSelfNotify();
     }
 
-    @Override
-    public boolean canPlaceBlockAt(World world, int i, int j, int k)
+    public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLiving par5EntityLiving, ItemStack par6ItemStack)
     {
-        //int check = world.getBlockId(i, j + 1, k);
-        if (!world.isBlockNormalCube(i, j + 1, k))
+        if (par6ItemStack.hasDisplayName())
         {
-            return true;
+            ((TileEntityDenEnder)par1World.getBlockTileEntity(par2, par3, par4)).setInvName(par6ItemStack.getDisplayName());
         }
-
-        return false;
-    }
-
-    @Override
-    public int getBlockTextureFromSide(int i)
-    {
-        if (i == 1)
-        {
-            return 158;
-        }
-
-        if (i == 0)
-        {
-            return 159 + 16;
-        }
-        else
-        {
-            return 158;
-        }
-    }
-
-    @Override
-    public void updateTick(World world, int i, int j, int k, Random random)
-    {
-        InsertDenenderPearl(world, i, j, k);
-    }
-
-    @Override
-    public int tickRate()
-    {
-        return 100;
-    }
-
-    private void InsertDenenderPearl(World world, int i, int j, int k)
-    {
-        ItemStack pearl = new ItemStack(Mod_DenEnderman_Core.denEnderPearl, 1);
-        TileEntityDenEnder myDBlock = (TileEntityDenEnder) world.getBlockTileEntity(i, j, k);
-
-        if (random.nextInt(2000) == 0)
-        {
-            if (myDBlock != null)
-            {
-                for (int empty = 0; empty < myDBlock.getSizeInventory(); empty++)
-                {
-                    ItemStack itemstackDE = myDBlock.getStackInSlot(empty);
-
-                    if (itemstackDE == null)
-                    {
-                        myDBlock.setInventorySlotContents(empty, pearl.copy());
-                        //System.out.println("Lucky! DenEnderPearl!");
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-	public void onBlockAdded(World par1World, int par2, int par3, int par4)
-    {
-        super.onBlockAdded(par1World, par2, par3, par4);
     }
 
     @Override
     public void breakBlock(World par1World, int par2, int par3, int par4, int par5, int par6)
     {
         TileEntityDenEnder deblock = (TileEntityDenEnder)par1World.getBlockTileEntity(par2, par3, par4);
-        System.out.println(deblock.hashCode());
         label0:
 
         for (int l = 0; l < deblock.getSizeInventory(); l++)
@@ -165,13 +111,14 @@ public class BlockDenEnder extends BlockContainer
         }
         else
         {
-            //ModLoader.openGUI(par5EntityPlayer, new GuiDenEnderBlock(par5EntityPlayer.inventory, tileentitydenender));
         	par5EntityPlayer.openGui(Mod_DenEnderman_Core.instance, 2, world, i, j, k);
             return true;
         }
     }
 
-    private Random random;
-    private IInventory playerinvently;
-    private boolean spawncheck[];
+    public void registerIcons(IconRegister icoreg)
+    {
+    	this.blockIcon = icoreg.registerIcon("denender:dblock");
+    }
+
 }

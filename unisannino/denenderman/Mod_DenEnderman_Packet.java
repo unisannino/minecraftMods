@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -23,7 +24,10 @@ public class Mod_DenEnderman_Packet implements IPacketHandler
 	@Override
 	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player)
 	{
+		World world = Mod_DenEnderman_Core.proxy.getClientWorld();
+		List<Entity> elist = world.loadedEntityList;
 		ByteArrayDataInput dat = ByteStreams.newDataInput(packet.data);
+
 		if(packet.channel.equals("DenEnderman"))
 		{
 			int entityid = dat.readInt();
@@ -37,8 +41,6 @@ public class Mod_DenEnderman_Packet implements IPacketHandler
 				}
 			}
 
-			World world = Mod_DenEnderman_Core.proxy.getClientWorld();
-			List<Entity> elist = world.loadedEntityList;
 			for(int j = 0;j < elist.size(); j++)
 			{
 				Entity entity = (Entity) elist.get(j);
@@ -48,24 +50,33 @@ public class Mod_DenEnderman_Packet implements IPacketHandler
 					farmer.handlePacketdata(items);
 				}
 			}
-		}else
-		if(packet.channel.equals("SeedBullet"))
+		}
+		else
+		if(packet.channel.equals("FarmBlock"))
 		{
-			int entityid = dat.readInt();
-			int seeddamage = dat.readInt();
-			byte seedtype = dat.readByte();;
+			int x = dat.readInt();
+			int y = dat.readInt();
+			int z = dat.readInt();
+			String invname = dat.readLine();
 
-			World world = Mod_DenEnderman_Core.proxy.getClientWorld();
-			List<Entity> elist = world.loadedEntityList;
-			for(int j = 0;j < elist.size(); j++)
+			boolean hasitems = dat.readByte() != 0;
+			int[] items = new int[54 * 3];
+			if(hasitems)
 			{
-				Entity entity = (Entity) elist.get(j);
-				if(entity.entityId == entityid && entity instanceof EntitySeedBullet)
+				for(int i = 0;i < items.length; i++)
 				{
-					EntitySeedBullet bullet = (EntitySeedBullet) entity;
-					bullet.handlePacketdata(seeddamage, seedtype);
+					items[i] = dat.readInt();
 				}
 			}
+
+			TileEntity tentity = world.getBlockTileEntity(x, y, z);
+			if(tentity instanceof TileEntityDenEnder)
+			{
+				TileEntityDenEnder farmblo = (TileEntityDenEnder) tentity;
+				farmblo.handlePacketData(items, invname);
+			}
+
+
 		}
     }
 
@@ -99,25 +110,33 @@ public class Mod_DenEnderman_Packet implements IPacketHandler
 		return packet;
 	}
 
-	public static Packet getPacket(EntitySeedBullet seed)
+	public static Packet getPacket(TileEntityDenEnder farmerblo)
 	{
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream dos = new DataOutputStream(bos);
-		int entityid = seed.entityId;
-		int seeddamage = seed.damage;
-		byte seedtype = seed.type;
-
+		int x = farmerblo.xCoord;
+		int y = farmerblo.yCoord;
+		int z = farmerblo.zCoord;
+		String invname = farmerblo.getInvName();
+		int[] items = farmerblo.buildIntDataList();
+		boolean hasitems = items != null;
 		try
 		{
-			dos.writeInt(entityid);
-			dos.writeInt(seeddamage);
-			dos.writeByte(seedtype);
+			dos.writeByte(hasitems ? 1 : 0);
+			if(hasitems)
+			{
+				for(int i = 0;i < items.length;i++)
+				{
+					dos.writeInt(items[i]);
+				}
+			}
 		}catch(IOException e)
 		{
+			e.getStackTrace();
 		}
 
 		Packet250CustomPayload packet = new Packet250CustomPayload();
-		packet.channel = "SeedBullet";
+		packet.channel = "FarmBlock";
 		packet.data = bos.toByteArray();
 		packet.length = bos.size();
 		packet.isChunkDataPacket = true;

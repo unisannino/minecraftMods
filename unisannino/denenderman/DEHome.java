@@ -59,7 +59,7 @@ public class DEHome
 
     private void updateNumVillagers()
     {
-        List var1 = this.worldObj.getEntitiesWithinAABB(EntityVillager.class, AxisAlignedBB.getAABBPool().addOrModifyAABBInPool((this.center.posX - this.villageRadius), (this.center.posY - 4), (this.center.posZ - this.villageRadius), (this.center.posX + this.villageRadius), (this.center.posY + 4), (this.center.posZ + this.villageRadius)));
+        List var1 = this.worldObj.getEntitiesWithinAABB(EntityVillager.class, AxisAlignedBB.getAABBPool().getAABB((this.center.posX - this.villageRadius), (this.center.posY - 4), (this.center.posZ - this.villageRadius), (this.center.posX + this.villageRadius), (this.center.posY + 4), (this.center.posZ + this.villageRadius)));
         this.numVillagers = var1.size();
 
         if (this.numVillagers == 0)

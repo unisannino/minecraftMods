@@ -21,8 +21,8 @@ public class EntityUniuniSoul extends EntityFarmerSpawner
     }
 
     @Override
-    protected EntityFarmers getFarmer()
+    protected EntityFarmers getFarmer(World world)
     {
-    	return new EntityUniuni(this.worldObj);
+    	return new EntityUniuni(world);
     }
 }

@@ -103,7 +103,7 @@ public class EntityAICuttingAndPlanting extends EntityAIBase
     	ItemStack item = new ItemStack(block.idDropped(meta, this.theFarmers.getRNG(), 0), block.quantityDropped(this.theFarmers.getRNG()) ,block.damageDropped(meta));
 		if(this.theFarmers.inventory.addItemStackToInventory(item))
 		{
-			this.theWorld.setBlockWithNotify(x, y, z, 0);
+			this.theWorld.setBlock(x, y, z, 0);
 			/*
 			ChunkPosition posi = new ChunkPosition(x, y, z);
 			this.theFarmers.checkposition.add(posi);
@@ -166,7 +166,7 @@ public class EntityAICuttingAndPlanting extends EntityAIBase
 		        {
 					if (this.theFarmers.inventory.consumeInventoryItem(itemstack.itemID, itemstack.getItemDamage()))
 					{
-						this.theWorld.setBlockAndMetadataWithNotify(fposX, fposY + h + 1, fposZ, itemstack.itemID, itemstack.getItemDamage());
+						this.theWorld.setBlock(fposX, fposY + h + 1, fposZ, itemstack.itemID, itemstack.getItemDamage(), 3);
 						StepSound stepsound = Block.sapling.stepSound;
 						this.theFarmers.getLookHelper().setLookPosition(fposX, fposYup, fposZ, 10.0F, this.theFarmers.getVerticalFaceSpeed());
 						this.theWorld.playSoundAtEntity(this.theFarmers, stepsound.getStepSound(), stepsound.getPitch(), stepsound.getPitch());

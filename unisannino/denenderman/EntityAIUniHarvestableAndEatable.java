@@ -13,13 +13,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-public class EntityAIUniHervestableAndEatable extends EntityAIBase
+public class EntityAIUniHarvestableAndEatable extends EntityAIBase
 {
 
     private EntityUniuni theFarmers;
     private World theWorld;
 
-    public EntityAIUniHervestableAndEatable(EntityUniuni par1EntityFarmers)
+    public EntityAIUniHarvestableAndEatable(EntityUniuni par1EntityFarmers)
     {
         this.theFarmers = par1EntityFarmers;
         this.theWorld = par1EntityFarmers.worldObj;
@@ -36,7 +36,7 @@ public class EntityAIUniHervestableAndEatable extends EntityAIBase
 
     public void updateTask()
     {
-    	this.hervest(this.theFarmers.posX, this.theFarmers.posY, this.theFarmers.posZ);
+    	this.harvest(this.theFarmers.posX, this.theFarmers.posY, this.theFarmers.posZ);
 
         if(this.theFarmers.getHealth() < this.theFarmers.getMaxHealth())
         {
@@ -44,7 +44,7 @@ public class EntityAIUniHervestableAndEatable extends EntityAIBase
         }
     }
 
-    private void hervest(double posX, double posY, double posZ)
+    private void harvest(double posX, double posY, double posZ)
     {
         int x = MathHelper.floor_double((posX - 1.0D) + this.theFarmers.getRNG().nextDouble() * 2D);
         int y = MathHelper.floor_double(posY);
@@ -63,10 +63,10 @@ public class EntityAIUniHervestableAndEatable extends EntityAIBase
             {
                 stepsound = crops.stepSound;
                 this.theWorld.playSoundAtEntity(this.theFarmers, stepsound.getBreakSound(), stepsound.getPitch(), stepsound.getPitch());
-                this.theWorld.setBlockWithNotify(x, y , z, 0);
+                this.theWorld.setBlock(x, y , z, 0);
                 if(this.theFarmers.inventory.consumeInventoryItem(crops.idDropped(meta, this.theFarmers.getRNG(), 0)))
                 {
-                    this.theWorld.setBlockWithNotify(x, y , z, crops.blockID);
+                    this.theWorld.setBlock(x, y , z, crops.blockID);
                 }
                 crops.dropBlockAsItemWithChance(this.theWorld, x, y, z, 0, 1.0F, 0);
             }else
@@ -74,12 +74,12 @@ public class EntityAIUniHervestableAndEatable extends EntityAIBase
             {
                 stepsound = crops.stepSound;
                 this.theWorld.playSoundAtEntity(this.theFarmers, stepsound.getBreakSound(), stepsound.getPitch(), stepsound.getPitch());
-                this.theWorld.setBlockWithNotify(x, y , z, 0);
+                this.theWorld.setBlock(x, y , z, 0);
                 for(ItemStack item: drop)
                 {
                     if(this.theFarmers.inventory.consumeInventoryItem(item.itemID))
                     {
-                        this.theWorld.setBlockAndMetadataWithNotify(x, y, z, crops.blockID, 0);
+                        this.theWorld.setBlock(x, y, z, crops.blockID, 0, 3);
                     }
                 }
                 crops.dropBlockAsItemWithChance(this.theWorld, x, y, z, 3, 1.0F, 0);
@@ -121,7 +121,7 @@ public class EntityAIUniHervestableAndEatable extends EntityAIBase
 
             EntityItem entityitem = new EntityItem(this.theWorld, x, y, z, itemstack);
             entityitem.delayBeforeCanPickup = 10;
-            if(this.theWorld.setBlockWithNotify(x, y, z, 0))
+            if(this.theWorld.setBlock(x, y, z, 0))
             {
                 this.theWorld.spawnEntityInWorld(entityitem);
             }else

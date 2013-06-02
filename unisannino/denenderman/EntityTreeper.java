@@ -26,18 +26,10 @@ import net.minecraftforge.common.IShearable;
 
 public class EntityTreeper extends EntityFarmers
 {
-	public int timeSinceIgnited;
-	public int lastActiveTime;
-
-
-	private int cutExplosion;
-	private int cutTime;
-	private int leavetype;
-
 	public EntityTreeper(World world)
 	{
 		super(world);
-		texture = "/denender/treeper.png";
+		texture = "/mods/denender/textures/mobs/treeper.png";
 		setSize(0.8F, 2.8F);
         moveSpeed = 0.28F;
 
@@ -51,8 +43,6 @@ public class EntityTreeper extends EntityFarmers
 		setcanPickup(3, Block.leaves.blockID);
 		setcanPickup(4, Mod_DenEnderman_Core.lavender.blockID);
 		setcanPickup(5, Item.shears.itemID);
-
-		setLeavesType();
 
         this.getNavigator().setBreakDoors(true);
         this.getNavigator().setAvoidsWater(true);
@@ -72,6 +62,23 @@ public class EntityTreeper extends EntityFarmers
         this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(7, new EntityAILookIdle(this));
 	}
+
+	protected void entityInit()
+	{
+		super.entityInit();
+		dataWatcher.addObject(20, Integer.valueOf(rand.nextInt(4))); // leaveType
+	}
+
+	public int getLeaveType()
+	{
+		return this.dataWatcher.getWatchableObjectInt(20);
+	}
+
+	public void setLeaveType(int i)
+	{
+		this.dataWatcher.updateObject(20, Integer.valueOf(i));
+	}
+
 
     @Override
     protected boolean isAIEnabled()
@@ -95,26 +102,10 @@ public class EntityTreeper extends EntityFarmers
 		return 13;
 	}
 
-	protected int getLeavesType()
-	{
-		return leavetype;
-	}
-
-	private void setLeavesType()
-	{
-		leavetype = rand.nextInt(4);
-	}
-
 	@Override
 	public float getEyeHeight()
 	{
 		return 2.0F;
-	}
-
-	protected void entityInit()
-	{
-		super.entityInit();
-		dataWatcher.addObject(18, Byte.valueOf((byte) - 1));
 	}
 
 	public void onLivingUpdate()
@@ -158,13 +149,13 @@ public class EntityTreeper extends EntityFarmers
 	public void writeEntityToNBT(NBTTagCompound nbttagcompound)
 	{
 		super.writeEntityToNBT(nbttagcompound);
-		nbttagcompound.setInteger("leaves", leavetype);
+		nbttagcompound.setInteger("leaves", this.getLeaveType());
 	}
 
 	public void readEntityFromNBT(NBTTagCompound nbttagcompound)
 	{
 		super.readEntityFromNBT(nbttagcompound);
-		leavetype = nbttagcompound.getInteger("leaves");
+		this.setLeaveType(nbttagcompound.getInteger("leaves"));
 	}
 
 	@Override
@@ -190,28 +181,11 @@ public class EntityTreeper extends EntityFarmers
 	{
 		if (!worldObj.isRemote && ((BlockSapling)Block.sapling).canPlaceBlockAt(this.worldObj, (int)posX, (int)posY, (int)posZ))
 		{
-			worldObj.setBlockAndMetadataWithNotify((int)posX, (int)posY, (int)posZ, Block.sapling.blockID, leavetype);
+			worldObj.setBlock((int)posX, (int)posY, (int)posZ, Block.sapling.blockID, this.getLeaveType(), 3);
 			worldObj.createExplosion(this, posX, posY, posZ, 0F, true);
 			((BlockSapling)Block.sapling).growTree(worldObj, (int)posX, (int)posY, (int)posZ, worldObj.rand);
 		}
 	}
-
-
-	public float setTreeperFlashTime(float f)
-	{
-		return ((float)lastActiveTime + (float)(timeSinceIgnited - lastActiveTime) * f) / 1F;
-	}
-
-	private int getTreeperState()
-	{
-		return dataWatcher.getWatchableObjectByte(18);
-	}
-
-	private void setTreeperState(int i)
-	{
-		dataWatcher.updateObject(18, Byte.valueOf((byte)i));
-	}
-
 
 	protected int getDropItemId()
 	{
@@ -281,7 +255,7 @@ public class EntityTreeper extends EntityFarmers
         				}
 
                     	mc.effectRenderer.addBlockDestroyEffects(x, y, z, Block.leaves.blockID & 0xfff, Block.leaves.blockID >> 12 & 0xff);
-                    	worldObj.setBlockWithNotify(x, y, z, 0);
+                    	worldObj.setBlock(x, y, z, 0);
                     }
                 }
             }

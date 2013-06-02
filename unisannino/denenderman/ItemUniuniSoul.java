@@ -1,5 +1,6 @@
 package unisannino.denenderman;
 
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemEgg;
@@ -13,12 +14,6 @@ public class ItemUniuniSoul extends ItemEgg
         super(i);
         maxStackSize = 64;
         this.setCreativeTab(CreativeTabs.tabMisc);
-    }
-
-    @Override
-    public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
-    {
-        return 0x41cd34;
     }
 
     @Override
@@ -43,5 +38,10 @@ public class ItemUniuniSoul extends ItemEgg
         }
 
         return itemstack;
+    }
+
+    public void registerIcons(IconRegister iconreg)
+    {
+    	this.itemIcon = iconreg.registerIcon("denender:uniunisoul");
     }
 }

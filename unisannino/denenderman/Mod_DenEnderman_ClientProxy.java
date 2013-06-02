@@ -14,10 +14,10 @@ public class Mod_DenEnderman_ClientProxy extends Mod_DenEnderman_CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(unisannino.denenderman.EntityDenEnderman.class, new RenderDenEnderman());
 		RenderingRegistry.registerEntityRenderingHandler(unisannino.denenderman.EntityUniuni.class, new RenderUniuni());
 		RenderingRegistry.registerEntityRenderingHandler(unisannino.denenderman.EntityTreeper.class, new RenderTreeper());
-		RenderingRegistry.registerEntityRenderingHandler(unisannino.denenderman.EntityDenEnderPearl.class, new RenderThrowingItemColor(Mod_DenEnderman_Core.denEnderPearl.getIconFromDamage(0), new ItemStack(Mod_DenEnderman_Core.denEnderPearl)));
-		RenderingRegistry.registerEntityRenderingHandler(unisannino.denenderman.EntityTreeperSeed.class, new RenderThrowingItemColor(Mod_DenEnderman_Core.treeperSeed.getIconFromDamage(0), new ItemStack(Mod_DenEnderman_Core.treeperSeed)));
-		RenderingRegistry.registerEntityRenderingHandler(unisannino.denenderman.EntityUniuniSoul.class, new RenderThrowingItemColor(Mod_DenEnderman_Core.uniuniSoul.getIconFromDamage(0), new ItemStack(Mod_DenEnderman_Core.uniuniSoul)));
-		RenderingRegistry.registerEntityRenderingHandler(unisannino.denenderman.EntityAppleBomb.class, new RenderThrowingItemColor(Mod_DenEnderman_Core.appleBomb.getIconFromDamage(0), new ItemStack(Mod_DenEnderman_Core.appleBomb)));
+		RenderingRegistry.registerEntityRenderingHandler(unisannino.denenderman.EntityDenEnderPearl.class, new RenderThrowingItemColor(Mod_DenEnderman_Core.denEnderPearl, 0));
+		RenderingRegistry.registerEntityRenderingHandler(unisannino.denenderman.EntityTreeperSeed.class, new RenderThrowingItemColor(Mod_DenEnderman_Core.treeperSeed, 0));
+		RenderingRegistry.registerEntityRenderingHandler(unisannino.denenderman.EntityUniuniSoul.class, new RenderThrowingItemColor(Mod_DenEnderman_Core.uniuniSoul, 0));
+		RenderingRegistry.registerEntityRenderingHandler(unisannino.denenderman.EntityAppleBomb.class, new RenderThrowingItemColor(Mod_DenEnderman_Core.appleBomb, 0));
 		RenderingRegistry.registerEntityRenderingHandler(unisannino.denenderman.EntitySeedBullet.class, new RenderSeedBullet());
 	}
 

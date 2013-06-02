@@ -21,8 +21,8 @@ public class EntityTreeperSeed extends EntityFarmerSpawner
     }
 
     @Override
-    protected EntityFarmers getFarmer()
+    protected EntityFarmers getFarmer(World world)
     {
-    	return new EntityTreeper(this.worldObj);
+    	return new EntityTreeper(world);
     }
 }

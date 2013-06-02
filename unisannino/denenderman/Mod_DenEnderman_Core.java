@@ -33,6 +33,8 @@ public class Mod_DenEnderman_Core
 	@Instance("D.Enderman_unisannino")
 	static Mod_DenEnderman_Core instance;
 
+
+
 	public static int denenblockID = 161;
 	public static int lavenderID = 162;
 	public static int starSandID = 164;
@@ -44,6 +46,7 @@ public class Mod_DenEnderman_Core
 	public static int fSeedsID = 566;
 	public static int appleBombID = 567;
 	public static int seedGunID = 568;
+	public static int seedBulletID = 569;
 
 	public static boolean crying = true;
 	public static boolean toggleXies = false;
@@ -67,41 +70,10 @@ public class Mod_DenEnderman_Core
 	public static Item farmerSeeds;
 	public static Item appleBomb;
 	public static Item seedGun;
+	public static Item seedBullet;
 
 	public static String version;
 
-	public static Material starsand;
-
-	public String lavenderTex = "/denender/terrainde.png";
-	public String seedgunTex = "/denender/itemsde.png";
-	/*
-	int sgtex = ModLoader.addOverride("/gui/items.png", "/denender/seedgun.png");
-	int Ltex = ModLoader.addOverride("/terrain.png", "/denender/lavender.png");
-	*/
-
-	public static boolean forge;
-
-	/*
-	static
-	{
-		try
-		{
-			Method forge = Class.forName("net.minecraft.src.forge.MinecraftForgeClient").getMethod("preloadTexture", new Class[]{String.class});
-			forge.invoke(null, new Object[] {"/denender/terrainde.png" });
-			forge.invoke(null, new Object[] {"/denender/itemsde.png" });
-			Forge = true;
-			System.out.println("Den-Enderman: Found Minecraft Forge.");
-
-		}catch(ClassNotFoundException e)
-		{
-			System.out.println("Den-Enderman: Not Found Minecraft Forge.");
-			Forge = false;
-		}catch(Exception e)
-		{
-			System.out.println("Den-Enderman: Exception. Something happened by your minecraft!");
-		}
-	}
-	*/
 	@PreInit
 	public void preload(FMLPreInitializationEvent event)
 	{
@@ -122,6 +94,7 @@ public class Mod_DenEnderman_Core
 			fSeedsID = conf.get("FarmerSeedID", Configuration.CATEGORY_ITEM, 566).getInt();
 			appleBombID = conf.get("AppleBombID", Configuration.CATEGORY_ITEM, 567).getInt();
 			seedGunID = conf.get("SeedGunID", Configuration.CATEGORY_ITEM, 568).getInt();
+			seedBulletID = conf.get("SeedBulletID", Configuration.CATEGORY_ITEM, 569).getInt();
 
 			Property cryingP = conf.get("isCrying", Configuration.CATEGORY_GENERAL, true);
 			cryingP.comment = "If you choose \"false\", DenEnderman stop crying.";
@@ -149,10 +122,10 @@ public class Mod_DenEnderman_Core
 
 			Property canPickupDEP = conf.get("canPickDenEnder", Configuration.CATEGORY_GENERAL, "37, 38");
 			canPickupDEP.comment = "DenEnderman can pick up items that you wrote here.";
-			canPickupDE  = canPickupDEP.value;
+			canPickupDE  = canPickupDEP.getString();
 			Property canPickupTRP = conf.get("canPickTreeper", Configuration.CATEGORY_GENERAL, "39, 40");
 			canPickupTRP.comment = "Treeper can pick up items that you wrote here.";
-			canPickupTR = canPickupTRP.value;
+			canPickupTR = canPickupTRP.getString();
 
 		}
 		catch(Exception e)
@@ -197,24 +170,25 @@ public class Mod_DenEnderman_Core
 		int deid = denenblockID;
 		int lid = lavenderID;
 		int ssid  = starSandID;
-		int Ltex = 0;
 
-		//MinecraftForgeClient.preloadTexture("/denender/terrainde.png");
+		denenderBlock = new BlockDenEnder(deid).setHardness(10.0F).setStepSound(Block.soundStoneFootstep).setUnlocalizedName("denenderblock");
+		lavender = new BlockFlowerDenender(lid).setHardness(0.0F).setStepSound(Block.soundGrassFootstep).setUnlocalizedName("lavender");
+		starSand = new BlockStarSandlayer(ssid).setHardness(0.1F).setStepSound(Block.soundSandFootstep).setUnlocalizedName("unisand").setLightOpacity(0);
 
-		denenderBlock = new BlockDenEnder(deid).setHardness(0.6F).setStepSound(Block.soundGrassFootstep).setBlockName("Denender");
-		lavender = new BlockFlowerForge(lid, Ltex).setHardness(0.0F).setStepSound(Block.soundGrassFootstep).setBlockName("lavender");
-		starSand = new BlockStarSandlayer(ssid, 18).setHardness(0.1F).setStepSound(Block.soundSandFootstep).setBlockName("layeredsand").setLightOpacity(0);
-
-		GameRegistry.registerBlock(denenderBlock, "DenEnder Block");
+		GameRegistry.registerBlock(denenderBlock, "Farmers Block");
 		GameRegistry.registerBlock(lavender, "Lavender");
 		GameRegistry.registerBlock(starSand, "Uni Sand");
-		LanguageRegistry.addName(denenderBlock, "DenEnder Block");
+		LanguageRegistry.addName(denenderBlock, "Farmers Block");
 		LanguageRegistry.addName(lavender, "Lavender");
 		LanguageRegistry.addName(starSand, "Uni Sand");
-		LanguageRegistry.instance().addNameForObject(denenderBlock,"ja_JP", "田園ダーブロック");
+		LanguageRegistry.instance().addNameForObject(denenderBlock,"ja_JP", "ファーマーズブロック");
 		LanguageRegistry.instance().addNameForObject(lavender,"ja_JP", "ラベンダー");
 		LanguageRegistry.instance().addNameForObject(starSand,"ja_JP", "うにうにの粉");
+
 		GameRegistry.registerTileEntity(TileEntityDenEnder.class, "DenEnder");
+		LanguageRegistry.instance().addStringLocalization("container.denender", "Crops");
+		LanguageRegistry.instance().addStringLocalization("container.denender", "ja_JP", "作物");
+
 	}
 
 	private void registItemsForge()
@@ -226,16 +200,19 @@ public class Mod_DenEnderman_Core
 		int fsid =  fSeedsID;
 		int abid =  appleBombID;
 		int sgid = seedGunID;
+		int sbid = seedBulletID;
 
 		//MinecraftForgeClient.preloadTexture("/denender/itemsde.png");
 
-		denEnderPearl = new ItemDenEnderPearl(depid).setIconCoord(11, 6).setItemName("DenEnderPearl");
-		treeperSeed = new ItemTreeperSeed(tsid).setIconCoord(13, 3).setItemName("Treeper");
-		uniuniSoul = new ItemUniuniSoul(uusid).setIconCoord(7, 3).setItemName("UniuniSoul");
-		starPowder = new ItemStarPowder(spid).setIconCoord(14, 0).setItemName("UniPowder");
-		farmerSeeds = new ItemFarmerSeeds(fsid).setIconCoord(13, 3).setItemName("FarmerSeeds");
-		appleBomb = new ItemAppleBomb(abid).setIconCoord(10, 0).setItemName("AppleBomb");
-		seedGun = new ItemSeedGun(sgid).setIconCoord(0, 0).setItemName("SeedGun");
+		denEnderPearl = new ItemDenEnderPearl(depid).setUnlocalizedName("DenEnderPearl");
+		treeperSeed = new ItemTreeperSeed(tsid).setUnlocalizedName("Treeper");
+		uniuniSoul = new ItemUniuniSoul(uusid).setUnlocalizedName("UniuniSoul");
+		starPowder = new ItemStarPowder(spid).setUnlocalizedName("UniPowder");
+		farmerSeeds = new ItemFarmerSeeds(fsid).setUnlocalizedName("FarmerSeeds");
+		appleBomb = new ItemAppleBomb(abid).setUnlocalizedName("AppleBomb");
+		seedGun = new ItemSeedGun(sgid).setUnlocalizedName("SeedGun");
+		seedBullet = new ItemSeedBullet(sbid).setUnlocalizedName("SeedBullet");
+
 
 		LanguageRegistry.addName(denEnderPearl, "DenEnder Pearl");
 		LanguageRegistry.addName(treeperSeed, "Treeper Seed");
@@ -244,7 +221,7 @@ public class Mod_DenEnderman_Core
 		LanguageRegistry.addName(farmerSeeds, "Lavender Seed");
 		LanguageRegistry.addName(appleBomb, "Apple Bomb");
 		LanguageRegistry.addName(seedGun, "Seed Gun");
-		//ModLoader.addName(new ItemStack(Item.itemsList[this.SeedGun.shiftedIndex], 1, 1), "Tane-Ga-Shima");
+		LanguageRegistry.addName(seedBullet, "Seed Bullet");
 
 		LanguageRegistry.instance().addNameForObject(denEnderPearl,"ja_JP", "田園ダーパール");
 		LanguageRegistry.instance().addNameForObject(treeperSeed,"ja_JP", "ツリーパーの種");
@@ -253,7 +230,8 @@ public class Mod_DenEnderman_Core
 		LanguageRegistry.instance().addNameForObject(farmerSeeds,"ja_JP", "ラベンダーの種");
 		LanguageRegistry.instance().addNameForObject(appleBomb,"ja_JP", "リンゴ爆弾");
 		LanguageRegistry.instance().addNameForObject(seedGun,"ja_JP", "種鉄砲");
-		//ModLoader.addName(new ItemStack(Item.itemsList[this.SeedGun.shiftedIndex], 1, 1),"ja_JP", "種子島");
+		LanguageRegistry.instance().addNameForObject(seedBullet, "ja_JP", "種鉄砲の弾");
+
 	}
 
 	private void addEntities()
@@ -263,10 +241,10 @@ public class Mod_DenEnderman_Core
 		EntityRegistry.registerModEntity(EntityDenEnderPearl.class, "DenEnderPearl", 1, this, 64, 10, true);
 		EntityRegistry.registerModEntity(EntityTreeperSeed.class, "TreeperSeed", 2, this, 64, 10, true);
 		EntityRegistry.registerModEntity(EntityUniuniSoul.class, "UniuniSoul", 3, this, 64, 10, true);
-		EntityRegistry.registerModEntity(EntitySeedBullet.class, "SeedBullet", 4, this, 64, 10, true);
-		EntityRegistry.registerModEntity(EntityAppleBomb.class, "ApplerBomb", 5, this, 64, 10, true);
+		EntityRegistry.registerModEntity(EntitySeedBullet.class, "SeedBullet", 4, this, 64, 3, true);
+		EntityRegistry.registerModEntity(EntityAppleBomb.class, "ApplerBomb", 5, this, 64, 3, true);
 
-		EntityRegistry.registerGlobalEntityID(EntityDenEnderman.class, "DenEnderman", EntityRegistry.findGlobalUniqueEntityId());
+		EntityRegistry.registerGlobalEntityID(EntityDenEnderman.class, "DenEnderman", EntityRegistry.findGlobalUniqueEntityId(), 0 , 0);
 		EntityRegistry.registerGlobalEntityID(EntityUniuni.class, "Uniuni", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerGlobalEntityID(EntityTreeper.class, "Treeper", EntityRegistry.findGlobalUniqueEntityId());
 
@@ -297,13 +275,28 @@ public class Mod_DenEnderman_Core
 				{
 					Item.appleRed, Item.gunpowder, this.starPowder
 				});
+		GameRegistry.addShapelessRecipe(new ItemStack(this.seedBullet, 1, 0), new Object[]
+				{
+					this.starPowder, Item.seeds
+				});
+		GameRegistry.addShapelessRecipe(new ItemStack(this.seedBullet, 1, 1), new Object[]
+		        {
+		            this.starPowder, Item.melonSeeds
+		        });
+		GameRegistry.addShapelessRecipe(new ItemStack(this.seedBullet, 1, 2), new Object[]
+		        {
+		            this.starPowder, Item.pumpkinSeeds
+		        });
+		GameRegistry.addShapelessRecipe(new ItemStack(this.seedBullet, 1, 3), new Object[]
+		        {
+		            this.starPowder, new ItemStack(Item.dyePowder, 1, 3)
+		        });
 
 		GameRegistry.addRecipe(new ItemStack(this.denenderBlock, 1), new Object[]
 				{
-					"WWW", "SEH", "PGM",
-					'S', Item.seeds, 'W', Item.wheat, 'H',
-					Item.hoeGold, 'E', Item.enderPearl,
-					'M', Block.melon, 'P', Block.pumpkin, 'G', Block.blockGold,
+					"EBE", "BWB", "EBE",
+					'B', Block.brick, 'E', Item.emerald,
+					'W', Item.wheat
 				});
 		GameRegistry.addRecipe(new ItemStack(this.denEnderPearl, 1), new Object[]
 				{

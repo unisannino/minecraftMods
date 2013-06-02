@@ -1,5 +1,6 @@
 package unisannino.denenderman;
 
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -46,4 +47,9 @@ public class ItemFarmerSeeds extends Item implements IPlantable
 	{
 		return 0;
 	}
+
+    public void registerIcons(IconRegister iconreg)
+    {
+    	this.itemIcon = iconreg.registerIcon("denender:farmerseed");
+    }
 }

@@ -19,13 +19,12 @@ import net.minecraft.world.World;
 
 public class EntityUniuni extends EntityFarmers
 {
-    private boolean eatingmelon;
     private static int[] eatableIBlocks = {Block.tallGrass.blockID, Block.vine.blockID, Block.crops.blockID, Block.leaves.blockID, Block.melon.blockID};
 
     public EntityUniuni(World world)
     {
         super(world);
-        texture = "/denender/uniuni.png";
+        texture = "/mods/denender/textures/mobs/uniuni.png";
         setSize(0.8F, 0.6F);
         yOffset = 0.16F;
 		favoriteItem = Mod_DenEnderman_Core.lavender.blockID;
@@ -34,7 +33,7 @@ public class EntityUniuni extends EntityFarmers
         this.getNavigator().setBreakDoors(true);
         this.getNavigator().setAvoidsWater(true);
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(0, new EntityAIUniHervestableAndEatable(this));
+        this.tasks.addTask(0, new EntityAIUniHarvestableAndEatable(this));
         this.tasks.addTask(0, new EntityAIPutDEBlock(this));
         this.tasks.addTask(1, new EntityAITempt(this, this.moveSpeed, this.likeItem, false));
         this.tasks.addTask(1, this.aiSit);
@@ -48,6 +47,23 @@ public class EntityUniuni extends EntityFarmers
         this.tasks.addTask(7, new EntityAILookIdle(this));
         //this.targetTasks.addTask(1, new EntityAINearestAttackableTarget(this, EntityDenEnderman.class, 16.0F, 0, true));
     }
+
+    @Override
+    protected void entityInit()
+	{
+    	super.entityInit();
+		this.dataWatcher.addObject(20, Byte.valueOf((byte) 0)); //eatingMelons
+	}
+
+    public void setEatingMelons(boolean b)
+	{
+		this.dataWatcher.updateObject(20, Byte.valueOf((byte) (b ? 1 : 0)));
+	}
+
+    public boolean getEatingMelons()
+	{
+    	return this.dataWatcher.getWatchableObjectByte(20) == 1;
+	}
 
     @Override
     protected void addConfigPickupItems()
@@ -107,7 +123,7 @@ public class EntityUniuni extends EntityFarmers
 
                 if (worldObj.getBlockId(l11, j11, k1) == 0 && Mod_DenEnderman_Core.starSand.canPlaceBlockAt(worldObj, l11, j11, k1))
                 {
-                    worldObj.setBlockWithNotify(l11, j11, k1, Mod_DenEnderman_Core.starSandID);
+                    worldObj.setBlock(l11, j11, k1, Mod_DenEnderman_Core.starSandID);
                 }
             }
         }
@@ -272,16 +288,16 @@ public class EntityUniuni extends EntityFarmers
                     {
                         StepSound stepsound = Block.grass.stepSound;
 
-                        if (eatingmelon)
+                        if (this.getEatingMelons())
                         {
                             stepsound = Block.melon.stepSound;
                         }
 
                         world.playSoundAtEntity(this, stepsound.getBreakSound(), stepsound.getPitch(), stepsound.getPitch());
-                        world.setBlockWithNotify(x, y, z, 0);
+                        world.setBlock(x, y, z, 0);
                         ItemStack itemstack = new ItemStack(Item.seeds, 1);
 
-                        if (eatingmelon)
+                        if (this.getEatingMelons())
                         {
                             itemstack = new ItemStack(Item.melonSeeds, 1);
                         }
@@ -290,7 +306,7 @@ public class EntityUniuni extends EntityFarmers
                         entityitem.delayBeforeCanPickup = 10;
                         worldObj.spawnEntityInWorld(entityitem);
 
-                        if (!eatingmelon)
+                        if (!this.getEatingMelons())
                         {
                             heal(1);
                         }
@@ -299,7 +315,7 @@ public class EntityUniuni extends EntityFarmers
                             heal(this.getMaxHealth());
                         }
 
-                        eatingmelon = false;
+                        this.setEatingMelons(false);
                         //pathToCrop = null;
                     }
                 }
@@ -377,8 +393,8 @@ public class EntityUniuni extends EntityFarmers
                     {
                             StepSound stepsound = crops.stepSound;
                             worldObj.playSoundAtEntity(this, stepsound.getBreakSound(), stepsound.getPitch(), stepsound.getPitch());
-                            world.setBlockWithNotify(x, y , z, 0);
-                            world.setBlockWithNotify(x, y , z, crops.blockID);
+                            world.setBlock(x, y , z, 0);
+                            world.setBlock(x, y , z, crops.blockID);
                             crops.dropBlockAsItemWithChance(worldObj, x, y, z, 0, 1.0F, 0);
                             //pathToCrop = null;
                     }
@@ -435,7 +451,7 @@ public class EntityUniuni extends EntityFarmers
                     {
                             StepSound stepsound = crops.stepSound;
                             worldObj.playSoundAtEntity(this, stepsound.getBreakSound(), stepsound.getPitch(), stepsound.getPitch());
-                            world.setBlockAndMetadataWithNotify(x, y, z, crops.blockID, 0);
+                            world.setBlock(x, y, z, crops.blockID, 0, 3);
                             crops.dropBlockAsItemWithChance(worldObj, x, y, z, 3, 1.0F, 0);
                             //pathToCrop = null;
                     }

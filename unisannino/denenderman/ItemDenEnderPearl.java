@@ -1,12 +1,14 @@
 package unisannino.denenderman;
 
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemEgg;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class ItemDenEnderPearl extends ItemEgg
+public class ItemDenEnderPearl extends Item
 {
     public ItemDenEnderPearl(int i)
     {
@@ -43,5 +45,11 @@ public class ItemDenEnderPearl extends ItemEgg
         }
 
         return itemstack;
+    }
+
+    @Override
+    public void registerIcons(IconRegister iconreg)
+    {
+        this.itemIcon = Item.enderPearl.getIconFromDamage(0);
     }
 }

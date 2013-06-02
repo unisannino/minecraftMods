@@ -4,6 +4,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -14,74 +16,59 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderSeedBullet extends Render
 {
-    /**
-     * Have the icon index (in items.png) that will be used to render the image. Currently, eggs and snowballs uses this
-     * classes.
-     */
-    private int itemIconIndex;
-
     public RenderSeedBullet()
     {
-    	itemIconIndex = 0;
+
     }
 
-    /**
-     * Actually renders the given argument. This is a synthetic bridge method, always casting down its argument and then
-     * handing it off to a worker function which does the actual work. In all probabilty, the class Render is generic
-     * (Render<T extends Entity) and this method has signature public void doRender(T entity, double d, double d1,
-     * double d2, float f, float f1). But JAD is pre 1.5 so doesn't do that.
-     */
     public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9)
     {
+    	this.renderingBullet((EntitySeedBullet)par1Entity, par2, par4, par6, par8, par9);
+    }
+
+    private void renderingBullet(EntitySeedBullet bullet, double x, double y, double z, float par8, float par9)
+    {
+    	Icon icon = Item.seeds.getIconFromDamage(0);
+
         GL11.glPushMatrix();
-        GL11.glTranslatef((float)par2, (float)par4, (float)par6);
+        GL11.glTranslatef((float)x, (float)y, (float)z);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        GL11.glScalef(0.5F, 0.5F, 0.5F);
-        loadTexture("/gui/items.png");
+        GL11.glRotatef(bullet.prevRotationYaw + (bullet.rotationYaw - bullet.prevRotationYaw) * par9 - 90.0F, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(bullet.prevRotationPitch + (bullet.rotationPitch - bullet.prevRotationPitch) * par9, 0.0F, 0.0F, 1.0F);
+        this.loadTexture("/mods/denender/textures/items/shootedbullet.png");
         Tessellator tessellator = Tessellator.instance;
 
-        if(par1Entity != null && par1Entity instanceof EntitySeedBullet)
+        int k1 = ItemSeedBullet.colorTable[bullet.getBulletType()];
+        float f3 = 1.0F;
+        float f9 = (k1 >> 16 & 0xff) / 255F;
+        float f12 = (k1 >> 8 & 0xff) / 255F;
+        float f14 = (k1 & 0xff) / 255F;
+        GL11.glColor4f(f9 * f3, f12 * f3, f14 * f3, 1.0F);
+
+        float minU = 0.0f;
+        float maxU = 17.0f / 32.0f;
+        float minV = 0.0f;
+        float maxV = 12.0f / 32.0f;
+        float size = 0.0425f;
+
+        GL11.glRotatef(45.0F, 1.0F, 0.0F, 0.0F);
+        GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
+        GL11.glTranslatef(0.0f, 0.1425f, 0.0f);
+        GL11.glScalef(size, size, size);
+        for (int i = 0; i < 4; ++i)
         {
-        	EntitySeedBullet seed = (EntitySeedBullet)par1Entity;
-        	if(seed.type == 1)
-        	{
-        		this.itemIconIndex = Item.seeds.getIconFromDamage(0);
-        	}else
-        	if(seed.type == 2)
-        	{
-        		this.itemIconIndex = Item.melonSeeds.getIconFromDamage(0);
-        	}else
-        	if(seed.type == 3)
-        	{
-        		this.itemIconIndex = Item.pumpkinSeeds.getIconFromDamage(0);
-        	}else
-        	{
-        		this.itemIconIndex = Item.seeds.getIconFromDamage(0);
-        	}
+            GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
+            GL11.glNormal3f(1.0F, 0.0F, 0.0F);
+            tessellator.startDrawingQuads();
+            tessellator.addVertexWithUV(-8.0D, -2.0D, 0.0D, (double)minU, (double)minV);
+            tessellator.addVertexWithUV(8.0D, -2.0D, 0.0D, (double)maxU, (double)minV);
+            tessellator.addVertexWithUV(8.0D, 2.0D, 0.0D, (double)maxU, (double)maxV);
+            tessellator.addVertexWithUV(-8.0D, 2.0D, 0.0D, (double)minU, (double)maxV);
+            tessellator.draw();
         }
 
-        func_40265_a(tessellator, itemIconIndex);
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         GL11.glPopMatrix();
     }
 
-    private void func_40265_a(Tessellator par1Tessellator, int par2)
-    {
-        float f = ((par2 % 16) * 16 + 0) / 256F;
-        float f1 = ((par2 % 16) * 16 + 16) / 256F;
-        float f2 = ((par2 / 16) * 16 + 0) / 256F;
-        float f3 = ((par2 / 16) * 16 + 16) / 256F;
-        float f4 = 1.0F;
-        float f5 = 0.5F;
-        float f6 = 0.25F;
-        GL11.glRotatef(180F - renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(-renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-        par1Tessellator.startDrawingQuads();
-        par1Tessellator.setNormal(0.0F, 1.0F, 0.0F);
-        par1Tessellator.addVertexWithUV(0.0F - f5, 0.0F - f6, 0.0D, f, f3);
-        par1Tessellator.addVertexWithUV(f4 - f5, 0.0F - f6, 0.0D, f1, f3);
-        par1Tessellator.addVertexWithUV(f4 - f5, f4 - f6, 0.0D, f1, f2);
-        par1Tessellator.addVertexWithUV(0.0F - f5, f4 - f6, 0.0D, f, f2);
-        par1Tessellator.draw();
-    }
 }

@@ -15,13 +15,13 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
-public class EntityAIPlantAndHervestCrops extends EntityAIBase
+public class EntityAIPlantAndHarvestCrops extends EntityAIBase
 {
 
     private EntityDenEnderman theFarmers;
     private World theWorld;
 
-    public EntityAIPlantAndHervestCrops(EntityDenEnderman par1EntityFarmers)
+    public EntityAIPlantAndHarvestCrops(EntityDenEnderman par1EntityFarmers)
     {
         this.theFarmers = par1EntityFarmers;
         this.theWorld = par1EntityFarmers.worldObj;
@@ -106,13 +106,13 @@ public class EntityAIPlantAndHervestCrops extends EntityAIBase
                     if (this.theFarmers.inventory.addItemStackToInventory(new ItemStack(crops.idDropped(cropsMeta, rand, 0), 1, 0)))
                     {
                     	crops.dropBlockAsItemWithChance(this.theWorld, fposX, fposYup, fposZ, 7, 1.0F, 0);
-                    	this.theWorld.setBlockWithNotify(fposX, fposYup, fposZ, 0);
+                    	this.theWorld.setBlock(fposX, fposYup, fposZ, 0);
                     	//this.theFarmers.facetoPath(i, l3, j1, 100F, 100F);
             			this.theFarmers.getLookHelper().setLookPosition(fposX, fposYup, fposZ, 10.0F, (float)this.theFarmers.getVerticalFaceSpeed());
                         this.theWorld.playSoundAtEntity(this.theFarmers, "damage.fallbig", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
                         if(!this.theFarmers.worldObj.isRemote)
                         {
-                        	this.theFarmers.hervestSeed = true;
+                        	this.theFarmers.setHarvestCrops(true);
                         }
                     }
                 }else
@@ -157,10 +157,10 @@ public class EntityAIPlantAndHervestCrops extends EntityAIBase
                 	//this.theFarmers.facetoPath(i, l3, j1, 100F, 100F);
         			this.theFarmers.getLookHelper().setLookPosition(fposX, fposYup, fposZ, 10.0F, (float)this.theFarmers.getVerticalFaceSpeed());
                     this.theWorld.playSoundAtEntity(this.theFarmers, "damage.fallbig", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
-                    this.theWorld.setBlockWithNotify(fposX, fposYup, fposZ, 0);
+                    this.theWorld.setBlock(fposX, fposYup, fposZ, 0);
                     if(!this.theFarmers.worldObj.isRemote)
                     {
-                    	this.theFarmers.hervestSeed = true;
+                    	this.theFarmers.setHarvestCrops(true);
                     }
                 }
             }
@@ -172,10 +172,10 @@ public class EntityAIPlantAndHervestCrops extends EntityAIBase
                 	//this.theFarmers.facetoPath(i, l3, j1, 100F, 100F);
         			this.theFarmers.getLookHelper().setLookPosition(fposX, fposYup, fposZ, 10.0F, (float)this.theFarmers.getVerticalFaceSpeed());
                     this.theWorld.playSoundAtEntity(this.theFarmers, "damage.fallbig", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
-                    this.theWorld.setBlockWithNotify(fposX, fposYup, fposZ, 0);
+                    this.theWorld.setBlock(fposX, fposYup, fposZ, 0);
                     if(!this.theFarmers.worldObj.isRemote)
                     {
-                    	this.theFarmers.hervestSeed = true;
+                    	this.theFarmers.setHarvestCrops(true);
                     }
                 }
             }
@@ -203,7 +203,7 @@ public class EntityAIPlantAndHervestCrops extends EntityAIBase
     			this.theFarmers.getLookHelper().setLookPosition(fposX, fposYup, fposZ, 10.0F, (float)this.theFarmers.getVerticalFaceSpeed());
                 StepSound stepsound1 = Block.tilledField.stepSound;
                 this.theWorld.playSoundAtEntity(this.theFarmers, stepsound1.getStepSound(), stepsound1.getPitch(), stepsound1.getPitch());
-                this.theWorld.setBlockWithNotify(fposX, fposY, fposZ, Block.tilledField.blockID);
+                this.theWorld.setBlock(fposX, fposY, fposZ, Block.tilledField.blockID);
             }
 
             /*
@@ -285,7 +285,7 @@ public class EntityAIPlantAndHervestCrops extends EntityAIBase
                                 			this.theFarmers.getLookHelper().setLookPosition(fposX, fposYup, fposZ, 100F, 100F);
                                             StepSound stepsound2 = Block.crops.stepSound;
                                             this.theWorld.playSoundAtEntity(this.theFarmers, stepsound2.getStepSound(), stepsound2.getPitch(), stepsound2.getPitch());
-        									this.theWorld.setBlockWithNotify(fposX, fposYup, fposZ, cropblock);
+        									this.theWorld.setBlock(fposX, fposYup, fposZ, cropblock);
                                 		}
                                 	}
                             	}
@@ -306,7 +306,7 @@ public class EntityAIPlantAndHervestCrops extends EntityAIBase
                                 			this.theFarmers.getLookHelper().setLookPosition(fposX, fposYup, fposZ, 100F, 100F);
                                             StepSound stepsound2 = Block.crops.stepSound;
                                             this.theWorld.playSoundAtEntity(this.theFarmers, stepsound2.getStepSound(), stepsound2.getPitch(), stepsound2.getPitch());
-        									this.theWorld.setBlockWithNotify(fposX, fposYup, fposZ, cropblock);
+        									this.theWorld.setBlock(fposX, fposYup, fposZ, cropblock);
                                 		}
                                 	}
                             	}
@@ -349,7 +349,7 @@ public class EntityAIPlantAndHervestCrops extends EntityAIBase
                         StepSound stepsound1 = Block.plantRed.stepSound;
             			this.theFarmers.getLookHelper().setLookPosition(fposX, fposYup, fposZ, 100F, 100F);
                         this.theWorld.playSoundAtEntity(this.theFarmers, stepsound1.getStepSound(), stepsound1.getPitch(), stepsound1.getPitch());
-                        this.theWorld.setBlockWithNotify(fposX, l14, fposZ, Mod_DenEnderman_Core.lavender.blockID);
+                        this.theWorld.setBlock(fposX, l14, fposZ, Mod_DenEnderman_Core.lavender.blockID);
                     }
                 }
             }

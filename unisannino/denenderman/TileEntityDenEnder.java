@@ -1,19 +1,28 @@
 package unisannino.denenderman;
 
+import java.util.Random;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockDaylightDetector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 public class TileEntityDenEnder extends TileEntity implements IInventory
 {
     private ItemStack mainInv[];
+    private Random rand;
+    private String invName;
 
     public TileEntityDenEnder()
     {
         mainInv = new ItemStack[54];
+        this.rand = new Random();
     }
 
     @Override
@@ -27,6 +36,47 @@ public class TileEntityDenEnder extends TileEntity implements IInventory
     {
         return mainInv[i];
     }
+
+	public int[] buildIntDataList()
+	{
+		int[] itemsdata = new int[this.mainInv.length * 3];
+		int i = 0;
+		for(ItemStack is : this.mainInv)
+		{
+			if(is != null)
+			{
+				itemsdata[i++] = is.itemID;
+				itemsdata[i++] = is.getItemDamage();
+				itemsdata[i++] = is.stackSize;
+			}else
+			{
+				itemsdata[i++] = 0;
+				itemsdata[i++] = 0;
+				itemsdata[i++] = 0;
+			}
+		}
+		return itemsdata;
+	}
+
+	@Override
+    public void updateEntity()
+    {
+        this.generateLavender(this.getWorldObj(), this.xCoord, this.yCoord, this.zCoord);
+    }
+
+    private void generateLavender(World world, int i, int j, int k)
+	{
+		if(world.isDaytime() && world.getWorldTime() == 6000)
+		{
+			int x = i + -4 + this.rand.nextInt(8);
+			int z = k + -4 + this.rand.nextInt(8);
+
+			if(world.getBlockId(x, j, z) == 0 && world.canBlockSeeTheSky(x, j, z) && world.getBlockId(x, j - 1, z) == Block.grass.blockID)
+			{
+				world.setBlock(x, j, z, Mod_DenEnderman_Core.lavender.blockID);
+			}
+		}
+	}
 
     @Override
 	public ItemStack decrStackSize(int i, int j)
@@ -55,6 +105,11 @@ public class TileEntityDenEnder extends TileEntity implements IInventory
         {
             return null;
         }
+    }
+
+    public Packet getDescriptionPacket()
+    {
+        return Mod_DenEnderman_Packet.getPacket(this);
     }
 
     @Override
@@ -86,9 +141,20 @@ public class TileEntityDenEnder extends TileEntity implements IInventory
     }
 
     @Override
-	public String getInvName()
+    public String getInvName()
     {
-        return "Crops";
+        return this.isInvNameLocalized() ? this.invName : "container.denender";
+    }
+
+    @Override
+    public boolean isInvNameLocalized()
+    {
+        return this.invName != null && this.invName.length() > 0;
+    }
+
+    public void setInvName(String par1Str)
+    {
+        this.invName = par1Str;
     }
 
     @Override
@@ -107,6 +173,11 @@ public class TileEntityDenEnder extends TileEntity implements IInventory
             {
                 mainInv[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
             }
+        }
+
+        if (nbttagcompound.hasKey("CustomName"))
+        {
+            this.invName = nbttagcompound.getString("CustomName");
         }
     }
 
@@ -128,6 +199,11 @@ public class TileEntityDenEnder extends TileEntity implements IInventory
         }
 
         nbttagcompound.setTag("Items", nbttaglist);
+
+        if (this.isInvNameLocalized())
+        {
+            nbttagcompound.setString("CustomName", this.invName);
+        }
     }
 
     @Override
@@ -169,4 +245,42 @@ public class TileEntityDenEnder extends TileEntity implements IInventory
 	public void closeChest()
     {
     }
+
+	@Override
+	public boolean isStackValidForSlot(int i, ItemStack itemstack)
+	{
+		return false;
+	}
+
+	public void handlePacketData(int[] items, String names)
+	{
+		if(items != null)
+		{
+			int i = 0;
+			if(items.length < this.mainInv.length * 3)
+			{
+				return;
+			}
+
+			for(int j = 0; j < this.mainInv.length; j++)
+			{
+				if(items[i + 2] != 0)
+				{
+					ItemStack is = new ItemStack(items[i], items[i + 2], items[i + 1]);
+					this.mainInv[j] = is;
+				}else
+				{
+					this.mainInv[j] = null;
+				}
+				i += 3;
+			}
+		}
+
+		if (names != null)
+		{
+			this.setInvName(names);
+		}
+	}
+
+
 }

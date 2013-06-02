@@ -4,8 +4,10 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.AxisAlignedBB;
@@ -14,9 +16,9 @@ import net.minecraft.world.World;
 
 public class BlockStarSandlayer extends Block
 {
-    protected BlockStarSandlayer(int i, int j)
+    protected BlockStarSandlayer(int i)
     {
-        super(i, j, Material.circuits);
+        super(i, Material.circuits);
         setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
         setTickRandomly(true);
         rand = new Random();
@@ -29,7 +31,7 @@ public class BlockStarSandlayer extends Block
 
         if (l >= 3)
         {
-            return AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(i + minX, j + minY, k + minZ, i + maxX, j + 0.5F, k + maxZ);
+            return AxisAlignedBB.getAABBPool().getAABB(i + minX, j + minY, k + minZ, i + maxX, j + 0.5F, k + maxZ);
         }
         else
         {
@@ -93,7 +95,7 @@ public class BlockStarSandlayer extends Block
 
         if (rand.nextInt(10) == 0)
         {
-            world.setBlockWithNotify(i, j, k, 0);
+            world.setBlock(i, j, k, 0);
         }
     }
 
@@ -101,7 +103,7 @@ public class BlockStarSandlayer extends Block
     {
         if (!canPlaceBlockAt(world, i, j, k))
         {
-            world.setBlockWithNotify(i, j, k, 0);
+            world.setBlock(i, j, k, 0);
             return false;
         }
         else
@@ -121,7 +123,7 @@ public class BlockStarSandlayer extends Block
         EntityItem entityitem = new EntityItem(world, i + d, j + d1, k + d2, new ItemStack(i1, 1, 0));
         entityitem.delayBeforeCanPickup = 10;
         world.spawnEntityInWorld(entityitem);
-        world.setBlockWithNotify(i, j, k, 0);
+        world.setBlock(i, j, k, 0);
         entityplayer.addStat(StatList.mineBlockStatArray[blockID], 1);
     }
 
@@ -140,7 +142,7 @@ public class BlockStarSandlayer extends Block
     @Override
 	public void updateTick(World world, int i, int j, int k, Random random)
     {
-        world.setBlockWithNotify(i, j, k, 0);
+        world.setBlock(i, j, k, 0);
     }
 
     @Override
@@ -157,6 +159,12 @@ public class BlockStarSandlayer extends Block
     }
 
     private Random rand;
+
+    @Override
+    public void registerIcons(IconRegister iconreg)
+    {
+        this.blockIcon = Block.sand.getIcon(0, 0);
+    }
 
     //ここからforge独自のメソッドを利用
 

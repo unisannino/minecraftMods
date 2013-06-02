@@ -1,7 +1,9 @@
 package unisannino.denenderman;
 
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemEgg;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -17,7 +19,6 @@ public class ItemAppleBomb extends ItemEgg
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
     public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
     {
@@ -43,10 +44,17 @@ public class ItemAppleBomb extends ItemEgg
         if (!world.isRemote)
         {
         	EntityAppleBomb entity = new EntityAppleBomb(world, entityplayer);
-            world.spawnEntityInWorld(entity);
             entity.setThrowableHeading(entity.motionX, entity.motionY + 1.4, entity.motionZ, 0.5F, 1.5F);
+            world.spawnEntityInWorld(entity);
+
         }
 
         return itemstack;
+    }
+
+    @Override
+    public void registerIcons(IconRegister icoreg)
+    {
+        this.itemIcon = Item.appleRed.getIconFromDamage(0);
     }
 }

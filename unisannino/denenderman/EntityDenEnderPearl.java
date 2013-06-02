@@ -21,8 +21,8 @@ public class EntityDenEnderPearl extends EntityFarmerSpawner
     }
 
     @Override
-    protected EntityFarmers getFarmer()
+    protected EntityFarmers getFarmer(World world)
     {
-    	return new EntityDenEnderman(this.worldObj);
+    	return new EntityDenEnderman(world);
     }
 }

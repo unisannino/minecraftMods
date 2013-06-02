@@ -49,7 +49,10 @@ public class InventoryFarmers implements IInventory
         return this.currentItem < 9 && this.currentItem >= 0 ? this.mainInventory[this.currentItem] : null;
     }
 
-    public static int func_70451_h()
+    /**
+     * Get the size of the player hotbar inventory
+     */
+    public static int getHotbarSize()
     {
         return 9;
     }
@@ -706,4 +709,16 @@ public class InventoryFarmers implements IInventory
     {
     	return this.farmer.entityId;
     }
+
+	@Override
+	public boolean isInvNameLocalized()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isStackValidForSlot(int i, ItemStack itemstack)
+	{
+		return false;
+	}
 }
