@@ -63,6 +63,7 @@ public class EntityTreeper extends EntityFarmers
         this.tasks.addTask(7, new EntityAILookIdle(this));
 	}
 
+	@Override
 	protected void entityInit()
 	{
 		super.entityInit();
@@ -97,6 +98,7 @@ public class EntityTreeper extends EntityFarmers
     	}
     }
 
+	@Override
 	public int getMaxHealth()
 	{
 		return 13;
@@ -108,6 +110,7 @@ public class EntityTreeper extends EntityFarmers
 		return 2.0F;
 	}
 
+	@Override
 	public void onLivingUpdate()
 	{
 		super.onLivingUpdate();
@@ -146,12 +149,14 @@ public class EntityTreeper extends EntityFarmers
     	return super.checkItemID(i);
     }
 
+	@Override
 	public void writeEntityToNBT(NBTTagCompound nbttagcompound)
 	{
 		super.writeEntityToNBT(nbttagcompound);
 		nbttagcompound.setInteger("leaves", this.getLeaveType());
 	}
 
+	@Override
 	public void readEntityFromNBT(NBTTagCompound nbttagcompound)
 	{
 		super.readEntityFromNBT(nbttagcompound);
@@ -187,6 +192,7 @@ public class EntityTreeper extends EntityFarmers
 		}
 	}
 
+	@Override
 	protected int getDropItemId()
 	{
 		return Mod_DenEnderman_Core.treeperSeed.itemID;
@@ -265,10 +271,10 @@ public class EntityTreeper extends EntityFarmers
 	private void spawnItems(int i, int j, int k, ItemStack itemstack)
 	{
 		float f = 0.7F;
-		double d = (double)(worldObj.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-		double d1 = (double)(worldObj.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-		double d2 = (double)(worldObj.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-		EntityItem entityitem = new EntityItem(worldObj, (double)i + d, (double)j + d1, (double)k + d2, itemstack);
+		double d = (worldObj.rand.nextFloat() * f) + (1.0F - f) * 0.5D;
+		double d1 = (worldObj.rand.nextFloat() * f) + (1.0F - f) * 0.5D;
+		double d2 = (worldObj.rand.nextFloat() * f) + (1.0F - f) * 0.5D;
+		EntityItem entityitem = new EntityItem(worldObj, i + d, j + d1, k + d2, itemstack);
 		entityitem.delayBeforeCanPickup = 10;
 		worldObj.spawnEntityInWorld(entityitem);
 	}

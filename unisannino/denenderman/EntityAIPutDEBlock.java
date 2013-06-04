@@ -13,14 +13,14 @@ import net.minecraft.world.World;
 public class EntityAIPutDEBlock extends EntityAIBase
 {
 
-    private EntityFarmers theFarmers;
-    private World theWorld;
+    private final EntityFarmers theFarmers;
+    private final World theWorld;
     private int tilePosX;
     private int tilePosY;
     private int tilePosZ;
     public IInventory targetDEBInv;
     public TileEntity targetDEB;
-    private DEBlockSorter sorter;
+    private final DEBlockSorter sorter;
 
 
     public EntityAIPutDEBlock(EntityFarmers par1EntityFarmers)
@@ -33,6 +33,7 @@ public class EntityAIPutDEBlock extends EntityAIBase
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
+    @Override
     public boolean shouldExecute()
     {
     	Random rand = this.theFarmers.getRNG();
@@ -62,6 +63,7 @@ public class EntityAIPutDEBlock extends EntityAIBase
         return false;
     }
 
+    @Override
     public void updateTask()
     {
         if (this.targetDEB != null)
@@ -144,6 +146,7 @@ public class EntityAIPutDEBlock extends EntityAIBase
     /**
      * Execute a one shot task or start executing a continuous task
      */
+    @Override
     public void startExecuting()
     {
     }

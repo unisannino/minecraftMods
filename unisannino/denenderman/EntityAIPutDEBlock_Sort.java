@@ -15,14 +15,14 @@ import net.minecraft.world.World;
 public class EntityAIPutDEBlock_Sort extends EntityAIBase
 {
 
-    private EntityDenEnderman theFarmers;
-    private World theWorld;
+    private final EntityDenEnderman theFarmers;
+    private final World theWorld;
     private int tilePosX;
     private int tilePosY;
     private int tilePosZ;
     public IInventory targetDEBInv;
     public TileEntity targetDEB;
-    private DEBlockSorter sorter;
+    private final DEBlockSorter sorter;
 
 
 	/*
@@ -39,6 +39,7 @@ public class EntityAIPutDEBlock_Sort extends EntityAIBase
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
+    @Override
     public boolean shouldExecute()
     {
         if(this.theFarmers.inventory.getFirstEmptyStack() == -1)
@@ -65,6 +66,7 @@ public class EntityAIPutDEBlock_Sort extends EntityAIBase
         return false;
     }
 
+    @Override
     public void updateTask()
     {
         if (this.targetDEB != null)
@@ -142,6 +144,7 @@ public class EntityAIPutDEBlock_Sort extends EntityAIBase
     /**
      * Execute a one shot task or start executing a continuous task
      */
+    @Override
     public void startExecuting()
     {
     }

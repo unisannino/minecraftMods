@@ -35,9 +35,9 @@ public class EntityFarmers extends EntityTameable
     protected int likeItem;
     protected int funcItem;
 
-    private List<Integer> canpickup;
+    private final List<Integer> canpickup;
     protected List<TileEntityDenEnder> serchedDE;
-    private List<Integer> cantputItem;
+    private final List<Integer> cantputItem;
 
     public IInventory myDBlock;
     public TileEntity myTile;

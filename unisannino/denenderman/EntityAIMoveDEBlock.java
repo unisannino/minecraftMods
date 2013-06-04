@@ -10,12 +10,12 @@ import net.minecraft.world.World;
 
 public class EntityAIMoveDEBlock extends EntityAIBase
 {
-    private EntityFarmers theFarmers;
+    private final EntityFarmers theFarmers;
     private double blockPosX;
     private double blockPosY;
     private double blockPosZ;
-    private float moveSpeed;
-    private World theWorld;
+    private final float moveSpeed;
+    private final World theWorld;
 
     public EntityAIMoveDEBlock(EntityFarmers par1EntityFarmers, float par2)
     {
@@ -81,7 +81,7 @@ public class EntityAIMoveDEBlock extends EntityAIBase
 
             if (this.theWorld.getBlockId(var3, var4, var5) == Mod_DenEnderman_Core.denenderBlock.blockID)
             {
-                return this.theWorld.getWorldVec3Pool().getVecFromPool((double)var3, (double)var4, (double)var5);
+                return this.theWorld.getWorldVec3Pool().getVecFromPool(var3, var4, var5);
             }
         }
         return null;
