@@ -2,12 +2,11 @@ package unisannino.denenderman;
 
 import java.util.Random;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import cpw.mods.fml.client.FMLClientHandler;
 
 public class EntityAIMoveDEBlock extends EntityAIBase
 {
@@ -17,7 +16,6 @@ public class EntityAIMoveDEBlock extends EntityAIBase
     private double blockPosZ;
     private float moveSpeed;
     private World theWorld;
-    private Minecraft mc = FMLClientHandler.instance().getClient();
 
     public EntityAIMoveDEBlock(EntityFarmers par1EntityFarmers, float par2)
     {
@@ -41,11 +39,12 @@ public class EntityAIMoveDEBlock extends EntityAIBase
                 this.blockPosZ = var1.zCoord;
 
         		String s = new StringBuilder(this.theFarmers.getFarmersName()).append(" is searching DenenderBlock...").toString();
-        		if(mc.thePlayer != null)
+        		if(theFarmers.getOwnerName().isEmpty() == false)
         		{
         			if(!this.theFarmers.worldObj.isRemote && !this.theFarmers.sayLogs)
         			{
-            			mc.thePlayer.addChatMessage(s);
+        				EntityPlayerMP player = ((EntityPlayerMP)this.theFarmers.getOwner());
+        				player.sendChatToPlayer(s);
             			this.theFarmers.sayLogs = true;
         			}
         		}

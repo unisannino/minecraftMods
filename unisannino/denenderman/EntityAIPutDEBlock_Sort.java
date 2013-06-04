@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -114,7 +115,8 @@ public class EntityAIPutDEBlock_Sort extends EntityAIBase
                         String s = "Putted Inventory Items!!";
             			if(!this.theWorld.isRemote)
             			{
-                			this.theFarmers.mc.thePlayer.addChatMessage(s);
+            				EntityPlayerMP player = ((EntityPlayerMP)this.theFarmers.getOwner());
+            				player.sendChatToPlayer(s);
             			}
                     }
                     else
@@ -122,7 +124,8 @@ public class EntityAIPutDEBlock_Sort extends EntityAIBase
                         String s = "Oh No! Slot of DenEnderBlock is full!";
             			if(!this.theWorld.isRemote)
             			{
-            				this.theFarmers.mc.thePlayer.addChatMessage(s);
+            				EntityPlayerMP player = ((EntityPlayerMP)this.theFarmers.getOwner());
+            				player.sendChatToPlayer(s);
             			}
                     	this.theFarmers.deblockList.remove(this.theWorld.getBlockTileEntity(tilePosX, tilePosY, tilePosZ));
                         return;

@@ -3,6 +3,7 @@ package unisannino.denenderman;
 import java.util.Random;
 
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -111,9 +112,10 @@ public class EntityAIPutDEBlock extends EntityAIBase
                     {
 
                         String s = "Oh No! Slot of DenEnderBlock is full!";
-            			if(!this.theWorld.isRemote && this.theFarmers.mc.thePlayer.username.equalsIgnoreCase(this.theFarmers.getOwnerName()))
+            			if(!this.theWorld.isRemote && theFarmers.getOwnerName().equalsIgnoreCase(this.theFarmers.getOwnerName()))
             			{
-            				this.theFarmers.mc.thePlayer.addChatMessage(s);
+            				EntityPlayerMP player = ((EntityPlayerMP)this.theFarmers.getOwner());
+            				player.sendChatToPlayer(s);
             			}
                     	this.theFarmers.deblockList.remove(this.theWorld.getBlockTileEntity(tilePosX, tilePosY, tilePosZ));
                         return;
@@ -125,9 +127,10 @@ public class EntityAIPutDEBlock extends EntityAIBase
             {
                 this.theWorld.playSoundAtEntity(this.theFarmers, "random.pop", 0.5F, (this.theFarmers.getRNG().nextFloat() - this.theFarmers.getRNG().nextFloat()) * 0.2F + 1.0F);
                 String s = "Putted Inventory Items!!";
-    			if(!this.theWorld.isRemote && this.theFarmers.mc.thePlayer.username.equalsIgnoreCase(this.theFarmers.getOwnerName()))
+    			if(!this.theWorld.isRemote && this.theFarmers.getOwnerName().equalsIgnoreCase(this.theFarmers.getOwnerName()))
     			{
-        			this.theFarmers.mc.thePlayer.addChatMessage(s);
+    				EntityPlayerMP player = ((EntityPlayerMP)this.theFarmers.getOwner());
+    				player.sendChatToPlayer(s);
     			}
     			putcrop = false;
             }

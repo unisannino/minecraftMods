@@ -254,7 +254,7 @@ public class EntityTreeper extends EntityFarmers
         					//spawnItems(x, y + dleave, z, new ItemStack(Item.appleRed));
         				}
 
-                    	mc.effectRenderer.addBlockDestroyEffects(x, y, z, Block.leaves.blockID & 0xfff, Block.leaves.blockID >> 12 & 0xff);
+        				Mod_DenEnderman_Core.proxy.addBlockDestroyEffects(x, y, z);
                     	worldObj.setBlock(x, y, z, 0);
                     }
                 }
