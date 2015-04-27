@@ -3,6 +3,7 @@ package unisannino.denenderman;
 import java.util.Random;
 
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -12,14 +13,14 @@ import net.minecraft.world.World;
 public class EntityAIPutDEBlock extends EntityAIBase
 {
 
-    private EntityFarmers theFarmers;
-    private World theWorld;
+    private final EntityFarmers theFarmers;
+    private final World theWorld;
     private int tilePosX;
     private int tilePosY;
     private int tilePosZ;
     public IInventory targetDEBInv;
     public TileEntity targetDEB;
-    private DEBlockSorter sorter;
+    private final DEBlockSorter sorter;
 
 
     public EntityAIPutDEBlock(EntityFarmers par1EntityFarmers)
@@ -32,6 +33,7 @@ public class EntityAIPutDEBlock extends EntityAIBase
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
+    @Override
     public boolean shouldExecute()
     {
     	Random rand = this.theFarmers.getRNG();
@@ -61,6 +63,7 @@ public class EntityAIPutDEBlock extends EntityAIBase
         return false;
     }
 
+    @Override
     public void updateTask()
     {
         if (this.targetDEB != null)
@@ -111,9 +114,10 @@ public class EntityAIPutDEBlock extends EntityAIBase
                     {
 
                         String s = "Oh No! Slot of DenEnderBlock is full!";
-            			if(!this.theWorld.isRemote && this.theFarmers.mc.thePlayer.username.equalsIgnoreCase(this.theFarmers.getOwnerName()))
+            			if(!this.theWorld.isRemote && theFarmers.getOwnerName().equalsIgnoreCase(this.theFarmers.getOwnerName()))
             			{
-            				this.theFarmers.mc.thePlayer.addChatMessage(s);
+            				EntityPlayerMP player = ((EntityPlayerMP)this.theFarmers.getOwner());
+            				player.sendChatToPlayer(s);
             			}
                     	this.theFarmers.deblockList.remove(this.theWorld.getBlockTileEntity(tilePosX, tilePosY, tilePosZ));
                         return;
@@ -125,9 +129,10 @@ public class EntityAIPutDEBlock extends EntityAIBase
             {
                 this.theWorld.playSoundAtEntity(this.theFarmers, "random.pop", 0.5F, (this.theFarmers.getRNG().nextFloat() - this.theFarmers.getRNG().nextFloat()) * 0.2F + 1.0F);
                 String s = "Putted Inventory Items!!";
-    			if(!this.theWorld.isRemote && this.theFarmers.mc.thePlayer.username.equalsIgnoreCase(this.theFarmers.getOwnerName()))
+    			if(!this.theWorld.isRemote && this.theFarmers.getOwnerName().equalsIgnoreCase(this.theFarmers.getOwnerName()))
     			{
-        			this.theFarmers.mc.thePlayer.addChatMessage(s);
+    				EntityPlayerMP player = ((EntityPlayerMP)this.theFarmers.getOwner());
+    				player.sendChatToPlayer(s);
     			}
     			putcrop = false;
             }
@@ -141,6 +146,7 @@ public class EntityAIPutDEBlock extends EntityAIBase
     /**
      * Execute a one shot task or start executing a continuous task
      */
+    @Override
     public void startExecuting()
     {
     }

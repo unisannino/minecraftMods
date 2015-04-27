@@ -1,6 +1,8 @@
 package unisannino.denenderman;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.client.particle.EntityPickupFX;
+import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -25,5 +27,17 @@ public class Mod_DenEnderman_ClientProxy extends Mod_DenEnderman_CommonProxy
 	public World getClientWorld()
 	{
 		return FMLClientHandler.instance().getClient().theWorld;
+	}
+
+	@Override
+	public void addEffectPickup(World worldObj, Entity entity, Entity entityFarmer)
+	{
+        FMLClientHandler.instance().getClient().effectRenderer.addEffect(new EntityPickupFX(worldObj, entity, entityFarmer, 0.1F));
+	}
+
+	@Override
+	public void addBlockDestroyEffects(int x, int y, int z)
+	{
+		FMLClientHandler.instance().getClient().effectRenderer.addBlockDestroyEffects(x, y, z, Block.leaves.blockID & 0xfff, Block.leaves.blockID >> 12 & 0xff);
 	}
 }

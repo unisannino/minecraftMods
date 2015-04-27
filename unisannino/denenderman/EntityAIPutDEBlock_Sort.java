@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -14,14 +15,14 @@ import net.minecraft.world.World;
 public class EntityAIPutDEBlock_Sort extends EntityAIBase
 {
 
-    private EntityDenEnderman theFarmers;
-    private World theWorld;
+    private final EntityDenEnderman theFarmers;
+    private final World theWorld;
     private int tilePosX;
     private int tilePosY;
     private int tilePosZ;
     public IInventory targetDEBInv;
     public TileEntity targetDEB;
-    private DEBlockSorter sorter;
+    private final DEBlockSorter sorter;
 
 
 	/*
@@ -38,6 +39,7 @@ public class EntityAIPutDEBlock_Sort extends EntityAIBase
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
+    @Override
     public boolean shouldExecute()
     {
         if(this.theFarmers.inventory.getFirstEmptyStack() == -1)
@@ -64,6 +66,7 @@ public class EntityAIPutDEBlock_Sort extends EntityAIBase
         return false;
     }
 
+    @Override
     public void updateTask()
     {
         if (this.targetDEB != null)
@@ -114,7 +117,8 @@ public class EntityAIPutDEBlock_Sort extends EntityAIBase
                         String s = "Putted Inventory Items!!";
             			if(!this.theWorld.isRemote)
             			{
-                			this.theFarmers.mc.thePlayer.addChatMessage(s);
+            				EntityPlayerMP player = ((EntityPlayerMP)this.theFarmers.getOwner());
+            				player.sendChatToPlayer(s);
             			}
                     }
                     else
@@ -122,7 +126,8 @@ public class EntityAIPutDEBlock_Sort extends EntityAIBase
                         String s = "Oh No! Slot of DenEnderBlock is full!";
             			if(!this.theWorld.isRemote)
             			{
-            				this.theFarmers.mc.thePlayer.addChatMessage(s);
+            				EntityPlayerMP player = ((EntityPlayerMP)this.theFarmers.getOwner());
+            				player.sendChatToPlayer(s);
             			}
                     	this.theFarmers.deblockList.remove(this.theWorld.getBlockTileEntity(tilePosX, tilePosY, tilePosZ));
                         return;
@@ -139,6 +144,7 @@ public class EntityAIPutDEBlock_Sort extends EntityAIBase
     /**
      * Execute a one shot task or start executing a continuous task
      */
+    @Override
     public void startExecuting()
     {
     }

@@ -2,22 +2,20 @@ package unisannino.denenderman;
 
 import java.util.Random;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import cpw.mods.fml.client.FMLClientHandler;
 
 public class EntityAIMoveDEBlock extends EntityAIBase
 {
-    private EntityFarmers theFarmers;
+    private final EntityFarmers theFarmers;
     private double blockPosX;
     private double blockPosY;
     private double blockPosZ;
-    private float moveSpeed;
-    private World theWorld;
-    private Minecraft mc = FMLClientHandler.instance().getClient();
+    private final float moveSpeed;
+    private final World theWorld;
 
     public EntityAIMoveDEBlock(EntityFarmers par1EntityFarmers, float par2)
     {
@@ -41,11 +39,12 @@ public class EntityAIMoveDEBlock extends EntityAIBase
                 this.blockPosZ = var1.zCoord;
 
         		String s = new StringBuilder(this.theFarmers.getFarmersName()).append(" is searching DenenderBlock...").toString();
-        		if(mc.thePlayer != null)
+        		if(theFarmers.getOwnerName().isEmpty() == false)
         		{
         			if(!this.theFarmers.worldObj.isRemote && !this.theFarmers.sayLogs)
         			{
-            			mc.thePlayer.addChatMessage(s);
+        				EntityPlayerMP player = ((EntityPlayerMP)this.theFarmers.getOwner());
+        				player.sendChatToPlayer(s);
             			this.theFarmers.sayLogs = true;
         			}
         		}
@@ -82,7 +81,7 @@ public class EntityAIMoveDEBlock extends EntityAIBase
 
             if (this.theWorld.getBlockId(var3, var4, var5) == Mod_DenEnderman_Core.denenderBlock.blockID)
             {
-                return this.theWorld.getWorldVec3Pool().getVecFromPool((double)var3, (double)var4, (double)var5);
+                return this.theWorld.getWorldVec3Pool().getVecFromPool(var3, var4, var5);
             }
         }
         return null;

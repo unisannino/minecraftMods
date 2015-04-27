@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityPickupFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
@@ -23,7 +21,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -31,7 +28,6 @@ public class EntityFarmers extends EntityTameable
 {
     protected int heartpop;
 
-    protected Minecraft mc = FMLClientHandler.instance().getClient();
     protected InventoryFarmers inventory;
     //protected PathEntity pathToCrop;
 
@@ -39,9 +35,9 @@ public class EntityFarmers extends EntityTameable
     protected int likeItem;
     protected int funcItem;
 
-    private List<Integer> canpickup;
+    private final List<Integer> canpickup;
     protected List<TileEntityDenEnder> serchedDE;
-    private List<Integer> cantputItem;
+    private final List<Integer> cantputItem;
 
     public IInventory myDBlock;
     public TileEntity myTile;
@@ -228,7 +224,7 @@ public class EntityFarmers extends EntityTameable
                         if (this.worldObj.isRemote)
 						{
                             worldObj.playSoundAtEntity(this, "random.pop", 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                            mc.effectRenderer.addEffect(new EntityPickupFX(mc.theWorld, entity, this, 0.1F));
+                            Mod_DenEnderman_Core.proxy.addEffectPickup(worldObj, entity, this);
 						}
                     }
                 }
@@ -658,146 +654,6 @@ public class EntityFarmers extends EntityTameable
         {
             myDBlock = tedenender;
             return true;
-        }
-    }
-
-    @Deprecated
-    protected void putDBlock()
-    {
-        if (myDBlock != null)
-        {
-            if (inventory.getFirstEmptyStack() == -1)
-            {
-                for (int i = 0; i < inventory.getSizeInventory(); i++)
-                {
-                    //System.out.println(i);
-                    ItemStack itemstackF = inventory.getStackInSlot(i);
-                    if (itemstackF != null)
-                    {
-                    	if(!checkItemCanPut(itemstackF.itemID))
-                    	{
-                    		continue;
-                    	}
-                        boolean putcrop = false;
-
-                        for (int j = 0; j < myDBlock.getSizeInventory(); j++)
-                        {
-                            ItemStack itemstackDE = myDBlock.getStackInSlot(j);
-
-                            if (itemstackDE == null)
-                            {
-                                myDBlock.setInventorySlotContents(j, itemstackF);
-                                inventory.setInventorySlotContents(i, null);
-                                putcrop = true;
-                                break;
-                            }
-                        }
-
-                        if (putcrop)
-                        {
-                            worldObj.playSoundAtEntity(this, "random.pop", 0.5F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
-                            String s = "Putted Inventory Items!!";
-                			if(this.worldObj.isRemote)
-                			{
-                    			mc.thePlayer.addChatMessage(s);
-                			}
-                        }
-                        else
-                        {
-                            String s = "Oh No! Slot of DenEnderBlock is full!";
-                			if(this.worldObj.isRemote)
-                			{
-                    			mc.thePlayer.addChatMessage(s);
-                			}
-                            return;
-                        }
-                    }
-                }
-            }
-
-            myTile = null;
-            myDBlock = null;
-            serchedDE.clear();
-            sayLogs = false;
-        }
-    }
-
-    @Deprecated
-    private void searchDBlock()
-    {
-    	if(!sayLogs)
-    	{
-    		String s = new StringBuilder(getEntityString()).append(" is searching DenenderBlock...").toString();
-    		if(mc.thePlayer != null)
-    		{
-    			if(!this.worldObj.isRemote)
-    			{
-
-        			mc.thePlayer.addChatMessage(s);
-    			}
-        		sayLogs = true;
-    		}
-    	}
-		for (double checkXZ = 10; checkXZ > 0; checkXZ--)
-		{
-			for (int height = 4; height > -1; height--)
-			{
-				int i = MathHelper.floor_double((posX - (rand.nextDouble() * 9D)) + checkXZ);
-				int j = MathHelper.floor_double((posY - 1.0D) + rand.nextDouble() * height);
-				int k = MathHelper.floor_double((posZ - (rand.nextDouble() * 9D)) + checkXZ);
-
-				if (worldObj.getBlockId(i, j, k) == Mod_DenEnderman_Core.denenderBlock.blockID)
-				{
-					/*
-					pathToCrop = worldObj.getEntityPathToXYZ(this, i, j, k, 16F, true, false, false, true);
-					setPathToEntity(pathToCrop);
-					*/
-				}
-			}
-		}
-        for (double checkheight = 4; checkheight > 0; checkheight--)
-        {
-            int i = MathHelper.floor_double(posX - (rand.nextDouble() * 2D));
-            int l = MathHelper.floor_double((posY - 1.0D) + rand.nextDouble() * checkheight);
-            int j1 = MathHelper.floor_double(posZ - (rand.nextDouble() * 2D));
-
-            TileEntity tileentity = worldObj.getBlockTileEntity(i, l, j1);
-            //System.out.println(tileentity != null);
-
-            if (tileentity != null && tileentity instanceof TileEntityDenEnder)
-            {
-                myTile = tileentity;
-            }
-
-            if (myTile != null)
-            {
-                if (worldObj.getBlockTileEntity(i, l, j1) == myTile)
-                {
-                    if (myDBlock == null)
-                    {
-                        getBlock(worldObj, i, l, j1);
-
-                        if (myDBlock != null)
-                        {
-                        	facetoPath(i, l, j1, 100F, 100F);
-                        }
-                    }
-
-                    putDBlock();
-                }
-                else
-                {
-                    myTile = null;
-
-                    if (myDBlock != null)
-                    {
-                    	/*
-                        myDBlock = null;
-                        pathToCrop = null;
-                        */
-                    }
-                }
-            }
         }
     }
 

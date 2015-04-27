@@ -2,16 +2,13 @@ package unisannino.denenderman;
 
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.network.IGuiHandler;
-import cpw.mods.fml.server.FMLServerHandler;
 
 public class Mod_DenEnderman_CommonProxy implements IGuiHandler
 {
@@ -71,6 +68,18 @@ public class Mod_DenEnderman_CommonProxy implements IGuiHandler
 	public World getClientWorld()
 	{
 		return null;
+	}
+
+
+	public void addEffectPickup(World worldObj, Entity entity, Entity entityFarmer) {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+
+	public void addBlockDestroyEffects(int x, int y, int z) {
+		// TODO 自動生成されたメソッド・スタブ
+
 	}
 
 }
